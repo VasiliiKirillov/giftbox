@@ -21,6 +21,7 @@ const StorageStyled = styled.div`
   min-width: 128px;
   min-height: 64px;
   justify-content: space-between;
+  flex-grow: 1;
 `;
 
 const StorageDataStyled = styled.div`
