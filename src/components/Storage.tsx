@@ -18,8 +18,10 @@ const StorageStyled = styled.div`
   display: flex;
   flex-direction: column;
   border: solid;
-  min-width: 128px;
-  min-height: 64px;
+  width: 256px;
+  min-height: 128px;
+  box-sizing: border-box;
+  padding: 8px;
   justify-content: space-between;
   flex-grow: 1;
 `;
@@ -27,12 +29,12 @@ const StorageStyled = styled.div`
 const StorageDataStyled = styled.div`
   display: flex;
   flex-direction: row;
-  font-size: 20px;
+  font-size: 24px;
   justify-content: space-between;
 `;
 
 const CurrencyStyled = styled.div`
-  font-size: 10px;
+  font-size: 12px;
 `;
 
 const StorageNameStyled = styled.div`

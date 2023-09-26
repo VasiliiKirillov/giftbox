@@ -15,5 +15,6 @@ export const Storages = memo(() => {
 const StoragesStyled = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
   margin-bottom: 16px;
 `;
