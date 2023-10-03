@@ -36,19 +36,4 @@ const incomesData = [
     amount: 123,
     description: 'test',
   },
-  {
-    storage: 'Aaaa',
-    amount: 1237,
-    description: 'testtest',
-  },
-  {
-    storage: 'Bb',
-    amount: 123.54,
-    description: 'test test',
-  },
-  {
-    storage: 'Bogg',
-    amount: 123,
-    description: 'test test',
-  },
 ];

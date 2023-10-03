@@ -1,13 +1,19 @@
-import { memo } from 'react';
+import { FC, memo } from 'react';
 import styled from 'styled-components';
 
-export const Storage = memo(() => {
+type StorageProps = {
+  name: string;
+  currency: string;
+  amount: number;
+};
+
+export const Storage: FC<StorageProps> = memo(({ name, currency, amount }) => {
   return (
     <StorageStyled>
-      <CurrencyStyled>USD</CurrencyStyled>
+      <CurrencyStyled>{currency}</CurrencyStyled>
       <StorageDataStyled>
-        <StorageNameStyled>Bog</StorageNameStyled>
-        <StorageAmountStyled>1234</StorageAmountStyled>
+        <StorageNameStyled>{name}</StorageNameStyled>
+        <StorageAmountStyled>{amount}</StorageAmountStyled>
       </StorageDataStyled>
     </StorageStyled>
   );
@@ -18,7 +24,7 @@ const StorageStyled = styled.div`
   display: flex;
   flex-direction: column;
   border: solid;
-  width: 256px;
+  max-width: 256px;
   min-height: 128px;
   box-sizing: border-box;
   padding: 8px;

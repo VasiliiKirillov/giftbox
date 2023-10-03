@@ -33,7 +33,8 @@ export const AccountingTable: FC<AccountingTableProps> = memo(({ data }) => {
       </RecordContainerStyled>
       {data.map((record) => {
         return (
-          <RecordContainerStyled>
+          // TODO: change to id!!!!
+          <RecordContainerStyled key={record.description}>
             <RecordItemStyled width={storageRef?.clientWidth ?? 0}>
               {record.storage}
             </RecordItemStyled>
