@@ -7,10 +7,10 @@ import { collection, getDocs } from 'firebase/firestore';
 
 type Storage = { currency: string; startTotal: number };
 
-type TStorages = Record<string, Storage>;
+type StoragesType = Record<string, Storage>;
 
 export const Storages = memo(() => {
-  const storages = useGetStorages();
+  const storages = useFetchStorages();
 
   return (
     <StoragesStyled>
@@ -27,8 +27,8 @@ export const Storages = memo(() => {
 });
 
 // hooks
-const useGetStorages = () => {
-  const [storages, setStorages] = useState<TStorages>({});
+const useFetchStorages = () => {
+  const [storages, setStorages] = useState<StoragesType>({});
 
   const fetchStorages = async () => {
     const storagesRef = collection(
@@ -36,7 +36,7 @@ const useGetStorages = () => {
       `months/October-${getYear() + 1}/storages`
     );
     const storagesSnap = await getDocs(storagesRef);
-    const storages: TStorages = {};
+    const storages: StoragesType = {};
     storagesSnap.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       storages[doc.id] = doc.data() as Storage;

@@ -32,6 +32,7 @@ const IncomesStyled = styled.div`
 
 const incomesData = [
   {
+    id: 'asdf',
     storage: 'Bog',
     amount: 123,
     description: 'test',

@@ -1,15 +1,20 @@
-import { FC, memo, useState } from 'react';
+import React, { FC, memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { RecordContainerStyled } from './CommonStyles';
+import { RecordInput } from './RecordInput';
 
 type AccountingRecord = {
   storage: string;
   amount: number;
   description: string;
+  id: string;
 };
 
 type AccountingTableProps = {
   data: Array<AccountingRecord>;
 };
+
+const MAX_ROWS_AMOUNT = 8;
 
 export const AccountingTable: FC<AccountingTableProps> = memo(({ data }) => {
   const [storageRef, setStorageRef] = useState<HTMLDivElement | null>(null);
@@ -17,9 +22,23 @@ export const AccountingTable: FC<AccountingTableProps> = memo(({ data }) => {
   const [descriptionRef, setDescriptionRef] = useState<HTMLDivElement | null>(
     null
   );
+
+  const emptyRows = useMemo(() => {
+    if (data.length < MAX_ROWS_AMOUNT) {
+      return new Array(MAX_ROWS_AMOUNT - data.length)
+        .fill(0)
+        .map((el, index) => <RecordContainerStyled key={index} />);
+    }
+  }, [data]);
+
+  const [isNewItemAddition, setIsNewItemAddition] = useState(false);
+
+  const closeRecordInput = useCallback(() => {
+    setIsNewItemAddition(false);
+  }, []);
+
   return (
     <AccountingTableStyled>
-      <AddNewButtonStyled>+</AddNewButtonStyled>
       <RecordContainerStyled>
         <TitleStorageStyled ref={(newRef) => setStorageRef(newRef)}>
           Storage
@@ -31,10 +50,21 @@ export const AccountingTable: FC<AccountingTableProps> = memo(({ data }) => {
           Description
         </TitleDescriptionStyled>
       </RecordContainerStyled>
+      {isNewItemAddition ? (
+        <RecordInput
+          storageWidth={storageRef?.clientWidth ?? 0}
+          amountWidth={amountRef?.clientWidth ?? 0}
+          descriptionWidth={descriptionRef?.clientWidth ?? 0}
+          closeAction={closeRecordInput}
+        />
+      ) : (
+        <AddNewButtonStyled onClick={() => setIsNewItemAddition(true)}>
+          +
+        </AddNewButtonStyled>
+      )}
       {data.map((record) => {
         return (
-          // TODO: change to id!!!!
-          <RecordContainerStyled key={record.description}>
+          <RecordContainerStyled key={record.id}>
             <RecordItemStyled width={storageRef?.clientWidth ?? 0}>
               {record.storage}
             </RecordItemStyled>
@@ -47,6 +77,7 @@ export const AccountingTable: FC<AccountingTableProps> = memo(({ data }) => {
           </RecordContainerStyled>
         );
       })}
+      {emptyRows}
     </AccountingTableStyled>
   );
 });
@@ -73,17 +104,11 @@ const RecordItemStyled = styled.div<{ width: number }>`
   text-overflow: ellipsis;
 `;
 
-const RecordContainerStyled = styled.div`
-  display: flex;
-  flex-direction: row;
-  border: solid;
-  gap: 8px;
-`;
-
 const AddNewButtonStyled = styled.div`
   display: flex;
   justify-content: center;
   border: solid;
+  height: 32px;
 `;
 
 const AccountingTableStyled = styled.div`
