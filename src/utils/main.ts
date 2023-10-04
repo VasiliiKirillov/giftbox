@@ -22,3 +22,5 @@ export const getYear = () => {
   const d = new Date();
   return d.getFullYear();
 };
+
+export const API = `months/${getMonth()}-${getYear() + 1}`;

@@ -109,6 +109,8 @@ const AddNewButtonStyled = styled.div`
   justify-content: center;
   border: solid;
   height: 32px;
+  align-items: center;
+  cursor: pointer;
 `;
 
 const AccountingTableStyled = styled.div`

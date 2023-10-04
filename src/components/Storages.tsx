@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Storage } from './Storage';
-import { getYear } from '../utils/main';
+import { API } from '../utils/main';
 import { db } from '../main';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -31,10 +31,7 @@ const useFetchStorages = () => {
   const [storages, setStorages] = useState<StoragesType>({});
 
   const fetchStorages = async () => {
-    const storagesRef = collection(
-      db,
-      `months/October-${getYear() + 1}/storages`
-    );
+    const storagesRef = collection(db, `${API}/storages`);
     const storagesSnap = await getDocs(storagesRef);
     const storages: StoragesType = {};
     storagesSnap.forEach((doc) => {
