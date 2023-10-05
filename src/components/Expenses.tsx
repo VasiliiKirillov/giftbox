@@ -2,8 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AccountingTable } from './AccountingTable';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../main';
-import { API } from '../utils/main';
+import { API, db } from '../utils/api';
 
 export const Expenses = memo(() => {
   const expensesData = useFetchExpensesData();

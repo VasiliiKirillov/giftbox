@@ -23,4 +23,13 @@ export const getYear = () => {
   return d.getFullYear();
 };
 
-export const API = `months/${getMonth()}-${getYear() + 1}`;
+export const sortAccountingData = (data: AccountRecord[]) =>
+  data.sort((a, b) => {
+    if (a.dateAdded.seconds < b.dateAdded.seconds) {
+      return -1;
+    }
+    if (a.dateAdded.seconds > b.dateAdded.seconds) {
+      return 1;
+    }
+    return 0;
+  });

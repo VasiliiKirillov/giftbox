@@ -1,8 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Storage } from './Storage';
-import { API } from '../utils/main';
-import { db } from '../main';
+import { API, db } from '../utils/api';
 import { collection, getDocs } from 'firebase/firestore';
 
 type Storage = { currency: string; startTotal: number };
