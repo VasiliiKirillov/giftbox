@@ -1,11 +1,15 @@
 import { memo } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+
+import { getProfitAmount } from '../store/commonSelectors';
 
 export const Profit = memo(() => {
+  const profitAmount = useSelector(getProfitAmount);
   return (
     <ProfitStyled>
       <ProfitTitleStyled>Profit</ProfitTitleStyled>
-      <ProfitSumStyled>456</ProfitSumStyled>
+      <ProfitSumStyled>{profitAmount}</ProfitSumStyled>
     </ProfitStyled>
   );
 });

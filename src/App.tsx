@@ -1,18 +1,26 @@
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 import { Storages } from './components/Storages';
 import { Accounting } from './components/Accounting';
 import { Calendar } from './components/Calendar';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { fetchIncomes } from './store/incomesState';
 import { AppDispatch } from './store/store';
+import { fetchExpenses } from './store/expensesState';
 
-export const App = () => {
+const useFetchInitialData = () => {
   const dispatch: AppDispatch = useDispatch();
+
   useEffect(() => {
     dispatch(fetchIncomes());
+    dispatch(fetchExpenses());
   }, []);
+};
+
+export const App = () => {
+  useFetchInitialData();
+
   return (
     <AppContainerStyled>
       <MainContentStyled>

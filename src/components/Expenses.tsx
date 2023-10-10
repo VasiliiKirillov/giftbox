@@ -1,13 +1,13 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+
 import { AccountingTable } from './AccountingTable';
-import { collection, getDocs } from 'firebase/firestore';
-import { API, db } from '../utils/api';
+import { getExpenses, getExpensesSum } from '../store/expensesState';
 
 export const Expenses = memo(() => {
-  const expensesData = useFetchExpensesData();
-
-  const expensesSum = expensesData.reduce((acc, curr) => acc + curr.amount, 0);
+  const expensesData = useSelector(getExpenses);
+  const expensesSum = useSelector(getExpensesSum);
 
   return (
     <ExpensesStyled>
@@ -19,40 +19,6 @@ export const Expenses = memo(() => {
     </ExpensesStyled>
   );
 });
-
-//hooks
-const useFetchExpensesData = () => {
-  const [expenses, setExpenses] = useState<AccountRecord[]>([]);
-
-  const fetchExpenses = async () => {
-    const expensesRef = collection(db, `${API}/expenses`);
-    const expensesSnap = await getDocs(expensesRef);
-    const expenses: AccountRecord[] = [];
-    expensesSnap.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      expenses.push({
-        id: doc.id,
-        ...(doc.data() as Omit<AccountRecord, 'id'>),
-      });
-    });
-    setExpenses(
-      expenses.sort((a, b) => {
-        if (a.dateAdded.seconds < b.dateAdded.seconds) {
-          return -1;
-        }
-        if (a.dateAdded.seconds > b.dateAdded.seconds) {
-          return 1;
-        }
-        return 0;
-      })
-    );
-  };
-
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
-  return expenses;
-};
 
 // styles
 const ExpensesSumStyled = styled.div``;

@@ -5,15 +5,8 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { collection, getDocs } from 'firebase/firestore';
-import { db, API } from '../utils/api';
+import { db, API, DataStatus } from '../utils/api';
 import { sortAccountingData } from '../utils/main';
-
-export enum DataStatus {
-  idle = 'idle',
-  loading = 'loading',
-  succeeded = 'succeeded',
-  failed = 'failed',
-}
 
 export type IncomesState = {
   status: DataStatus;
