@@ -3,7 +3,11 @@ import { getFirestore } from 'firebase/firestore';
 
 import { getMonth, getYear } from './main';
 
-export const API = `months/${getMonth()}-${getYear() + 1}`;
+const userID = 'H88QUMietMsPzhsq5drS';
+
+const API_USER = `/users/${userID}`;
+
+export const API_MONTHS = `${API_USER}/months/${getMonth()}-${getYear()}`;
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDf6EmJoSfqMXI1bbvXHPIDh0flGyhtrsw',

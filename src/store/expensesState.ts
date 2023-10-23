@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { collection, getDocs } from 'firebase/firestore';
-import { db, API, DataStatus } from '../utils/api';
+import { db, API_MONTHS, DataStatus } from '../utils/api';
 import { sortAccountingData } from '../utils/main';
 
 export type ExpensesState = {
@@ -46,7 +46,7 @@ export const getExpensesSum = createSelector(getExpenses, (expenses) =>
 );
 
 export const fetchExpenses = createAsyncThunk('fetchExpenses', async () => {
-  const expensesRef = collection(db, `${API}/expenses`);
+  const expensesRef = collection(db, `${API_MONTHS}/expenses`);
   const expensesSnap = await getDocs(expensesRef);
   const expenses: AccountRecord[] = [];
   expensesSnap.forEach((doc) => {

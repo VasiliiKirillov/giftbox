@@ -8,11 +8,13 @@ import { Calendar } from './components/Calendar';
 import { fetchIncomes } from './store/incomesState';
 import { AppDispatch } from './store/store';
 import { fetchExpenses } from './store/expensesState';
+import { fetchStorages } from './store/storagesState';
 
 const useFetchInitialData = () => {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(fetchStorages());
     dispatch(fetchIncomes());
     dispatch(fetchExpenses());
   }, []);
