@@ -10,9 +10,9 @@ type AccountRecord = {
   dateAdded: { seconds: number };
 };
 
-type Storage = {
+type StorageType = {
   id: string;
-  shortName: string;
+  name: string;
   currency: Currency;
   startTotal: number;
 };

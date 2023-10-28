@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
@@ -9,12 +9,20 @@ export const Expenses = memo(() => {
   const expensesData = useSelector(getExpenses);
   const expensesSum = useSelector(getExpensesSum);
 
+  const putNewRecord = useCallback(
+    (amount: string, description: string, pickedStorage: StorageType) => {
+      // TODO Implement saving procedure
+      console.log('gov expenses', amount, description, pickedStorage);
+    },
+    []
+  );
+
   return (
     <ExpensesStyled>
       <ExpensesInfoStyled>
         <ExpensesTitleStyled>Expenses</ExpensesTitleStyled>
         <ExpensesSumStyled>{expensesSum}</ExpensesSumStyled>
-        <AccountingTable data={expensesData} />
+        <AccountingTable data={expensesData} putNewRecord={putNewRecord} />
       </ExpensesInfoStyled>
     </ExpensesStyled>
   );

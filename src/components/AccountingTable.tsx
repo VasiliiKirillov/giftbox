@@ -12,75 +12,83 @@ type AccountingRecord = {
 
 type AccountingTableProps = {
   data: Array<AccountingRecord>;
+  putNewRecord: (
+    amount: string,
+    description: string,
+    pickedStorage: StorageType
+  ) => void;
 };
 
 const MAX_ROWS_AMOUNT = 8;
 
-export const AccountingTable: FC<AccountingTableProps> = memo(({ data }) => {
-  const [storageRef, setStorageRef] = useState<HTMLDivElement | null>(null);
-  const [amountRef, setAmountRef] = useState<HTMLDivElement | null>(null);
-  const [descriptionRef, setDescriptionRef] = useState<HTMLDivElement | null>(
-    null
-  );
+export const AccountingTable: FC<AccountingTableProps> = memo(
+  ({ data, putNewRecord }) => {
+    const [storageRef, setStorageRef] = useState<HTMLDivElement | null>(null);
+    const [amountRef, setAmountRef] = useState<HTMLDivElement | null>(null);
+    const [descriptionRef, setDescriptionRef] = useState<HTMLDivElement | null>(
+      null
+    );
 
-  const emptyRows = useMemo(() => {
-    if (data.length < MAX_ROWS_AMOUNT) {
-      return new Array(MAX_ROWS_AMOUNT - data.length)
-        .fill(0)
-        .map((el, index) => <RecordContainerStyled key={index} />);
-    }
-  }, [data]);
+    const emptyRows = useMemo(() => {
+      if (data.length < MAX_ROWS_AMOUNT) {
+        return new Array(MAX_ROWS_AMOUNT - data.length)
+          .fill(0)
+          .map((el, index) => <RecordContainerStyled key={index} />);
+      }
+    }, [data]);
 
-  const [isNewItemAddition, setIsNewItemAddition] = useState(false);
+    const [isNewItemAddition, setIsNewItemAddition] = useState(false);
 
-  const closeRecordInput = useCallback(() => {
-    setIsNewItemAddition(false);
-  }, []);
+    const closeRecordInput = useCallback(() => {
+      setIsNewItemAddition(false);
+    }, []);
 
-  return (
-    <AccountingTableStyled>
-      <RecordContainerStyled>
-        <TitleStorageStyled ref={(newRef) => setStorageRef(newRef)}>
-          Storage
-        </TitleStorageStyled>
-        <TitleAmountStyled ref={(newRef) => setAmountRef(newRef)}>
-          Amount
-        </TitleAmountStyled>
-        <TitleDescriptionStyled ref={(newRef) => setDescriptionRef(newRef)}>
-          Description
-        </TitleDescriptionStyled>
-      </RecordContainerStyled>
-      {isNewItemAddition ? (
-        <RecordInput
-          storageWidth={storageRef?.clientWidth ?? 0}
-          amountWidth={amountRef?.clientWidth ?? 0}
-          descriptionWidth={descriptionRef?.clientWidth ?? 0}
-          closeAction={closeRecordInput}
-        />
-      ) : (
-        <AddNewButtonStyled onClick={() => setIsNewItemAddition(true)}>
-          +
-        </AddNewButtonStyled>
-      )}
-      {data.map((record) => {
-        return (
-          <RecordContainerStyled key={record.id}>
-            <RecordItemStyled width={storageRef?.clientWidth ?? 0}>
-              {record.storage}
-            </RecordItemStyled>
-            <RecordItemStyled width={amountRef?.clientWidth ?? 0}>
-              {record.amount}
-            </RecordItemStyled>
-            <RecordItemStyled width={descriptionRef?.clientWidth ?? 0}>
-              {record.description}
-            </RecordItemStyled>
-          </RecordContainerStyled>
-        );
-      })}
-      {emptyRows}
-    </AccountingTableStyled>
-  );
-});
+    return (
+      <AccountingTableStyled>
+        <RecordContainerStyled>
+          <TitleStorageStyled ref={(newRef) => setStorageRef(newRef)}>
+            Storage
+          </TitleStorageStyled>
+          <TitleAmountStyled ref={(newRef) => setAmountRef(newRef)}>
+            Amount
+          </TitleAmountStyled>
+          <TitleDescriptionStyled ref={(newRef) => setDescriptionRef(newRef)}>
+            Description
+          </TitleDescriptionStyled>
+        </RecordContainerStyled>
+        {isNewItemAddition ? (
+          <RecordInput
+            putNewRecord={putNewRecord}
+            storageWidth={storageRef?.clientWidth ?? 0}
+            amountWidth={amountRef?.clientWidth ?? 0}
+            descriptionWidth={descriptionRef?.clientWidth ?? 0}
+            closeAction={closeRecordInput}
+          />
+        ) : (
+          <AddNewButtonStyled onClick={() => setIsNewItemAddition(true)}>
+            +
+          </AddNewButtonStyled>
+        )}
+        {data.map((record) => {
+          return (
+            <RecordContainerStyled key={record.id}>
+              <RecordItemStyled width={storageRef?.clientWidth ?? 0}>
+                {record.storage}
+              </RecordItemStyled>
+              <RecordItemStyled width={amountRef?.clientWidth ?? 0}>
+                {record.amount}
+              </RecordItemStyled>
+              <RecordItemStyled width={descriptionRef?.clientWidth ?? 0}>
+                {record.description}
+              </RecordItemStyled>
+            </RecordContainerStyled>
+          );
+        })}
+        {emptyRows}
+      </AccountingTableStyled>
+    );
+  }
+);
 
 // styles
 const TitleStorageStyled = styled.div`

@@ -12,7 +12,7 @@ export const Storages = memo(() => {
       {storages.map((storage) => (
         <Storage
           key={storage.id}
-          name={storage.shortName}
+          name={storage.name}
           currency={storage.currency}
           amount={storage.startTotal}
         />

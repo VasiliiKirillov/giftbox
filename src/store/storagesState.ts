@@ -5,7 +5,7 @@ import { db, API_MONTHS, DataStatus } from '../utils/api';
 
 export type StoragesState = {
   status: DataStatus;
-  data: Array<Storage>;
+  data: Array<StorageType>;
 };
 
 const initialState: StoragesState = {
@@ -38,11 +38,11 @@ export const getStorages = (store: RootState) => store.storages.data;
 export const fetchStorages = createAsyncThunk('fetchStorages', async () => {
   const storagesRef = collection(db, `${API_MONTHS}/storages`);
   const storagesSnap = await getDocs(storagesRef);
-  const storages: Storage[] = [];
+  const storages: StorageType[] = [];
   storagesSnap.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     storages.push({
-      ...(doc.data() as Storage),
+      ...(doc.data() as StorageType),
     });
   });
   return storages;
