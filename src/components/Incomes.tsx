@@ -1,17 +1,27 @@
 import React, { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import { AccountingTable } from './AccountingTable';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getIncomes, getIncomesSum } from '../store/incomesState';
+import { saveAccountRecord } from '../store/common';
+import { AppDispatch } from '../store/store';
 
 export const Incomes = memo(() => {
+  const dispatch: AppDispatch = useDispatch();
+
   const incomesData = useSelector(getIncomes);
   const incomesSum = useSelector(getIncomesSum);
 
-  const putNewRecord = useCallback(
-    (amount: string, description: string, pickedStorage: StorageType) => {
-      // TODO Implement saving procedure
-      console.log('gov incomes', amount, description, pickedStorage);
+  const putNewIncome = useCallback(
+    (amount: number, description: string, pickedStorage: StorageType) => {
+      dispatch(
+        saveAccountRecord({
+          accountType: 'incomes',
+          amount,
+          description,
+          storage: pickedStorage.id,
+        })
+      );
     },
     []
   );
@@ -21,7 +31,7 @@ export const Incomes = memo(() => {
       <IncomesInfoStyled>
         <IncomesTitleStyled>Incomes</IncomesTitleStyled>
         <IncomesSumStyled>{incomesSum}</IncomesSumStyled>
-        <AccountingTable data={incomesData} putNewRecord={putNewRecord} />
+        <AccountingTable data={incomesData} putNewRecord={putNewIncome} />
       </IncomesInfoStyled>
     </IncomesStyled>
   );

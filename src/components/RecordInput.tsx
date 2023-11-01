@@ -20,7 +20,7 @@ type RecordInputProps = {
   descriptionWidth: number;
   closeAction: () => void;
   putNewRecord: (
-    amount: string,
+    amount: number,
     description: string,
     pickedStorage: StorageType
   ) => void;
@@ -46,7 +46,7 @@ export const RecordInput: FC<RecordInputProps> = memo(
 
     const handleCloseRecordRow = useCallback(() => {
       if (amount && description && pickedStorage) {
-        putNewRecord(amount, description, pickedStorage);
+        putNewRecord(Number(amount), description, pickedStorage);
       }
       closeAction();
     }, [putNewRecord, closeAction, amount, description, pickedStorage]);

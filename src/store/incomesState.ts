@@ -7,6 +7,7 @@ import { RootState } from './store';
 import { collection, getDocs } from 'firebase/firestore';
 import { db, API_MONTHS, DataStatus } from '../utils/api';
 import { sortAccountingData } from '../utils/main';
+import { AccountRecordRef } from './common';
 
 export type IncomesState = {
   status: DataStatus;
@@ -21,7 +22,11 @@ const initialState: IncomesState = {
 export const IncomesSlice = createSlice({
   name: 'incomesState',
   initialState,
-  reducers: {},
+  reducers: {
+    addIncome: (state, action) => {
+      state.data = [action.payload].concat(state.data);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchIncomes.pending, (state) => {
@@ -38,7 +43,7 @@ export const IncomesSlice = createSlice({
   },
 });
 
-// export const { } = IncomesSlice.actions;
+export const { addIncome } = IncomesSlice.actions;
 
 export const getIncomes = (store: RootState) => store.incomes.data;
 export const getIncomesSum = createSelector(getIncomes, (incomes) =>
@@ -50,9 +55,13 @@ export const fetchIncomes = createAsyncThunk('fetchIncomes', async () => {
   const incomesSnap = await getDocs(incomesRef);
   const incomes: AccountRecord[] = [];
   incomesSnap.forEach((doc) => {
+    const docData = {
+      ...(doc.data() as AccountRecordRef),
+    };
     incomes.push({
       id: doc.id,
-      ...(doc.data() as Omit<AccountRecord, 'id'>),
+      ...docData,
+      dateAdded: docData.dateAdded.toMillis(),
     });
   });
   return sortAccountingData(incomes);

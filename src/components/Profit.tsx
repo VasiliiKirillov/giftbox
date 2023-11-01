@@ -2,7 +2,7 @@ import { memo } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
-import { getProfitAmount } from '../store/commonSelectors';
+import { getProfitAmount } from '../store/common';
 
 export const Profit = memo(() => {
   const profitAmount = useSelector(getProfitAmount);

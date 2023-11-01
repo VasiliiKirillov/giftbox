@@ -25,11 +25,11 @@ export const getYear = () => {
 
 export const sortAccountingData = (data: AccountRecord[]) =>
   data.sort((a, b) => {
-    if (a.dateAdded.seconds < b.dateAdded.seconds) {
-      return -1;
-    }
-    if (a.dateAdded.seconds > b.dateAdded.seconds) {
+    if (a.dateAdded < b.dateAdded) {
       return 1;
+    }
+    if (a.dateAdded > b.dateAdded) {
+      return -1;
     }
     return 0;
   });

@@ -2,12 +2,15 @@
 
 type Currency = string;
 
-type AccountRecord = {
-  id: string;
+type AccountRecordBase = {
   storage: string;
   amount: number;
   description: string;
-  dateAdded: { seconds: number };
+};
+
+type AccountRecord = AccountRecordBase & {
+  id: string;
+  dateAdded: number;
 };
 
 type StorageType = {

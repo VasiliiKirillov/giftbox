@@ -7,6 +7,7 @@ import { RootState } from './store';
 import { collection, getDocs } from 'firebase/firestore';
 import { db, API_MONTHS, DataStatus } from '../utils/api';
 import { sortAccountingData } from '../utils/main';
+import { AccountRecordRef } from './common';
 
 export type ExpensesState = {
   status: DataStatus;
@@ -21,7 +22,11 @@ const initialState: ExpensesState = {
 export const ExpensesSlice = createSlice({
   name: 'expensesState',
   initialState,
-  reducers: {},
+  reducers: {
+    addExpense: (state, action) => {
+      state.data = [action.payload].concat(state.data);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchExpenses.pending, (state) => {
@@ -38,7 +43,7 @@ export const ExpensesSlice = createSlice({
   },
 });
 
-// export const { } = ExpensesSlice.actions;
+export const { addExpense } = ExpensesSlice.actions;
 
 export const getExpenses = (store: RootState) => store.expenses.data;
 export const getExpensesSum = createSelector(getExpenses, (expenses) =>
@@ -50,10 +55,13 @@ export const fetchExpenses = createAsyncThunk('fetchExpenses', async () => {
   const expensesSnap = await getDocs(expensesRef);
   const expenses: AccountRecord[] = [];
   expensesSnap.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
+    const docData = {
+      ...(doc.data() as AccountRecordRef),
+    };
     expenses.push({
       id: doc.id,
-      ...(doc.data() as Omit<AccountRecord, 'id'>),
+      ...docData,
+      dateAdded: docData.dateAdded.toMillis(),
     });
   });
   return sortAccountingData(expenses);

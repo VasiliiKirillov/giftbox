@@ -13,7 +13,7 @@ type AccountingRecord = {
 type AccountingTableProps = {
   data: Array<AccountingRecord>;
   putNewRecord: (
-    amount: string,
+    amount: number,
     description: string,
     pickedStorage: StorageType
   ) => void;

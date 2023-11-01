@@ -1,18 +1,28 @@
 import React, { memo, useCallback } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { AccountingTable } from './AccountingTable';
 import { getExpenses, getExpensesSum } from '../store/expensesState';
+import { saveAccountRecord } from '../store/common';
+import { AppDispatch } from '../store/store';
 
 export const Expenses = memo(() => {
+  const dispatch: AppDispatch = useDispatch();
+
   const expensesData = useSelector(getExpenses);
   const expensesSum = useSelector(getExpensesSum);
 
-  const putNewRecord = useCallback(
-    (amount: string, description: string, pickedStorage: StorageType) => {
-      // TODO Implement saving procedure
-      console.log('gov expenses', amount, description, pickedStorage);
+  const putNewExpense = useCallback(
+    (amount: number, description: string, pickedStorage: StorageType) => {
+      dispatch(
+        saveAccountRecord({
+          accountType: 'expenses',
+          amount,
+          description,
+          storage: pickedStorage.id,
+        })
+      );
     },
     []
   );
@@ -22,7 +32,7 @@ export const Expenses = memo(() => {
       <ExpensesInfoStyled>
         <ExpensesTitleStyled>Expenses</ExpensesTitleStyled>
         <ExpensesSumStyled>{expensesSum}</ExpensesSumStyled>
-        <AccountingTable data={expensesData} putNewRecord={putNewRecord} />
+        <AccountingTable data={expensesData} putNewRecord={putNewExpense} />
       </ExpensesInfoStyled>
     </ExpensesStyled>
   );
