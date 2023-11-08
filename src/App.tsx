@@ -1,37 +1,49 @@
+import { useLayoutEffect, useMemo } from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Storages } from './components/Storages';
-import { Accounting } from './components/Accounting';
-import { Calendar } from './components/Calendar';
-import { fetchIncomes } from './store/incomesState';
+import { auth } from './utils/api';
 import { AppDispatch } from './store/store';
-import { fetchExpenses } from './store/expensesState';
-import { fetchStorages } from './store/storagesState';
+import {
+  getUserStatus,
+  setSingedInUser,
+  setSingedOutUser,
+  UserStatus,
+} from './store/user';
+import { MainPage } from './pages/Main.page';
+import { AuthPage } from './pages/Auth.page';
 
-const useFetchInitialData = () => {
+const useHandleAuthChanges = () => {
   const dispatch: AppDispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchStorages());
-    dispatch(fetchIncomes());
-    dispatch(fetchExpenses());
+  useLayoutEffect(() => {
+    const unsubscribeAuthState = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(setSingedInUser({ name: user.displayName, uid: user.uid }));
+      } else {
+        dispatch(setSingedOutUser());
+      }
+    });
+    return () => {
+      unsubscribeAuthState();
+    };
   }, []);
 };
 
 export const App = () => {
-  useFetchInitialData();
+  useHandleAuthChanges();
 
-  return (
-    <AppContainerStyled>
-      <MainContentStyled>
-        <Storages />
-        <Accounting />
-        <Calendar />
-      </MainContentStyled>
-    </AppContainerStyled>
-  );
+  const userStatus = useSelector(getUserStatus);
+
+  const content = useMemo(() => {
+    if (userStatus === UserStatus.idle) return <div>Please stand by</div>;
+    else if (userStatus === UserStatus.signedIn) return <MainPage />;
+    else if (userStatus === UserStatus.signedOut) return <AuthPage />;
+    else return null;
+  }, [userStatus]);
+
+  return <AppContainerStyled>{content}</AppContainerStyled>;
 };
 
 // styles
@@ -39,9 +51,4 @@ const AppContainerStyled = styled.div`
   display: grid;
   place-items: center;
   height: 100vh;
-`;
-
-const MainContentStyled = styled.div`
-  display: flex;
-  flex-direction: column;
 `;

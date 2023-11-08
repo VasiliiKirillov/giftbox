@@ -19,3 +19,8 @@ type StorageType = {
   currency: Currency;
   startTotal: number;
 };
+
+type UserType = {
+  name: string;
+  uid: string;
+};
