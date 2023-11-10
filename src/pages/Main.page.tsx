@@ -1,35 +1,43 @@
-import { memo, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { memo, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Storages } from '../components/Storages';
 import { Accounting } from '../components/Accounting';
 import { Calendar } from '../components/Calendar';
 import { AppDispatch } from '../store/store';
-import { fetchStorages } from '../store/storagesState';
-import { fetchIncomes } from '../store/incomesState';
-import { fetchExpenses } from '../store/expensesState';
 import { SignOutButton } from '../components/SignOutButton';
-
-const useFetchInitialData = () => {
-  const dispatch: AppDispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchStorages());
-    dispatch(fetchIncomes());
-    dispatch(fetchExpenses());
-  }, []);
-};
+import { fetchUserData, getNewUserStatus, getUserUID } from '../store/user';
 
 export const MainPage = memo(() => {
-  useFetchInitialData();
+  const dispatch: AppDispatch = useDispatch();
+
+  const userUID = useSelector(getUserUID);
+  const isUserNew = useSelector(getNewUserStatus);
+
+  useEffect(() => {
+    if (!userUID) return;
+
+    dispatch(fetchUserData(userUID));
+  }, [userUID]);
+
+  const content = useMemo(() => {
+    if (isUserNew === true) return <div>create your new storage</div>;
+    else if (isUserNew === false)
+      return (
+        <>
+          <Storages />
+          <Accounting />
+          <Calendar />
+        </>
+      );
+    else return <div>Please stand by</div>;
+  }, [isUserNew]);
 
   return (
     <MainContentStyled>
       <SignOutButton />
-      <Storages />
-      <Accounting />
-      <Calendar />
+      {content}
     </MainContentStyled>
   );
 });

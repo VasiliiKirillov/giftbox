@@ -1,38 +1,60 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from './store';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export enum UserStatus {
-  idle = 'idle',
-  signedIn = 'signedIn',
-  signedOut = 'signedOut',
-}
+import { RootState } from './store';
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from '../utils/api';
 
 export type UserState = {
-  status: UserStatus;
-  data: UserType | null;
+  isSignedId?: boolean;
+  name?: string;
+  uid?: string;
+  isNewUser?: boolean;
 };
 
-const initialState: UserState = {
-  status: UserStatus.idle,
-  data: null,
-};
+const initialState: UserState = {};
 
 export const UserSlice = createSlice({
   name: 'userState',
   initialState,
   reducers: {
     setSingedInUser: (state, action) => {
-      state.status = UserStatus.signedIn;
-      state.data = action.payload;
+      state.isSignedId = true;
+      state.name = action.payload.name;
+      state.uid = action.payload.uid;
     },
     setSingedOutUser: (state) => {
-      state.status = UserStatus.signedOut;
-      state.data = null;
+      state.isSignedId = false;
+      delete state.name;
+      delete state.uid;
+      delete state.isNewUser;
+    },
+    setIsNewUser: (state, action) => {
+      state.isNewUser = action.payload;
     },
   },
 });
 
-export const { setSingedInUser, setSingedOutUser } = UserSlice.actions;
+// actions
+export const { setSingedInUser, setSingedOutUser, setIsNewUser } =
+  UserSlice.actions;
 
-export const getUserData = (state: RootState) => state.user.data;
-export const getUserStatus = (state: RootState) => state.user.status;
+// selectors
+export const getUserUID = (state: RootState) => state.user.uid;
+export const getNewUserStatus = (state: RootState) => state.user.isNewUser;
+export const getIsUserSignedId = (state: RootState) => state.user.isSignedId;
+
+// async actions
+export const fetchUserData = createAsyncThunk(
+  'fetchUserData',
+  async (userUID: string, thunkAPI) => {
+    const userDocRef = doc(db, `/users/${userUID}`);
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+      console.log('Document data:', userDocSnap.data());
+      // take last Month-Year from Months and create current Month-Year, create and link storages
+      thunkAPI.dispatch(setIsNewUser(false));
+    } else {
+      thunkAPI.dispatch(setIsNewUser(true));
+    }
+  }
+);
