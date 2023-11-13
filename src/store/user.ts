@@ -8,7 +8,7 @@ export type UserState = {
   isSignedId?: boolean;
   name?: string;
   uid?: string;
-  isNewUser?: boolean;
+  isUserHasDB?: boolean;
 };
 
 const initialState: UserState = {};
@@ -26,21 +26,21 @@ export const UserSlice = createSlice({
       state.isSignedId = false;
       delete state.name;
       delete state.uid;
-      delete state.isNewUser;
+      delete state.isUserHasDB;
     },
-    setIsNewUser: (state, action) => {
-      state.isNewUser = action.payload;
+    setIsUserHasDB: (state, action) => {
+      state.isUserHasDB = action.payload;
     },
   },
 });
 
 // actions
-export const { setSingedInUser, setSingedOutUser, setIsNewUser } =
+export const { setSingedInUser, setSingedOutUser, setIsUserHasDB } =
   UserSlice.actions;
 
 // selectors
 export const getUserUID = (state: RootState) => state.user.uid;
-export const getNewUserStatus = (state: RootState) => state.user.isNewUser;
+export const getIsUserHasDB = (state: RootState) => state.user.isUserHasDB;
 export const getIsUserSignedId = (state: RootState) => state.user.isSignedId;
 
 // async actions
@@ -50,11 +50,9 @@ export const fetchUserData = createAsyncThunk(
     const userDocRef = doc(db, `/users/${userUID}`);
     const userDocSnap = await getDoc(userDocRef);
     if (userDocSnap.exists()) {
-      console.log('Document data:', userDocSnap.data());
-      // take last Month-Year from Months and create current Month-Year, create and link storages
-      thunkAPI.dispatch(setIsNewUser(false));
+      thunkAPI.dispatch(setIsUserHasDB(true));
     } else {
-      thunkAPI.dispatch(setIsNewUser(true));
+      thunkAPI.dispatch(setIsUserHasDB(false));
     }
   }
 );

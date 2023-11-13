@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import styled from 'styled-components';
 
-type RecordDropdownProps<T extends { id: string; name: string }> = {
+type DropdownProps<T extends { id: string; name: string }> = {
   listData: Array<T>;
   placeholderValue: string;
   pickedElement: T | null;
@@ -15,7 +15,7 @@ export const DropdownComponent = function <
   pickedElement,
   setPickedElement,
   placeholderValue,
-}: RecordDropdownProps<T>) {
+}: DropdownProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleListItemClick = (element: T) => {
@@ -80,6 +80,4 @@ export const DropDownListStyled = styled.ul`
   overflow: scroll;
 `;
 
-export const RecordDropdown = memo(
-  DropdownComponent
-) as typeof DropdownComponent;
+export const Dropdown = memo(DropdownComponent) as typeof DropdownComponent;

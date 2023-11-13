@@ -4,11 +4,8 @@ import { getAuth } from 'firebase/auth';
 
 import { getMonth, getYear } from './main';
 
-const userID = 'H88QUMietMsPzhsq5drS';
-
-const API_USER = `/users/${userID}`;
-
-export const API_MONTHS = `${API_USER}/months/${getMonth()}-${getYear()}`;
+export const getMonthAPI = (userUID: string) =>
+  `users/${userUID}/months/${getMonth()}-${getYear()}`;
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDf6EmJoSfqMXI1bbvXHPIDh0flGyhtrsw',

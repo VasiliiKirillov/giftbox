@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 import { RecordContainerStyled } from './CommonStyles';
 import { useOnClickOutside } from '../utils/hooks';
-import { RecordDropdown } from './RecordDropdown';
+import { Dropdown } from './Dropdown';
 import { useSelector } from 'react-redux';
 import { getStorages } from '../store/storagesState';
 
@@ -56,7 +56,7 @@ export const RecordInput: FC<RecordInputProps> = memo(
     return (
       <RecordContainerStyled ref={containerRef}>
         <RecordCommonStyled width={storageWidth}>
-          <RecordDropdown
+          <Dropdown
             setPickedElement={setPickedStorage}
             pickedElement={pickedStorage}
             placeholderValue={'Pick Storage'}

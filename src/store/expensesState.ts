@@ -5,9 +5,10 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { collection, getDocs } from 'firebase/firestore';
-import { db, API_MONTHS, DataStatus } from '../utils/api';
+import { db, DataStatus, getMonthAPI } from '../utils/api';
 import { sortAccountingData } from '../utils/main';
 import { AccountRecordRef } from './common';
+import { getUserUID } from './user';
 
 export type ExpensesState = {
   status: DataStatus;
@@ -50,19 +51,25 @@ export const getExpensesSum = createSelector(getExpenses, (expenses) =>
   expenses.reduce((acc, curr) => acc + curr.amount, 0)
 );
 
-export const fetchExpenses = createAsyncThunk('fetchExpenses', async () => {
-  const expensesRef = collection(db, `${API_MONTHS}/expenses`);
-  const expensesSnap = await getDocs(expensesRef);
-  const expenses: AccountRecord[] = [];
-  expensesSnap.forEach((doc) => {
-    const docData = {
-      ...(doc.data() as AccountRecordRef),
-    };
-    expenses.push({
-      id: doc.id,
-      ...docData,
-      dateAdded: docData.dateAdded.toMillis(),
+export const fetchExpenses = createAsyncThunk(
+  'fetchExpenses',
+  async (_, thunkAPI) => {
+    const userUID = getUserUID(thunkAPI.getState() as RootState);
+    if (!userUID) throw Error('No user UID!');
+
+    const expensesRef = collection(db, `${getMonthAPI(userUID)}/expenses`);
+    const expensesSnap = await getDocs(expensesRef);
+    const expenses: AccountRecord[] = [];
+    expensesSnap.forEach((doc) => {
+      const docData = {
+        ...(doc.data() as AccountRecordRef),
+      };
+      expenses.push({
+        id: doc.id,
+        ...docData,
+        dateAdded: docData.dateAdded.toMillis(),
+      });
     });
-  });
-  return sortAccountingData(expenses);
-});
+    return sortAccountingData(expenses);
+  }
+);

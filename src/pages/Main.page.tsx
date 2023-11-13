@@ -1,19 +1,18 @@
-import { memo, useEffect, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { Storages } from '../components/Storages';
-import { Accounting } from '../components/Accounting';
-import { Calendar } from '../components/Calendar';
 import { AppDispatch } from '../store/store';
 import { SignOutButton } from '../components/SignOutButton';
-import { fetchUserData, getNewUserStatus, getUserUID } from '../store/user';
+import { fetchUserData, getIsUserHasDB, getUserUID } from '../store/user';
+import { FirstStorage } from '../components/FirstStorage';
+import { MainContent } from '../components/MainContent';
 
 export const MainPage = memo(() => {
   const dispatch: AppDispatch = useDispatch();
 
   const userUID = useSelector(getUserUID);
-  const isUserNew = useSelector(getNewUserStatus);
+  const isUserHasDB = useSelector(getIsUserHasDB);
 
   useEffect(() => {
     if (!userUID) return;
@@ -22,17 +21,10 @@ export const MainPage = memo(() => {
   }, [userUID]);
 
   const content = useMemo(() => {
-    if (isUserNew === true) return <div>create your new storage</div>;
-    else if (isUserNew === false)
-      return (
-        <>
-          <Storages />
-          <Accounting />
-          <Calendar />
-        </>
-      );
+    if (isUserHasDB === true) return <MainContent />;
+    else if (isUserHasDB === false) return <FirstStorage />;
     else return <div>Please stand by</div>;
-  }, [isUserNew]);
+  }, [isUserHasDB]);
 
   return (
     <MainContentStyled>

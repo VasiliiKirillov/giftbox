@@ -8,7 +8,9 @@ import {
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
-import { API_MONTHS, db } from '../utils/api';
+import { db, getMonthAPI } from '../utils/api';
+import { getUserUID } from './user';
+import { RootState } from './store';
 
 // types
 export type AccountRecordRef = AccountRecordBase & {
@@ -34,9 +36,12 @@ export const saveAccountRecord = createAsyncThunk(
     },
     thunkAPI
   ) => {
+    const userUID = getUserUID(thunkAPI.getState() as RootState);
+    if (!userUID) throw Error('No user UID!');
+
     const accountCollectionRef = collection(
       db,
-      `${API_MONTHS}/${accountData.accountType}`
+      `${getMonthAPI(userUID)}/${accountData.accountType}`
     );
     const docRef = await addDoc(accountCollectionRef, {
       amount: accountData.amount,
