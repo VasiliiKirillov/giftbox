@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db, DataStatus, getMonthAPI } from '../utils/api';
-import { getUserUID, setIsUserHasDB } from './user';
+import { getUserUID, setDefaultCurrency, setIsUserHasDB } from './user';
 import { getMonth, getYear } from '../utils/main';
 
 export type StoragesState = {
@@ -59,7 +59,7 @@ export const addFirstStorage = createAsyncThunk(
   'addFirstStorage',
   async (
     arg: {
-      pickedCurrency: CurrencyType;
+      currency: CurrencyKey;
       storageName: string;
       storageAmount: number;
     },
@@ -68,12 +68,12 @@ export const addFirstStorage = createAsyncThunk(
     const userUID = getUserUID(thunkAPI.getState() as RootState);
     if (!userUID) throw Error('No user UID!');
 
-    const { pickedCurrency, storageName, storageAmount } = arg;
+    const { currency, storageName, storageAmount } = arg;
 
     // creation user's DB:
     // init user record + add default currency
     await setDoc(doc(db, 'users', userUID), {
-      defaultCurrency: pickedCurrency.id,
+      defaultCurrency: currency,
     });
     const monthDocRef = doc(
       db,
@@ -83,11 +83,12 @@ export const addFirstStorage = createAsyncThunk(
     const storageRef = doc(monthDocRef, 'storages', storageName.toLowerCase());
     // init first storage
     await setDoc(storageRef, {
-      currency: pickedCurrency.id,
+      currency,
       id: storageName.toLowerCase(),
       name: storageName.toUpperCase(),
       startTotal: storageAmount,
     });
+    thunkAPI.dispatch(setDefaultCurrency(currency));
     thunkAPI.dispatch(setIsUserHasDB(true));
   }
 );

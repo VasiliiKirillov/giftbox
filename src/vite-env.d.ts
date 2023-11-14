@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-type CurrencyType = { name: string; id: string };
+type CurrencyKey = string; // "USD", "EUR" and etc
 
 type AccountRecordBase = {
   storage: string;
@@ -16,6 +16,6 @@ type AccountRecord = AccountRecordBase & {
 type StorageType = {
   id: string;
   name: string;
-  currency: CurrencyType['name'];
+  currency: CurrencyKey;
   startTotal: number;
 };

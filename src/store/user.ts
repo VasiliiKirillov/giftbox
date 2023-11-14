@@ -9,6 +9,7 @@ export type UserState = {
   name?: string;
   uid?: string;
   isUserHasDB?: boolean;
+  defaultCurrency?: CurrencyKey;
 };
 
 const initialState: UserState = {};
@@ -31,17 +32,26 @@ export const UserSlice = createSlice({
     setIsUserHasDB: (state, action) => {
       state.isUserHasDB = action.payload;
     },
+    setDefaultCurrency: (state, action) => {
+      state.defaultCurrency = action.payload;
+    },
   },
 });
 
 // actions
-export const { setSingedInUser, setSingedOutUser, setIsUserHasDB } =
-  UserSlice.actions;
+export const {
+  setSingedInUser,
+  setSingedOutUser,
+  setIsUserHasDB,
+  setDefaultCurrency,
+} = UserSlice.actions;
 
 // selectors
 export const getUserUID = (state: RootState) => state.user.uid;
 export const getIsUserHasDB = (state: RootState) => state.user.isUserHasDB;
 export const getIsUserSignedId = (state: RootState) => state.user.isSignedId;
+export const getDefaultCurrency = (state: RootState) =>
+  state.user.defaultCurrency;
 
 // async actions
 export const fetchUserData = createAsyncThunk(
@@ -51,6 +61,8 @@ export const fetchUserData = createAsyncThunk(
     const userDocSnap = await getDoc(userDocRef);
     if (userDocSnap.exists()) {
       thunkAPI.dispatch(setIsUserHasDB(true));
+      const userData = userDocSnap.data();
+      thunkAPI.dispatch(setDefaultCurrency(userData.defaultCurrency));
     } else {
       thunkAPI.dispatch(setIsUserHasDB(false));
     }

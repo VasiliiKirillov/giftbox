@@ -1,16 +1,26 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from './Dropdown';
 import { AppDispatch } from '../store/store';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addFirstStorage } from '../store/storagesState';
+import {
+  fetchAvailableCurrencies,
+  getCurrenciesList,
+} from '../store/availableCurrencies';
 
-const currencies = [{ name: 'RUB', id: '1' }];
+type CurrencyItem = { name: string; id: CurrencyKey };
 
 export const FirstStorage = memo(() => {
   const dispatch: AppDispatch = useDispatch();
 
-  const [pickedCurrency, setPickedCurrency] = useState<CurrencyType | null>(
+  const currencies = useSelector(getCurrenciesList);
+
+  useEffect(() => {
+    dispatch(fetchAvailableCurrencies());
+  }, []);
+
+  const [pickedCurrency, setPickedCurrency] = useState<CurrencyItem | null>(
     null
   );
   const [storageName, setStorageName] = useState('');
@@ -24,7 +34,7 @@ export const FirstStorage = memo(() => {
 
     dispatch(
       addFirstStorage({
-        pickedCurrency,
+        currency: pickedCurrency.id,
         storageName,
         storageAmount: parsedStorageAmount,
       })
