@@ -53,20 +53,20 @@ export const saveAccountRecord = createAsyncThunk(
     const docSnap = await getDoc(docRef);
     const docData = docSnap.data();
 
+    if (!docData) throw Error('No account record after creation!');
+
+    const accountRecordData: AccountRecord = {
+      id: docSnap.id,
+      storage: docData.storage,
+      amount: docData.amount,
+      description: docData.description,
+      dateAdded: docData?.dateAdded.toMillis(),
+    };
+
     if (accountData.accountType === 'expenses') {
-      thunkAPI.dispatch(
-        addExpense({
-          ...docData,
-          dateAdded: docData?.dateAdded.toMillis(),
-        })
-      );
+      thunkAPI.dispatch(addExpense(accountRecordData));
     } else if (accountData.accountType === 'incomes') {
-      thunkAPI.dispatch(
-        addIncome({
-          ...docData,
-          dateAdded: docData?.dateAdded.toMillis(),
-        })
-      );
+      thunkAPI.dispatch(addIncome(accountRecordData));
     }
   }
 );
