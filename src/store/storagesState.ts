@@ -3,7 +3,6 @@ import { RootState } from './store';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db, DataStatus, getMonthAPI } from '../utils/api';
 import { getUserUID, setDefaultCurrency, setIsUserHasDB } from './user';
-import { getMonth, getYear } from '../utils/main';
 
 export type StoragesState = {
   status: DataStatus;
@@ -18,7 +17,11 @@ const initialState: StoragesState = {
 export const StoragesSlice = createSlice({
   name: 'storagesState',
   initialState,
-  reducers: {},
+  reducers: {
+    addStorage: (state, action) => {
+      state.data = state.data.concat(action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchStorages.pending, (state) => {
@@ -34,6 +37,8 @@ export const StoragesSlice = createSlice({
       });
   },
 });
+
+export const { addStorage } = StoragesSlice.actions;
 
 export const getStorages = (store: RootState) => store.storages.data;
 
@@ -52,6 +57,37 @@ export const fetchStorages = createAsyncThunk(
       });
     });
     return storages;
+  }
+);
+
+export const addNewStorage = createAsyncThunk(
+  'addNewStorage',
+  async (
+    arg: {
+      currency: CurrencyKey;
+      storageName: string;
+      storageAmount: number;
+    },
+    thunkAPI
+  ) => {
+    const userUID = getUserUID(thunkAPI.getState() as RootState);
+    if (!userUID) throw Error('No user UID!');
+
+    const { currency, storageName, storageAmount } = arg;
+
+    const storageRef = doc(
+      db,
+      `${getMonthAPI(userUID)}/storages`,
+      storageName.toLowerCase()
+    );
+    const newStorageData = {
+      currency,
+      id: storageName.toLowerCase(),
+      name: storageName.toUpperCase(),
+      startTotal: storageAmount,
+    };
+    await setDoc(storageRef, newStorageData);
+    thunkAPI.dispatch(addStorage(newStorageData));
   }
 );
 
@@ -75,19 +111,13 @@ export const addFirstStorage = createAsyncThunk(
     await setDoc(doc(db, 'users', userUID), {
       defaultCurrency: currency,
     });
-    const monthDocRef = doc(
-      db,
-      `users/${userUID}/months`,
-      `${getMonth()}-${getYear()}`
+    await thunkAPI.dispatch(
+      addNewStorage({
+        currency,
+        storageName,
+        storageAmount,
+      })
     );
-    const storageRef = doc(monthDocRef, 'storages', storageName.toLowerCase());
-    // init first storage
-    await setDoc(storageRef, {
-      currency,
-      id: storageName.toLowerCase(),
-      name: storageName.toUpperCase(),
-      startTotal: storageAmount,
-    });
     thunkAPI.dispatch(setDefaultCurrency(currency));
     thunkAPI.dispatch(setIsUserHasDB(true));
   }

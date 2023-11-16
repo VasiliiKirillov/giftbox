@@ -30,6 +30,7 @@ const StorageStyled = styled.div`
   padding: 8px;
   justify-content: space-between;
   flex-grow: 1;
+  width: 240px;
 `;
 
 const StorageDataStyled = styled.div`
