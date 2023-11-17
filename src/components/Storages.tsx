@@ -16,9 +16,10 @@ export const Storages = memo(() => {
         {storages.map((storage) => (
           <Storage
             key={storage.id}
+            id={storage.id}
             name={storage.name}
             currency={storage.currency}
-            amount={storage.startTotal}
+            startTotal={storage.startTotal}
           />
         ))}
       </StoragesContainerStyled>

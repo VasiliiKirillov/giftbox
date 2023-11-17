@@ -14,13 +14,13 @@ export const Expenses = memo(() => {
   const expensesSum = useSelector(getExpensesSum);
 
   const putNewExpense = useCallback(
-    (amount: number, description: string, pickedStorage: StorageType) => {
+    (amount: number, description: string, storage: StorageType) => {
       dispatch(
         saveAccountRecord({
           accountType: 'expenses',
           amount,
           description,
-          storage: pickedStorage.id,
+          storageId: storage.id,
         })
       );
     },

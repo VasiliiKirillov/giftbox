@@ -1,23 +1,51 @@
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import {
+  getExpensesSumByStorageId,
+  getIsExpensesLoading,
+} from '../store/expensesState';
+import {
+  getIncomesSumByStorageId,
+  getIsIncomesLoading,
+} from '../store/incomesState';
 
 type StorageProps = {
+  id: string;
   name: string;
   currency: string;
-  amount: number;
+  startTotal: number;
 };
 
-export const Storage: FC<StorageProps> = memo(({ name, currency, amount }) => {
-  return (
-    <StorageStyled>
-      <CurrencyStyled>{currency}</CurrencyStyled>
-      <StorageDataStyled>
-        <StorageNameStyled>{name}</StorageNameStyled>
-        <StorageAmountStyled>{amount}</StorageAmountStyled>
-      </StorageDataStyled>
-    </StorageStyled>
-  );
-});
+export const Storage: FC<StorageProps> = memo(
+  ({ id, name, currency, startTotal }) => {
+    const expensesSumByStorageId = useSelector(getExpensesSumByStorageId);
+    const incomesSumByStorageId = useSelector(getIncomesSumByStorageId);
+    const isExpensesLoading = useSelector(getIsExpensesLoading);
+    const isIncomesLoading = useSelector(getIsIncomesLoading);
+
+    const isTotalLoading = isExpensesLoading || isIncomesLoading;
+
+    console.log('expensesSumByStorageId', expensesSumByStorageId);
+    const total = useMemo(() => {
+      const expensesSum = expensesSumByStorageId[id] ?? 0;
+      const incomesSum = incomesSumByStorageId[id] ?? 0;
+      return startTotal - expensesSum + incomesSum;
+    }, [startTotal, expensesSumByStorageId, incomesSumByStorageId]);
+
+    return (
+      <StorageStyled>
+        <CurrencyStyled>{currency}</CurrencyStyled>
+        <StorageDataStyled>
+          <StorageNameStyled>{name}</StorageNameStyled>
+          <StorageAmountStyled>
+            {isTotalLoading ? 'Loading...' : total}
+          </StorageAmountStyled>
+        </StorageDataStyled>
+      </StorageStyled>
+    );
+  }
+);
 
 // styles
 const StorageStyled = styled.div`

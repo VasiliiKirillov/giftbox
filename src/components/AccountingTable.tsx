@@ -3,19 +3,12 @@ import styled from 'styled-components';
 import { RecordContainerStyled } from './CommonStyles';
 import { RecordInput } from './RecordInput';
 
-type AccountingRecord = {
-  storage: string;
-  amount: number;
-  description: string;
-  id: string;
-};
-
 type AccountingTableProps = {
-  data: Array<AccountingRecord>;
+  data: Array<AccountRecord>;
   putNewRecord: (
     amount: number,
     description: string,
-    pickedStorage: StorageType
+    storage: StorageType
   ) => void;
 };
 
@@ -73,7 +66,7 @@ export const AccountingTable: FC<AccountingTableProps> = memo(
           return (
             <RecordContainerStyled key={record.id}>
               <RecordItemStyled width={storageRef?.clientWidth ?? 0}>
-                {record.storage}
+                {record.storageId}
               </RecordItemStyled>
               <RecordItemStyled width={amountRef?.clientWidth ?? 0}>
                 {record.amount}

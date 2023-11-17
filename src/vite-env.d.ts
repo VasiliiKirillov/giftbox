@@ -2,8 +2,10 @@
 
 type CurrencyKey = string; // "USD", "EUR" and etc
 
+type StorageId = string;
+
 type AccountRecordBase = {
-  storage: string;
+  storageId: StorageId;
   amount: number;
   description: string;
 };
@@ -14,7 +16,7 @@ type AccountRecord = AccountRecordBase & {
 };
 
 type StorageType = {
-  id: string;
+  id: StorageId;
   name: string;
   currency: CurrencyKey;
   startTotal: number;

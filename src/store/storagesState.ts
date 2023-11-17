@@ -82,8 +82,8 @@ export const addNewStorage = createAsyncThunk(
     );
     const newStorageData = {
       currency,
-      id: storageName.toLowerCase(),
-      name: storageName.toUpperCase(),
+      id: `${storageName.replaceAll(' ', '')}-${currency}`,
+      name: storageName,
       startTotal: storageAmount,
     };
     await setDoc(storageRef, newStorageData);

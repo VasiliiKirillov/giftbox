@@ -19,7 +19,7 @@ export const Incomes = memo(() => {
           accountType: 'incomes',
           amount,
           description,
-          storage: pickedStorage.id,
+          storageId: pickedStorage.id,
         })
       );
     },

@@ -32,7 +32,7 @@ export const saveAccountRecord = createAsyncThunk(
       accountType: 'expenses' | 'incomes';
       amount: number;
       description: string;
-      storage: string;
+      storageId: StorageType['id'];
     },
     thunkAPI
   ) => {
@@ -47,7 +47,7 @@ export const saveAccountRecord = createAsyncThunk(
       amount: accountData.amount,
       dateAdded: serverTimestamp(),
       description: accountData.description,
-      storage: accountData.storage,
+      storageId: accountData.storageId,
     });
 
     const docSnap = await getDoc(docRef);
@@ -57,7 +57,7 @@ export const saveAccountRecord = createAsyncThunk(
 
     const accountRecordData: AccountRecord = {
       id: docSnap.id,
-      storage: docData.storage,
+      storageId: docData.storageId,
       amount: docData.amount,
       description: docData.description,
       dateAdded: docData?.dateAdded.toMillis(),

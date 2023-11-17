@@ -47,8 +47,30 @@ export const ExpensesSlice = createSlice({
 export const { addExpense } = ExpensesSlice.actions;
 
 export const getExpenses = (store: RootState) => store.expenses.data;
+export const getExpensesStatus = (store: RootState) => store.expenses.status;
+export const getIsExpensesLoading = createSelector(
+  getExpensesStatus,
+  (status) => {
+    return status === DataStatus.loading;
+  }
+);
 export const getExpensesSum = createSelector(getExpenses, (expenses) =>
   expenses.reduce((acc, curr) => acc + curr.amount, 0)
+);
+export const getExpensesSumByStorageId = createSelector(
+  getExpenses,
+  (expenses) =>
+    expenses.reduce(
+      (acc: { [key: StorageId]: number }, { storageId, amount }) => {
+        if (acc[storageId]) {
+          acc[storageId] = acc[storageId] + amount;
+        } else {
+          acc[storageId] = amount;
+        }
+        return acc;
+      },
+      {}
+    )
 );
 
 export const fetchExpenses = createAsyncThunk(

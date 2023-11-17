@@ -22,7 +22,7 @@ type RecordInputProps = {
   putNewRecord: (
     amount: number,
     description: string,
-    pickedStorage: StorageType
+    storage: StorageType
   ) => void;
 };
 

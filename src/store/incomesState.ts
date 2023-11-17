@@ -47,8 +47,25 @@ export const IncomesSlice = createSlice({
 export const { addIncome } = IncomesSlice.actions;
 
 export const getIncomes = (store: RootState) => store.incomes.data;
+export const getIncomesStatus = (store: RootState) => store.expenses.status;
+export const getIsIncomesLoading = createSelector(
+  getIncomesStatus,
+  (status) => {
+    return status === DataStatus.loading;
+  }
+);
 export const getIncomesSum = createSelector(getIncomes, (incomes) =>
   incomes.reduce((acc, curr) => acc + curr.amount, 0)
+);
+export const getIncomesSumByStorageId = createSelector(getIncomes, (incomes) =>
+  incomes.reduce((acc: { [key: StorageId]: number }, { storageId, amount }) => {
+    if (acc[storageId]) {
+      acc[storageId] = acc[storageId] + amount;
+    } else {
+      acc[storageId] = amount;
+    }
+    return acc;
+  }, {})
 );
 
 export const fetchIncomes = createAsyncThunk(
