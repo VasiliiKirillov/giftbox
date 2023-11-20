@@ -26,7 +26,6 @@ export const Storage: FC<StorageProps> = memo(
 
     const isTotalLoading = isExpensesLoading || isIncomesLoading;
 
-    console.log('expensesSumByStorageId', expensesSumByStorageId);
     const total = useMemo(() => {
       const expensesSum = expensesSumByStorageId[id] ?? 0;
       const incomesSum = incomesSumByStorageId[id] ?? 0;

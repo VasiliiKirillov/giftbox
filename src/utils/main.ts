@@ -33,3 +33,8 @@ export const sortAccountingData = (data: AccountRecord[]) =>
     }
     return 0;
   });
+
+export const generateStorageId = (
+  storageName: string,
+  currencyKey: CurrencyKey
+) => `${storageName.trim().replaceAll(' ', '_')}-${currencyKey}`;

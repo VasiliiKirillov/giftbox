@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useState } from 'react';
+import { ChangeEvent, FC, memo, useEffect, useState } from 'react';
 import { Dropdown } from './Dropdown';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,8 @@ import {
   getCurrenciesList,
 } from '../store/availableCurrencies';
 import { AppDispatch } from '../store/store';
+import { getStoragesById } from '../store/storagesState';
+import { generateStorageId } from '../utils/main';
 
 type CurrencyItem = { name: string; id: CurrencyKey };
 
@@ -22,6 +24,7 @@ export const NewStorage: FC<NewStorageProps> = memo(({ onAddNewStorage }) => {
   const dispatch: AppDispatch = useDispatch();
 
   const currencies = useSelector(getCurrenciesList);
+  const storagesById = useSelector(getStoragesById);
 
   useEffect(() => {
     dispatch(fetchAvailableCurrencies());
@@ -33,13 +36,33 @@ export const NewStorage: FC<NewStorageProps> = memo(({ onAddNewStorage }) => {
   const [storageName, setStorageName] = useState('');
   const [storageAmount, setStorageAmount] = useState('');
 
+  const [isShowSameStorageError, setIsShowSameStorageError] = useState(false);
+
   const handleAddNewStorage = () => {
     const parsedStorageAmount = Number(storageAmount);
 
-    if (!pickedCurrency || isNaN(parsedStorageAmount) || storageName === '')
+    const isSameStorageAlreadyExisted =
+      storagesById[generateStorageId(storageName, pickedCurrency?.id ?? '')];
+    if (isSameStorageAlreadyExisted) {
+      setIsShowSameStorageError(true);
+    }
+
+    if (
+      !pickedCurrency ||
+      isNaN(parsedStorageAmount) ||
+      storageName === '' ||
+      isSameStorageAlreadyExisted
+    )
       return;
 
     onAddNewStorage(pickedCurrency.id, storageName, parsedStorageAmount);
+  };
+
+  const handleSetStorageName = (e: ChangeEvent<HTMLInputElement>) => {
+    if (isShowSameStorageError) {
+      setIsShowSameStorageError(false);
+    }
+    setStorageName(e.currentTarget.value);
   };
 
   return (
@@ -52,7 +75,7 @@ export const NewStorage: FC<NewStorageProps> = memo(({ onAddNewStorage }) => {
       />
       <StorageDataStyled>
         <NewStorageInput
-          onChange={(e) => setStorageName(e.currentTarget.value)}
+          onChange={handleSetStorageName}
           placeholder="enter storage name"
           value={storageName}
         />
@@ -64,9 +87,16 @@ export const NewStorage: FC<NewStorageProps> = memo(({ onAddNewStorage }) => {
           />
         </NewStorageContainer>
       </StorageDataStyled>
-      <AddNewStorageStyled onClick={handleAddNewStorage}>
-        Add
-      </AddNewStorageStyled>
+      <FootterNewStorageStyled>
+        <AddNewStorageStyled onClick={handleAddNewStorage}>
+          Add
+        </AddNewStorageStyled>
+        {isShowSameStorageError && (
+          <ErrorNewStorageStyled>
+            You're trying to add storage with the same name!
+          </ErrorNewStorageStyled>
+        )}
+      </FootterNewStorageStyled>
     </NewStorageStyled>
   );
 });
@@ -84,6 +114,16 @@ const NewStorageStyled = styled.div`
 
 const AddNewStorageStyled = styled.div`
   cursor: pointer;
+`;
+
+const ErrorNewStorageStyled = styled.div`
+  color: red;
+`;
+
+const FootterNewStorageStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
 `;
 
 const StorageDataStyled = styled.div`

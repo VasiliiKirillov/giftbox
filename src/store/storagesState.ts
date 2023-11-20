@@ -7,6 +7,7 @@ import { RootState } from './store';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db, DataStatus, getMonthAPI } from '../utils/api';
 import { getUserUID, setDefaultCurrency, setIsUserHasDB } from './user';
+import { generateStorageId } from '../utils/main';
 
 export type StoragesState = {
   status: DataStatus;
@@ -92,7 +93,7 @@ export const addNewStorage = createAsyncThunk(
     );
     const newStorageData = {
       currency,
-      id: `${storageName.replaceAll(' ', '')}-${currency}`,
+      id: generateStorageId(storageName, currency),
       name: storageName,
       startTotal: storageAmount,
     };
