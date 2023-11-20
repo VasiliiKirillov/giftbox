@@ -2,6 +2,8 @@ import React, { FC, memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { RecordContainerStyled } from './CommonStyles';
 import { RecordInput } from './RecordInput';
+import { useSelector } from 'react-redux';
+import { getStoragesById } from '../store/storagesState';
 
 type AccountingTableProps = {
   data: Array<AccountRecord>;
@@ -21,6 +23,8 @@ export const AccountingTable: FC<AccountingTableProps> = memo(
     const [descriptionRef, setDescriptionRef] = useState<HTMLDivElement | null>(
       null
     );
+
+    const storagesById = useSelector(getStoragesById);
 
     const emptyRows = useMemo(() => {
       if (data.length < MAX_ROWS_AMOUNT) {
@@ -66,7 +70,7 @@ export const AccountingTable: FC<AccountingTableProps> = memo(
           return (
             <RecordContainerStyled key={record.id}>
               <RecordItemStyled width={storageRef?.clientWidth ?? 0}>
-                {record.storageId}
+                {storagesById[record.storageId].name}
               </RecordItemStyled>
               <RecordItemStyled width={amountRef?.clientWidth ?? 0}>
                 {record.amount}

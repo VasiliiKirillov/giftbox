@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db, DataStatus, getMonthAPI } from '../utils/api';
@@ -41,6 +45,12 @@ export const StoragesSlice = createSlice({
 export const { addStorage } = StoragesSlice.actions;
 
 export const getStorages = (store: RootState) => store.storages.data;
+export const getStoragesById = createSelector(getStorages, (storages) =>
+  storages.reduce((acc: Record<string, StorageType>, curr) => {
+    acc[curr.id] = curr;
+    return acc;
+  }, {})
+);
 
 export const fetchStorages = createAsyncThunk(
   'fetchStorages',
