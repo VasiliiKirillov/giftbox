@@ -8,6 +8,7 @@ import { fetchExpenses } from '../store/expensesState';
 import { fetchIncomes } from '../store/incomesState';
 import { fetchStorages } from '../store/storagesState';
 import { AppDispatch } from '../store/store';
+import { DefaultCurrencyPicker } from './DefaultCurrencyPicker';
 
 const useFetchInitialData = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -26,6 +27,7 @@ export const MainContent = memo(() => {
 
   return (
     <>
+      <DefaultCurrencyPicker />
       <Storages />
       <Accounting />
       <Calendar />

@@ -5,7 +5,8 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { DataStatus } from '../utils/api';
-import { getDefaultCurrency } from './user';
+import { getDefaultCurrencyKey } from './user';
+import { getIsCurrencyInUseById } from './storagesState';
 
 type CurrenciesMap = Record<CurrencyKey, string>;
 
@@ -42,26 +43,35 @@ export const getAvailableCurrencies = (store: RootState) =>
   store.availableCurrencies.data;
 export const getCurrenciesList = createSelector(
   getAvailableCurrencies,
-  getDefaultCurrency,
-  (availableCurrencies, defaultCurrency) => {
-    const comparerArray = ['USD', defaultCurrency].filter(Boolean);
-
-    return Object.entries(availableCurrencies)
-      .map(([key, value]) => ({
-        id: key,
-        name: value,
-      }))
-      .sort((a, b) => {
-        {
-          if (comparerArray.includes(a.id)) {
-            return -1;
-          } else if (comparerArray.includes(b.id)) {
-            return 1;
-          }
-          return 0;
-        }
-      });
+  (availableCurrencies) => {
+    return Object.entries(availableCurrencies).map(([key, value]) => ({
+      id: key,
+      name: value,
+    }));
   }
+);
+export const getSortedForNewStorageCurrenciesList = createSelector(
+  getCurrenciesList,
+  getDefaultCurrencyKey,
+  (currenciesList, defaultCurrencyKey) => {
+    const comparerArray = ['USD', defaultCurrencyKey].filter(Boolean);
+    return currenciesList.sort((a, b) => {
+      {
+        if (comparerArray.includes(a.id)) {
+          return -1;
+        } else if (comparerArray.includes(b.id)) {
+          return 1;
+        }
+        return 0;
+      }
+    });
+  }
+);
+export const getInUseCurrenciesList = createSelector(
+  getCurrenciesList,
+  getIsCurrencyInUseById,
+  (currenciesList, isCurrencyInUseById) =>
+    currenciesList.filter((currency) => isCurrencyInUseById[currency.id])
 );
 
 export const fetchAvailableCurrencies = createAsyncThunk(

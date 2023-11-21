@@ -7,12 +7,17 @@ import { SignOutButton } from '../components/SignOutButton';
 import { fetchUserData, getIsUserHasDB, getUserUID } from '../store/user';
 import { FirstStorage } from '../components/FirstStorage';
 import { MainContent } from '../components/MainContent';
+import { fetchAvailableCurrencies } from '../store/availableCurrencies';
 
 export const MainPage = memo(() => {
   const dispatch: AppDispatch = useDispatch();
 
   const userUID = useSelector(getUserUID);
   const isUserHasDB = useSelector(getIsUserHasDB);
+
+  useEffect(() => {
+    dispatch(fetchAvailableCurrencies());
+  }, []);
 
   useEffect(() => {
     if (!userUID) return;

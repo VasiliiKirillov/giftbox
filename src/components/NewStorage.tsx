@@ -1,12 +1,8 @@
-import { ChangeEvent, FC, memo, useEffect, useState } from 'react';
+import { ChangeEvent, FC, memo, useState } from 'react';
 import { Dropdown } from './Dropdown';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchAvailableCurrencies,
-  getCurrenciesList,
-} from '../store/availableCurrencies';
-import { AppDispatch } from '../store/store';
+import { useSelector } from 'react-redux';
+import { getSortedForNewStorageCurrenciesList } from '../store/availableCurrencies';
 import { getStoragesById } from '../store/storagesState';
 import { generateStorageId } from '../utils/main';
 
@@ -21,14 +17,8 @@ type NewStorageProps = {
 };
 
 export const NewStorage: FC<NewStorageProps> = memo(({ onAddNewStorage }) => {
-  const dispatch: AppDispatch = useDispatch();
-
-  const currencies = useSelector(getCurrenciesList);
+  const currencies = useSelector(getSortedForNewStorageCurrenciesList);
   const storagesById = useSelector(getStoragesById);
-
-  useEffect(() => {
-    dispatch(fetchAvailableCurrencies());
-  }, []);
 
   const [pickedCurrency, setPickedCurrency] = useState<CurrencyItem | null>(
     null

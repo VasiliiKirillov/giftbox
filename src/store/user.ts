@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from './store';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/api';
 
 export type UserState = {
@@ -50,7 +50,7 @@ export const {
 export const getUserUID = (state: RootState) => state.user.uid;
 export const getIsUserHasDB = (state: RootState) => state.user.isUserHasDB;
 export const getIsUserSignedId = (state: RootState) => state.user.isSignedId;
-export const getDefaultCurrency = (state: RootState) =>
+export const getDefaultCurrencyKey = (state: RootState) =>
   state.user.defaultCurrency;
 
 // async actions
@@ -66,5 +66,18 @@ export const fetchUserData = createAsyncThunk(
     } else {
       thunkAPI.dispatch(setIsUserHasDB(false));
     }
+  }
+);
+
+export const updateDefaultCurrency = createAsyncThunk(
+  'updateDefaultCurrency',
+  async (currencyKey: CurrencyKey, thunkAPI) => {
+    const userUID = getUserUID(thunkAPI.getState() as RootState);
+    if (!userUID) throw Error('No user UID!');
+
+    await updateDoc(doc(db, 'users', userUID), {
+      defaultCurrency: currencyKey,
+    });
+    thunkAPI.dispatch(setDefaultCurrency(currencyKey));
   }
 );

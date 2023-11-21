@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 type DropdownProps<T extends { id: string; name: string }> = {
   listData: Array<T>;
-  placeholderValue: string;
+  placeholderValue?: string;
   pickedElement: T | null;
   setPickedElement: (value: T) => void;
 };

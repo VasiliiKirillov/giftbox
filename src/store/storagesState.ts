@@ -47,8 +47,14 @@ export const { addStorage } = StoragesSlice.actions;
 
 export const getStorages = (store: RootState) => store.storages.data;
 export const getStoragesById = createSelector(getStorages, (storages) =>
-  storages.reduce((acc: Record<string, StorageType>, curr) => {
-    acc[curr.id] = curr;
+  storages.reduce((acc: Record<string, StorageType>, storage) => {
+    acc[storage.id] = storage;
+    return acc;
+  }, {})
+);
+export const getIsCurrencyInUseById = createSelector(getStorages, (storages) =>
+  storages.reduce((acc: Record<CurrencyKey, boolean>, storage) => {
+    acc[storage.currency] = true;
     return acc;
   }, {})
 );
