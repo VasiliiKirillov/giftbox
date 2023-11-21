@@ -5,6 +5,7 @@ import { ExpensesSlice } from './expensesState';
 import { StoragesSlice } from './storagesState';
 import { UserSlice } from './user';
 import { AvailableCurrenciesSlice } from './availableCurrencies';
+import { CurrencyRatesSlice } from './currencyRatesState';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     expenses: ExpensesSlice.reducer,
     storages: StoragesSlice.reducer,
     availableCurrencies: AvailableCurrenciesSlice.reducer,
+    currencyRates: CurrencyRatesSlice.reducer,
   },
 });
 
