@@ -8,6 +8,7 @@ type AccountRecordBase = {
   storageId: StorageId;
   amount: number;
   description: string;
+  currency: CurrencyKey;
 };
 
 type AccountRecord = AccountRecordBase & {

@@ -21,6 +21,7 @@ export const Expenses = memo(() => {
           amount,
           description,
           storageId: storage.id,
+          currency: storage.currency,
         })
       );
     },

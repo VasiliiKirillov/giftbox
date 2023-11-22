@@ -3,12 +3,15 @@ import {
   createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
-import { RootState } from './store';
+import Decimal from 'decimal.js';
 import { collection, getDocs } from 'firebase/firestore';
+
+import { RootState } from './store';
 import { db, DataStatus, getMonthAPI } from '../utils/api';
 import { sortAccountingData } from '../utils/main';
 import { AccountRecordRef } from './common';
 import { getUserUID } from './user';
+import { getCurrencyRates } from './currencyRatesState';
 
 export type ExpensesState = {
   status: DataStatus;
@@ -54,8 +57,20 @@ export const getIsExpensesLoading = createSelector(
     return status === DataStatus.loading;
   }
 );
-export const getExpensesSum = createSelector(getExpenses, (expenses) =>
-  expenses.reduce((acc, curr) => acc + curr.amount, 0)
+export const getExpensesSum = createSelector(
+  getExpenses,
+  getCurrencyRates,
+  (expenses, currencyRates) => {
+    if (expenses.length === 0 || Object.keys(currencyRates).length === 0)
+      return 0;
+
+    return expenses.reduce((acc, income) => {
+      return new Decimal(income.amount)
+        .times(currencyRates[income.currency])
+        .plus(acc)
+        .toNumber();
+    }, 0);
+  }
 );
 export const getExpensesSumByStorageId = createSelector(
   getExpenses,

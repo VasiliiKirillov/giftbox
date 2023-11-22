@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { DataStatus } from '../utils/api';
+import { RootState } from './store';
+import Decimal from 'decimal.js';
 
 type CurrencyRatesMap = Record<CurrencyKey, number>;
 
@@ -32,6 +34,8 @@ export const CurrencyRatesSlice = createSlice({
   },
 });
 
+export const getCurrencyRates = (store: RootState) => store.currencyRates.data;
+
 export const fetchCurrencyRates = createAsyncThunk(
   'fetchCurrencyRates',
   async (arg: {
@@ -45,7 +49,14 @@ export const fetchCurrencyRates = createAsyncThunk(
         `http://data.fixer.io/api/latest?access_key=2accd0dee4f82ccc1ae565dde6a3288d&base=${currencyBase}&symbols=${parsedRequiredCurrencies}`
       );
       const result = await response.json();
-      return result.rates;
+      const exchangeRates = result.rates;
+      for (const currency in exchangeRates) {
+        exchangeRates[currency] = new Decimal(1)
+          .dividedBy(exchangeRates[currency])
+          .toNumber()
+          .toPrecision(5);
+      }
+      return exchangeRates;
     } catch {
       return Promise.reject();
     }

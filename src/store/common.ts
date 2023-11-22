@@ -1,6 +1,5 @@
+import Decimal from 'decimal.js';
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-import { addIncome, getIncomesSum } from './incomesState';
-import { addExpense, getExpensesSum } from './expensesState';
 import {
   collection,
   getDoc,
@@ -8,6 +7,9 @@ import {
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
+
+import { addIncome, getIncomesSum } from './incomesState';
+import { addExpense, getExpensesSum } from './expensesState';
 import { db, getMonthAPI } from '../utils/api';
 import { getUserUID } from './user';
 import { RootState } from './store';
@@ -21,7 +23,7 @@ export type AccountRecordRef = AccountRecordBase & {
 export const getProfitAmount = createSelector(
   getIncomesSum,
   getExpensesSum,
-  (incomes, expenses) => incomes - expenses
+  (incomes, expenses) => new Decimal(incomes).minus(expenses).toNumber()
 );
 
 // async thunks
@@ -33,6 +35,7 @@ export const saveAccountRecord = createAsyncThunk(
       amount: number;
       description: string;
       storageId: StorageType['id'];
+      currency: CurrencyKey;
     },
     thunkAPI
   ) => {
@@ -48,6 +51,7 @@ export const saveAccountRecord = createAsyncThunk(
       dateAdded: serverTimestamp(),
       description: accountData.description,
       storageId: accountData.storageId,
+      currency: accountData.currency,
     });
 
     const docSnap = await getDoc(docRef);
@@ -60,6 +64,7 @@ export const saveAccountRecord = createAsyncThunk(
       storageId: docData.storageId,
       amount: docData.amount,
       description: docData.description,
+      currency: docData.currency,
       dateAdded: docData?.dateAdded.toMillis(),
     };
 
