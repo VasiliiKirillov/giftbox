@@ -1,18 +1,22 @@
 import Decimal from 'decimal.js';
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import {
-  collection,
-  getDoc,
   addDoc,
+  collection,
+  doc,
+  getDoc,
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
 
-import { addIncome, getIncomesSum } from './incomesState';
-import { addExpense, getExpensesSum } from './expensesState';
+import { addIncome, fetchIncomes, getIncomesSum } from './incomesState';
+import { addExpense, fetchExpenses, getExpensesSum } from './expensesState';
 import { db, getMonthAPI } from '../utils/api';
 import { getUserUID } from './user';
 import { RootState } from './store';
+import { fetchStorages } from './storagesState';
+import { getMonth, getYear } from '../utils/main';
+import { handleNewMonthCreation } from './utils';
 
 // types
 export type AccountRecordRef = AccountRecordBase & {
@@ -72,6 +76,28 @@ export const saveAccountRecord = createAsyncThunk(
       thunkAPI.dispatch(addExpense(accountRecordData));
     } else if (accountData.accountType === 'incomes') {
       thunkAPI.dispatch(addIncome(accountRecordData));
+    }
+  }
+);
+
+export const fetchInitialData = createAsyncThunk(
+  'fetchInitialData',
+  async (_, thunkAPI) => {
+    const userUID = getUserUID(thunkAPI.getState() as RootState);
+    if (!userUID) throw Error('No user UID!');
+
+    const currentMonthDocRef = doc(
+      db,
+      `/users/${userUID}/months/${getMonth()}-${getYear()}`
+    );
+    const currentMonthDocSnap = await getDoc(currentMonthDocRef);
+
+    if (currentMonthDocSnap.exists()) {
+      thunkAPI.dispatch(fetchStorages());
+      thunkAPI.dispatch(fetchIncomes());
+      thunkAPI.dispatch(fetchExpenses());
+    } else {
+      await handleNewMonthCreation(userUID, thunkAPI);
     }
   }
 );

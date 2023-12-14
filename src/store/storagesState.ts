@@ -4,7 +4,13 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  setDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { db, DataStatus, getMonthAPI } from '../utils/api';
 import { getUserUID, setDefaultCurrency, setIsUserHasDB } from './user';
 import { generateStorageId } from '../utils/main';
@@ -95,7 +101,7 @@ export const addNewStorage = createAsyncThunk(
     const storageRef = doc(
       db,
       `${getMonthAPI(userUID)}/storages`,
-      storageName.toLowerCase()
+      generateStorageId(storageName, currency)
     );
     const newStorageData = {
       currency,
@@ -127,6 +133,10 @@ export const addFirstStorage = createAsyncThunk(
     // init user record + add default currency
     await setDoc(doc(db, 'users', userUID), {
       defaultCurrency: currency,
+    });
+    // add createdAt because doc without fields is invisible for queries
+    await setDoc(doc(db, getMonthAPI(userUID)), {
+      createdAt: serverTimestamp(),
     });
     await thunkAPI.dispatch(
       addNewStorage({

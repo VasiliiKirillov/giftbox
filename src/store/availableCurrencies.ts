@@ -79,7 +79,7 @@ export const fetchAvailableCurrencies = createAsyncThunk(
   async () => {
     try {
       const response = await fetch(
-        'http://data.fixer.io/api/symbols?access_key=2accd0dee4f82ccc1ae565dde6a3288d'
+        'http://data.fixer.io/api/symbols?access_key=af51371a4012ccd4d0c852db20ac7c05'
       );
       const result = await response.json();
       return result.symbols;

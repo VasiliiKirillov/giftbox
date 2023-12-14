@@ -46,7 +46,7 @@ export const fetchCurrencyRates = createAsyncThunk(
       const currencyBase = 'EUR'; // arg.defaultCurrencyKey
       const parsedRequiredCurrencies = arg.requiredCurrencies.join(',');
       const response = await fetch(
-        `http://data.fixer.io/api/latest?access_key=2accd0dee4f82ccc1ae565dde6a3288d&base=${currencyBase}&symbols=${parsedRequiredCurrencies}`
+        `http://data.fixer.io/api/latest?access_key=af51371a4012ccd4d0c852db20ac7c05&base=${currencyBase}&symbols=${parsedRequiredCurrencies}`
       );
       const result = await response.json();
       const exchangeRates = result.rates;
