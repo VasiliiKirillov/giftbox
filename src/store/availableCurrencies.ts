@@ -79,10 +79,11 @@ export const fetchAvailableCurrencies = createAsyncThunk(
   async () => {
     try {
       const response = await fetch(
-        'http://data.fixer.io/api/symbols?access_key=af51371a4012ccd4d0c852db20ac7c05'
+        // 'http://data.fixer.io/api/symbols?access_key=af51371a4012ccd4d0c852db20ac7c05'
+        'https://openexchangerates.org/api/currencies.json?app_id=d090a84e92d044fdb4c03656de42c6b1'
       );
       const result = await response.json();
-      return result.symbols;
+      return result;
     } catch {
       return Promise.reject();
     }

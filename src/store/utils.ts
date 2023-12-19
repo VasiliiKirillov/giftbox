@@ -229,16 +229,24 @@ const getPrevMonthStorages = async (
 
 const getCurrencyRatesForPrevAvailableMonth = async (
   prevDateInfo: DateInfo,
-  defaultCurrency = 'EUR',
+  defaultCurrency = 'USD',
   requiredCurrencies: string[]
 ) => {
   const response = await fetch(
-    `http://data.fixer.io/api/${prevDateInfo.year}-${
+    /*`http://data.fixer.io/api/${prevDateInfo.year}-${
       monthsMap[prevDateInfo.month]
     }-${getLastDay(
       Number(prevDateInfo.year),
       Number(monthsMap[prevDateInfo.month])
     )}?access_key=af51371a4012ccd4d0c852db20ac7c05&base=${defaultCurrency}&symbols=${requiredCurrencies.join(
+      ','
+    )}`*/
+    `https://openexchangerates.org/api/historical/${prevDateInfo.year}-${
+      monthsMap[prevDateInfo.month]
+    }-${getLastDay(
+      Number(prevDateInfo.year),
+      Number(monthsMap[prevDateInfo.month])
+    )}?app_id=d090a84e92d044fdb4c03656de42c6b1&base=${defaultCurrency}&symbols=${requiredCurrencies.join(
       ','
     )}`
   );

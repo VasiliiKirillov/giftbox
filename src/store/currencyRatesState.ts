@@ -43,10 +43,11 @@ export const fetchCurrencyRates = createAsyncThunk(
     requiredCurrencies: Array<CurrencyKey>;
   }) => {
     try {
-      const currencyBase = 'EUR'; // arg.defaultCurrencyKey
+      const currencyBase = 'USD'; // arg.defaultCurrencyKey
       const parsedRequiredCurrencies = arg.requiredCurrencies.join(',');
       const response = await fetch(
-        `http://data.fixer.io/api/latest?access_key=af51371a4012ccd4d0c852db20ac7c05&base=${currencyBase}&symbols=${parsedRequiredCurrencies}`
+        // `http://data.fixer.io/api/latest?access_key=af51371a4012ccd4d0c852db20ac7c05&base=${currencyBase}&symbols=${parsedRequiredCurrencies}`
+        `https://openexchangerates.org/api/latest.json?app_id=d090a84e92d044fdb4c03656de42c6b1&base=${currencyBase}&symbols=${parsedRequiredCurrencies}`
       );
       const result = await response.json();
       const exchangeRates = result.rates;
