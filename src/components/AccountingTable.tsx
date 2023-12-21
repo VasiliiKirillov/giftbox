@@ -70,13 +70,13 @@ export const AccountingTable: FC<AccountingTableProps> = memo(
           return (
             <RecordContainerStyled key={record.id}>
               <RecordItemStyled width={storageRef?.clientWidth ?? 0}>
-                {storagesById[record.storageId].name}
+                {storagesById[record.storageId]?.name}
               </RecordItemStyled>
               <RecordItemStyled width={amountRef?.clientWidth ?? 0}>
-                {record.amount}
+                {record?.amount}
               </RecordItemStyled>
               <RecordItemStyled width={descriptionRef?.clientWidth ?? 0}>
-                {record.description}
+                {record?.description}
               </RecordItemStyled>
             </RecordContainerStyled>
           );

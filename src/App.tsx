@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { auth } from './utils/api';
 import { AppDispatch } from './store/store';
 import {
-  getIsUserSignedId,
+  getIsUserSignedIn,
   setSingedInUser,
   setSingedOutUser,
 } from './store/user';
@@ -33,12 +33,12 @@ const useHandleAuthChanges = () => {
 export const App = () => {
   useHandleAuthChanges();
 
-  const isUserSignedId = useSelector(getIsUserSignedId);
+  const isUserSignedId = useSelector(getIsUserSignedIn);
 
   const content = useMemo(() => {
     if (isUserSignedId === true) return <MainPage />;
     else if (isUserSignedId === false) return <AuthPage />;
-    else return <div>Please stand by</div>;
+    else return null;
   }, [isUserSignedId]);
 
   return <AppContainerStyled>{content}</AppContainerStyled>;

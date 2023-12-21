@@ -5,7 +5,7 @@ import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/api';
 
 export type UserState = {
-  isSignedId?: boolean;
+  isSignedIn?: boolean;
   name?: string;
   uid?: string;
   isUserHasDB?: boolean;
@@ -19,15 +19,16 @@ export const UserSlice = createSlice({
   initialState,
   reducers: {
     setSingedInUser: (state, action) => {
-      state.isSignedId = true;
+      state.isSignedIn = true;
       state.name = action.payload.name;
       state.uid = action.payload.uid;
     },
     setSingedOutUser: (state) => {
-      state.isSignedId = false;
+      state.isSignedIn = false;
       delete state.name;
       delete state.uid;
       delete state.isUserHasDB;
+      delete state.defaultCurrency;
     },
     setIsUserHasDB: (state, action) => {
       state.isUserHasDB = action.payload;
@@ -49,7 +50,7 @@ export const {
 // selectors
 export const getUserUID = (state: RootState) => state.user.uid;
 export const getIsUserHasDB = (state: RootState) => state.user.isUserHasDB;
-export const getIsUserSignedId = (state: RootState) => state.user.isSignedId;
+export const getIsUserSignedIn = (state: RootState) => state.user.isSignedIn;
 export const getDefaultCurrencyKey = (state: RootState) =>
   state.user.defaultCurrency;
 

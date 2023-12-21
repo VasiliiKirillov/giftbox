@@ -30,6 +30,7 @@ export const ExpensesSlice = createSlice({
     addExpense: (state, action) => {
       state.data = [action.payload].concat(state.data);
     },
+    resetExpenses: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -40,14 +41,10 @@ export const ExpensesSlice = createSlice({
         state.status = DataStatus.succeeded;
         state.data = action.payload;
       });
-    // .addCase(fetchExpenses.rejected, (state, action) => {
-    //   state.status = DataStatus.failed;
-    //   state.error = action.error.message ?? "";
-    // });
   },
 });
 
-export const { addExpense } = ExpensesSlice.actions;
+export const { addExpense, resetExpenses } = ExpensesSlice.actions;
 
 export const getExpenses = (store: RootState) => store.expenses.data;
 export const getExpensesStatus = (store: RootState) => store.expenses.status;

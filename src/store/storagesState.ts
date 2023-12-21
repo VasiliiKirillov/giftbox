@@ -32,6 +32,7 @@ export const StoragesSlice = createSlice({
     addStorage: (state, action) => {
       state.data = state.data.concat(action.payload);
     },
+    resetStorages: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -49,7 +50,7 @@ export const StoragesSlice = createSlice({
   },
 });
 
-export const { addStorage } = StoragesSlice.actions;
+export const { addStorage, resetStorages } = StoragesSlice.actions;
 
 export const getStorages = (store: RootState) => store.storages.data;
 export const getStoragesById = createSelector(getStorages, (storages) =>

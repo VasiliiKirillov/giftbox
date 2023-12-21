@@ -23,7 +23,9 @@ const initialState: AvailableCurrenciesState = {
 export const AvailableCurrenciesSlice = createSlice({
   name: 'availableCurrenciesState',
   initialState,
-  reducers: {},
+  reducers: {
+    resetAvailableCurrencies: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAvailableCurrencies.pending, (state) => {
@@ -38,6 +40,8 @@ export const AvailableCurrenciesSlice = createSlice({
       });
   },
 });
+
+export const { resetAvailableCurrencies } = AvailableCurrenciesSlice.actions;
 
 export const getAvailableCurrencies = (store: RootState) =>
   store.availableCurrencies.data;

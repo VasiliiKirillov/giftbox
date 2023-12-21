@@ -18,7 +18,9 @@ const initialState: CurrencyRatesState = {
 export const CurrencyRatesSlice = createSlice({
   name: 'currencyRatesState',
   initialState,
-  reducers: {},
+  reducers: {
+    resetCurrencyRates: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCurrencyRates.pending, (state) => {
@@ -33,6 +35,8 @@ export const CurrencyRatesSlice = createSlice({
       });
   },
 });
+
+export const { resetCurrencyRates } = CurrencyRatesSlice.actions;
 
 export const getCurrencyRates = (store: RootState) => store.currencyRates.data;
 

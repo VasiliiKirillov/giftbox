@@ -3,11 +3,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { AppDispatch } from '../store/store';
-import { SignOutButton } from '../components/SignOutButton';
 import { fetchUserData, getIsUserHasDB, getUserUID } from '../store/user';
+import {
+  fetchAvailableCurrencies,
+  resetAvailableCurrencies,
+} from '../store/availableCurrencies';
+import { resetStorages } from '../store/storagesState';
+import { resetIncomes } from '../store/incomesState';
+import { resetExpenses } from '../store/expensesState';
+import { resetCurrencyRates } from '../store/currencyRatesState';
+import { SignOutButton } from '../components/SignOutButton';
 import { FirstStorage } from '../components/FirstStorage';
 import { MainContent } from '../components/MainContent';
-import { fetchAvailableCurrencies } from '../store/availableCurrencies';
 
 export const MainPage = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -17,6 +24,13 @@ export const MainPage = memo(() => {
 
   useEffect(() => {
     dispatch(fetchAvailableCurrencies());
+    return () => {
+      dispatch(resetStorages());
+      dispatch(resetIncomes());
+      dispatch(resetExpenses());
+      dispatch(resetCurrencyRates());
+      dispatch(resetAvailableCurrencies());
+    };
   }, []);
 
   useEffect(() => {
@@ -28,7 +42,7 @@ export const MainPage = memo(() => {
   const content = useMemo(() => {
     if (isUserHasDB === true) return <MainContent />;
     else if (isUserHasDB === false) return <FirstStorage />;
-    else return <div>Please stand by</div>;
+    else return null;
   }, [isUserHasDB]);
 
   return (

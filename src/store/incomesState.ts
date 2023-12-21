@@ -30,6 +30,7 @@ export const IncomesSlice = createSlice({
     addIncome: (state, action) => {
       state.data = [action.payload].concat(state.data);
     },
+    resetIncomes: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -40,14 +41,10 @@ export const IncomesSlice = createSlice({
         state.status = DataStatus.succeeded;
         state.data = action.payload;
       });
-    // .addCase(fetchIncomes.rejected, (state, action) => {
-    //   state.status = DataStatus.failed;
-    //   state.error = action.error.message ?? "";
-    // });
   },
 });
 
-export const { addIncome } = IncomesSlice.actions;
+export const { addIncome, resetIncomes } = IncomesSlice.actions;
 
 export const getIncomes = (store: RootState) => store.incomes.data;
 export const getIncomesStatus = (store: RootState) => store.expenses.status;
