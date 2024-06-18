@@ -32,6 +32,7 @@ export const MainPage = memo(() => {
       dispatch(resetAvailableCurrencies());
     };
   }, []);
+  console.log('gov !!!');
 
   useEffect(() => {
     if (!userUID) return;
