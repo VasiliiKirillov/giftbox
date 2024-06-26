@@ -1,17 +1,16 @@
-import { useLayoutEffect, useMemo } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { auth } from './utils/api';
-import { AppDispatch } from './store/store';
+import { auth } from '../utils/api';
+import { AppDispatch } from '../store/store';
 import {
   getIsUserSignedIn,
   setSingedInUser,
   setSingedOutUser,
-} from './store/user';
-import { MainPage } from './pages/Main.page';
-import { AuthPage } from './pages/Auth.page';
+} from '../store/user';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const useHandleAuthChanges = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -34,14 +33,21 @@ export const App = () => {
   useHandleAuthChanges();
 
   const isUserSignedId = useSelector(getIsUserSignedIn);
+  const navigate = useNavigate();
 
-  const content = useMemo(() => {
-    if (isUserSignedId === true) return <MainPage />;
-    else if (isUserSignedId === false) return <AuthPage />;
-    else return null;
+  useEffect(() => {
+    if (isUserSignedId === true) {
+      navigate('/');
+    } else if (isUserSignedId === false) {
+      navigate('/login');
+    }
   }, [isUserSignedId]);
 
-  return <AppContainerStyled>{content}</AppContainerStyled>;
+  return (
+    <AppContainerStyled>
+      <Outlet />
+    </AppContainerStyled>
+  );
 };
 
 // styles

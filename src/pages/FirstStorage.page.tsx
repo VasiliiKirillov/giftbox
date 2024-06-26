@@ -2,9 +2,9 @@ import { memo } from 'react';
 import { AppDispatch } from '../store/store';
 import { useDispatch } from 'react-redux';
 import { addFirstStorage } from '../store/storagesState';
-import { NewStorage } from './NewStorage';
+import { NewStorage } from '../components/NewStorage';
 
-export const FirstStorage = memo(() => {
+export const FirstStoragePage = memo(() => {
   const dispatch: AppDispatch = useDispatch();
 
   const handleAddFirstStorage = (

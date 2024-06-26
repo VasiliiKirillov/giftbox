@@ -1,5 +1,6 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { AppDispatch } from '../store/store';
@@ -13,11 +14,11 @@ import { resetIncomes } from '../store/incomesState';
 import { resetExpenses } from '../store/expensesState';
 import { resetCurrencyRates } from '../store/currencyRatesState';
 import { SignOutButton } from '../components/SignOutButton';
-import { FirstStorage } from '../components/FirstStorage';
-import { MainContent } from '../components/MainContent';
+import { CalculatorButton } from '../components/CalculatorButton';
 
-export const MainPage = memo(() => {
+export const AuthorizedApp = memo(() => {
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userUID = useSelector(getUserUID);
   const isUserHasDB = useSelector(getIsUserHasDB);
@@ -32,7 +33,6 @@ export const MainPage = memo(() => {
       dispatch(resetAvailableCurrencies());
     };
   }, []);
-  console.log('gov !!!');
 
   useEffect(() => {
     if (!userUID) return;
@@ -40,16 +40,19 @@ export const MainPage = memo(() => {
     dispatch(fetchUserData(userUID));
   }, [userUID]);
 
-  const content = useMemo(() => {
-    if (isUserHasDB === true) return <MainContent />;
-    else if (isUserHasDB === false) return <FirstStorage />;
-    else return null;
+  useEffect(() => {
+    if (isUserHasDB === false) {
+      navigate('/first-storage');
+    }
   }, [isUserHasDB]);
 
   return (
     <MainContentStyled>
-      <SignOutButton />
-      {content}
+      <HeaderContainer>
+        <CalculatorButton />
+        <SignOutButton />
+      </HeaderContainer>
+      <Outlet />
     </MainContentStyled>
   );
 });
@@ -58,4 +61,9 @@ export const MainPage = memo(() => {
 const MainContentStyled = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const HeaderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;

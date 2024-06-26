@@ -1,11 +1,11 @@
 import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Storages } from './Storages';
-import { Accounting } from './Accounting';
-import { Calendar } from './Calendar';
+import { Storages } from '../components/Storages';
+import { Accounting } from '../components/Accounting';
+import { Calendar } from '../components/Calendar';
 import { AppDispatch } from '../store/store';
-import { DefaultCurrencyPicker } from './DefaultCurrencyPicker';
+import { DefaultCurrencyPicker } from '../components/DefaultCurrencyPicker';
 import { getInUseCurrenciesList } from '../store/availableCurrencies';
 import { getDefaultCurrencyKey } from '../store/user';
 import { fetchCurrencyRates } from '../store/currencyRatesState';
@@ -31,7 +31,7 @@ const useFetchInitialData = () => {
   }, []);
 };
 
-export const MainContent = memo(() => {
+export const MainViewPage = memo(() => {
   useFetchInitialData();
 
   return (
