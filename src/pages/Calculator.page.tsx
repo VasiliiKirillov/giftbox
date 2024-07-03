@@ -240,8 +240,6 @@ export const CalculatorPage = memo(() => {
 });
 
 const CalculatorContainer = styled.div`
-  width: 1000px;
-  height: 500px;
   display: flex;
   flex-direction: column;
 `;
@@ -249,5 +247,5 @@ const CalculatorContainer = styled.div`
 const ThresholdContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
 `;

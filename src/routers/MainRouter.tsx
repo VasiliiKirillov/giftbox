@@ -19,15 +19,15 @@ export const router = createBrowserRouter([
         children: [
           {
             path: '',
+            element: <CalculatorPage />,
+          },
+          {
+            path: '/mainTable',
             element: <MainViewPage />,
           },
           {
             path: '/first-storage',
             element: <FirstStoragePage />,
-          },
-          {
-            path: '/calculator',
-            element: <CalculatorPage />,
           },
         ],
       },

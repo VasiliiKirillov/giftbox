@@ -21,11 +21,12 @@ export const ThresholdBlock: FC<{
     return (
       <ThresholdBlockContainer>
         <Input
-          isRequired={true}
+          isRequired
           value={thresholdValue}
           labelText={thresholdName + ' threshold'}
           additionalInfo="Please enter threshold percent"
           changeAction={setThresholdValue}
+          type="number"
         />
         <Input disabled value={desiredCurrency} labelText="Desired currency" />
         <Input disabled value={orderPrice} labelText="Order price" />
@@ -38,4 +39,6 @@ export const ThresholdBlock: FC<{
 const ThresholdBlockContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 16px;
+  min-width: 200px;
 `;

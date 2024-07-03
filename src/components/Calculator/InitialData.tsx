@@ -26,36 +26,40 @@ export const InitialData: FC<InitialDataProps> = memo(
   }) => {
     return (
       <InitialDataContainer>
-        <InitialValuesConatiner>
+        <InitialValuesContainer>
           <Input
-            isRequired={true}
+            isRequired
             value={totalAmount}
             labelText="Total amount"
             additionalInfo="Please enter total amount"
             changeAction={setTotalAmount}
+            type="number"
           />
           <Input
-            isRequired={true}
+            isRequired
             value={assetsAmount}
             labelText="Assets amount"
             additionalInfo="Please enter assets amount"
             changeAction={setAssetsAmount}
+            type="number"
           />
           <Input
-            isRequired={true}
+            isRequired
             value={assetsCurrency}
             labelText="Assets currency"
             additionalInfo="Please enter assets currency"
             changeAction={setAssetsCurrency}
+            type="number"
           />
           <Input
-            isRequired={true}
+            isRequired
             value={assetsPercent}
             labelText="Desirable assets percent"
             additionalInfo="Please enter desirable assets percent"
             changeAction={setAssetsPercent}
+            type="number"
           />
-        </InitialValuesConatiner>
+        </InitialValuesContainer>
         <PieChart />
       </InitialDataContainer>
     );
@@ -65,19 +69,19 @@ export const InitialData: FC<InitialDataProps> = memo(
 const InitialDataContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
 `;
 
-const InitialValuesConatiner = styled.div`
+const InitialValuesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  margin: 16px;
+  min-width: 200px;
 `;
 
 const PieChart = styled.div`
   width: 100px;
   height: 100px;
   background-color: wheat;
+  margin: 64px;
 `;

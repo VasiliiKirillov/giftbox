@@ -13,6 +13,7 @@ interface InputProps {
   isRequired?: boolean;
   limitSymbols?: number;
   changeAction?: (text: string) => void;
+  type?: string;
 }
 
 export const Input: FC<InputProps> = memo(
@@ -24,10 +25,12 @@ export const Input: FC<InputProps> = memo(
     disabled = false,
     isRequired,
     limitSymbols,
+    type,
   }) => (
     <>
       <LabelField labelText={labelText} isRequired={isRequired} />
       <InputStyled
+        type={type}
         disabled={disabled}
         maxLength={limitSymbols}
         isDisabled={disabled}

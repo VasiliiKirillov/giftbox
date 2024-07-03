@@ -14,7 +14,6 @@ import { resetIncomes } from '../store/incomesState';
 import { resetExpenses } from '../store/expensesState';
 import { resetCurrencyRates } from '../store/currencyRatesState';
 import { SignOutButton } from '../components/SignOutButton';
-import { CalculatorButton } from '../components/CalculatorButton';
 
 export const AuthorizedApp = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -47,23 +46,29 @@ export const AuthorizedApp = memo(() => {
   }, [isUserHasDB]);
 
   return (
-    <MainContentStyled>
+    <>
       <HeaderContainer>
-        <CalculatorButton />
         <SignOutButton />
       </HeaderContainer>
-      <Outlet />
-    </MainContentStyled>
+      <ContentContainer>
+        <Outlet />
+      </ContentContainer>
+    </>
   );
 });
 
-// styles
-const MainContentStyled = styled.div`
-  display: flex;
-  flex-direction: column;
+const ContentContainer = styled.div`
+  padding: 32px;
 `;
 
 const HeaderContainer = styled.div`
   display: flex;
+  justify-content: end;
+  align-items: center;
   flex-direction: row;
+  height: 48px;
+  width: 100%;
+  background-color: gainsboro;
+  padding: 0 32px;
+  box-sizing: border-box;
 `;

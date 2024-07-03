@@ -14,8 +14,6 @@ export const SignOutButton = memo(() => {
 
 // styles
 const SignOutStyled = styled.div`
-  position: fixed;
+  display: flex;
   cursor: pointer;
-  top: 10px;
-  right: 10px;
 `;
