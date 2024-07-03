@@ -3,8 +3,12 @@ import styled from 'styled-components';
 import { InitialData } from '../components/Calculator/InitialData';
 import { ThresholdBlock } from '../components/ThresholdBlock';
 import Decimal from 'decimal.js';
+import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 
 export const CalculatorPage = memo(() => {
+  const [baseCurrencyName, setBaseCurrencyName] = useState('USD'); // usd
+  const [assetsCurrencyName, setAssetsCurrencyName] = useState('BTC'); // crypto
+
   // set by user
   const [totalAmount, setTotalAmount] = useState('100'); // usd
   const [assetsAmount, setAssetsAmount] = useState('14'); // crypto
@@ -207,6 +211,12 @@ export const CalculatorPage = memo(() => {
 
   return (
     <CalculatorContainer>
+      <CurrencyTitle
+        assetsCurrencyName={assetsCurrencyName}
+        setAssetsCurrencyName={setAssetsCurrencyName}
+        baseCurrencyName={baseCurrencyName}
+        setBaseCurrencyName={setBaseCurrencyName}
+      />
       <InitialData
         totalAmount={totalAmount}
         setTotalAmount={setTotalAmount}
@@ -216,6 +226,8 @@ export const CalculatorPage = memo(() => {
         setAssetsCurrency={setCurrentAssetsCurrencyRate}
         assetsPercent={idealAssetsPercent}
         setAssetsPercent={setIdealAssetsPercent}
+        baseCurrencyName={baseCurrencyName}
+        assetsCurrencyName={assetsCurrencyName}
       />
       <ThresholdContainer>
         <ThresholdBlock
@@ -225,6 +237,8 @@ export const CalculatorPage = memo(() => {
           desiredCurrency={aboveDesiredCurrencyRate}
           orderPrice={aboveOrderPrice}
           orderAmount={aboveOrderAmount}
+          baseCurrencyName={baseCurrencyName}
+          assetsCurrencyName={assetsCurrencyName}
         />
         <ThresholdBlock
           thresholdName={'Below'}
@@ -233,6 +247,8 @@ export const CalculatorPage = memo(() => {
           desiredCurrency={belowDesiredCurrencyRate}
           orderPrice={belowOrderPrice}
           orderAmount={belowOrderAmount}
+          baseCurrencyName={baseCurrencyName}
+          assetsCurrencyName={assetsCurrencyName}
         />
       </ThresholdContainer>
     </CalculatorContainer>

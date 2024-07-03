@@ -11,6 +11,8 @@ type InitialDataProps = {
   setAssetsCurrency: (a: string) => void;
   assetsPercent: string;
   setAssetsPercent: (a: string) => void;
+  baseCurrencyName: string;
+  assetsCurrencyName: string;
 };
 
 export const InitialData: FC<InitialDataProps> = memo(
@@ -23,6 +25,8 @@ export const InitialData: FC<InitialDataProps> = memo(
     setAssetsCurrency,
     assetsPercent,
     setAssetsPercent,
+    baseCurrencyName,
+    assetsCurrencyName,
   }) => {
     return (
       <InitialDataContainer>
@@ -30,7 +34,7 @@ export const InitialData: FC<InitialDataProps> = memo(
           <Input
             isRequired
             value={totalAmount}
-            labelText="Total amount"
+            labelText={`Total amount (${baseCurrencyName})`}
             additionalInfo="Please enter total amount"
             changeAction={setTotalAmount}
             type="number"
@@ -38,7 +42,7 @@ export const InitialData: FC<InitialDataProps> = memo(
           <Input
             isRequired
             value={assetsAmount}
-            labelText="Assets amount"
+            labelText={`Assets amount (${assetsCurrencyName})`}
             additionalInfo="Please enter assets amount"
             changeAction={setAssetsAmount}
             type="number"
@@ -46,7 +50,7 @@ export const InitialData: FC<InitialDataProps> = memo(
           <Input
             isRequired
             value={assetsCurrency}
-            labelText="Assets currency"
+            labelText={`Assets currency (1${baseCurrencyName} = ? ${assetsCurrencyName})`}
             additionalInfo="Please enter assets currency"
             changeAction={setAssetsCurrency}
             type="number"
@@ -54,7 +58,7 @@ export const InitialData: FC<InitialDataProps> = memo(
           <Input
             isRequired
             value={assetsPercent}
-            labelText="Desirable assets percent"
+            labelText="Desirable assets percent (%)"
             additionalInfo="Please enter desirable assets percent"
             changeAction={setAssetsPercent}
             type="number"
@@ -75,7 +79,7 @@ const InitialDataContainer = styled.div`
 const InitialValuesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 16px;
+  margin: 8px;
   min-width: 200px;
 `;
 

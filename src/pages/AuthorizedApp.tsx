@@ -58,7 +58,7 @@ export const AuthorizedApp = memo(() => {
 });
 
 const ContentContainer = styled.div`
-  padding: 32px;
+  padding: 16px;
 `;
 
 const HeaderContainer = styled.div`
