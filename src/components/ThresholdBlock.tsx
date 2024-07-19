@@ -22,7 +22,7 @@ export const ThresholdBlock: FC<{
     baseCurrencyName,
     assetsCurrencyName,
   }) => {
-    const isBuy = thresholdName === 'Above';
+    const isBuy = thresholdName === 'Below';
     return (
       <ThresholdBlockContainer>
         <Input
