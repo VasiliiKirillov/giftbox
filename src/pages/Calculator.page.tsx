@@ -1,9 +1,10 @@
-import { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { InitialData } from '../components/Calculator/InitialData';
 import { ThresholdBlock } from '../components/ThresholdBlock';
 import Decimal from 'decimal.js';
 import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
+import { PieChart } from '../components/Calculator/PieChart';
 
 export const CalculatorPage = memo(() => {
   const [baseCurrencyName, setBaseCurrencyName] = useState('USD'); // usd
@@ -27,6 +28,8 @@ export const CalculatorPage = memo(() => {
   const [belowDesiredCurrencyRate, setBelowDesiredCurrencyRate] = useState('0');
   const [belowOrderPrice, setBelowOrderPrice] = useState('0');
   const [belowOrderAmount, setBelowOrderAmount] = useState('0');
+
+  const [assetsInUsd, setAssetsInUsd] = useState('0');
 
   function calculateOrderDetails(
     idealAssetsPercent: string,
@@ -65,6 +68,7 @@ export const CalculatorPage = memo(() => {
     const assetsInUSD = new Decimal(assetsAmount).times(
       currentAssetsCurrencyRate
     ); // (USD)
+    setAssetsInUsd(assetsInUSD.toString());
 
     if (!assetsInUSD || !totalAmount) return;
     const actualAssetsPercent = new Decimal(assetsInUSD)
@@ -137,7 +141,6 @@ export const CalculatorPage = memo(() => {
       }
     } else if (differenceAssetsPercent.toNumber() < 0) {
       // lowerWeight
-      // I'm here
       if (
         differenceAssetsPercent.abs().toNumber() >=
         new Decimal(belowThresholdDeltaPercent).toNumber()
@@ -217,29 +220,22 @@ export const CalculatorPage = memo(() => {
         baseCurrencyName={baseCurrencyName}
         setBaseCurrencyName={setBaseCurrencyName}
       />
-      <InitialData
-        totalAmount={totalAmount}
-        setTotalAmount={setTotalAmount}
-        assetsAmount={assetsAmount}
-        setAssetsAmount={setAssetsAmount}
-        assetsCurrency={currentAssetsCurrencyRate}
-        setAssetsCurrency={setCurrentAssetsCurrencyRate}
-        assetsPercent={idealAssetsPercent}
-        setAssetsPercent={setIdealAssetsPercent}
-        baseCurrencyName={baseCurrencyName}
-        assetsCurrencyName={assetsCurrencyName}
-      />
-      <ThresholdContainer>
-        <ThresholdBlock
-          thresholdName={'Above'}
-          thresholdValue={aboveThresholdDeltaPercent}
-          setThresholdValue={setAboveThresholdDeltaPercent}
-          desiredCurrency={aboveDesiredCurrencyRate}
-          orderPrice={aboveOrderPrice}
-          orderAmount={aboveOrderAmount}
+      <InitialDataContainer>
+        <InitialData
+          totalAmount={totalAmount}
+          setTotalAmount={setTotalAmount}
+          assetsAmount={assetsAmount}
+          setAssetsAmount={setAssetsAmount}
+          assetsCurrency={currentAssetsCurrencyRate}
+          setAssetsCurrency={setCurrentAssetsCurrencyRate}
+          assetsPercent={idealAssetsPercent}
+          setAssetsPercent={setIdealAssetsPercent}
           baseCurrencyName={baseCurrencyName}
           assetsCurrencyName={assetsCurrencyName}
         />
+        <PieChart totalAmount={totalAmount} assetsInUsd={assetsInUsd} />
+      </InitialDataContainer>
+      <ThresholdContainer>
         <ThresholdBlock
           thresholdName={'Below'}
           thresholdValue={belowThresholdDeltaPercent}
@@ -247,6 +243,16 @@ export const CalculatorPage = memo(() => {
           desiredCurrency={belowDesiredCurrencyRate}
           orderPrice={belowOrderPrice}
           orderAmount={belowOrderAmount}
+          baseCurrencyName={baseCurrencyName}
+          assetsCurrencyName={assetsCurrencyName}
+        />
+        <ThresholdBlock
+          thresholdName={'Above'}
+          thresholdValue={aboveThresholdDeltaPercent}
+          setThresholdValue={setAboveThresholdDeltaPercent}
+          desiredCurrency={aboveDesiredCurrencyRate}
+          orderPrice={aboveOrderPrice}
+          orderAmount={aboveOrderAmount}
           baseCurrencyName={baseCurrencyName}
           assetsCurrencyName={assetsCurrencyName}
         />
@@ -261,6 +267,12 @@ const CalculatorContainer = styled.div`
 `;
 
 const ThresholdContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const InitialDataContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;

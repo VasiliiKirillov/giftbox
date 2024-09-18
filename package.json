@@ -15,7 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
+    "@types/chart.js": "^2.9.41",
     "@types/styled-components": "^5.1.27",
+    "chart.js": "^4.4.4",
     "decimal.js": "^10.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -24,11 +26,13 @@
     "styled-components": "^6.0.8"
   },
   "devDependencies": {
+    "@babel/plugin-transform-typescript": "^7.25.2",
     "@types/react": "^18.2.24",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
