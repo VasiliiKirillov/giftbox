@@ -242,6 +242,8 @@ export const CalculatorPage = memo(() => {
           belowThresholdDeltaPercent={belowThresholdDeltaPercent}
           aboveThresholdDeltaPercent={aboveThresholdDeltaPercent}
           actualAssetsPercent={actualAssetsPercent}
+          baseCurrencyName={baseCurrencyName}
+          assetsCurrencyName={assetsCurrencyName}
         />
       </InitialDataContainer>
       <ThresholdContainer>

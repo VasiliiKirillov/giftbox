@@ -30,7 +30,12 @@ const calculateOuterDoughnutData = (
   ];
 };
 
-const helperRef = { idealAssetsPercent: '', actualAssetsPercent: '' };
+const helperRef = {
+  idealAssetsPercent: '',
+  actualAssetsPercent: '',
+  baseCurrencyName: '',
+  assetsCurrencyName: '',
+};
 
 type PieChartProps = {
   totalAmount: string;
@@ -39,6 +44,8 @@ type PieChartProps = {
   belowThresholdDeltaPercent: string;
   aboveThresholdDeltaPercent: string;
   actualAssetsPercent: string;
+  baseCurrencyName: string;
+  assetsCurrencyName: string;
 };
 
 export const PieChart: FC<PieChartProps> = memo(
@@ -49,6 +56,8 @@ export const PieChart: FC<PieChartProps> = memo(
     belowThresholdDeltaPercent,
     aboveThresholdDeltaPercent,
     actualAssetsPercent,
+    baseCurrencyName,
+    assetsCurrencyName,
   }) => {
     const pieChartRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -123,9 +132,9 @@ export const PieChart: FC<PieChartProps> = memo(
                   if (tooltipItem.datasetIndex === 1) {
                     switch (tooltipItem.dataIndex) {
                       case 0:
-                        return `Rest assets: ${value}USD`;
+                        return `Rest assets: ${value}${helperRef.baseCurrencyName}`;
                       case 1:
-                        return `BTC amount: ${value}USD`;
+                        return `${helperRef.assetsCurrencyName} amount: ${value}${helperRef.baseCurrencyName}`;
                     }
                     // outer circle
                   } else if (tooltipItem.datasetIndex === 0) {
@@ -221,6 +230,15 @@ export const PieChart: FC<PieChartProps> = memo(
       };
     }, []);
 
+    // set names of currencies for piechart
+    useEffect(() => {
+      if (myChart === null) return;
+
+      helperRef.baseCurrencyName = baseCurrencyName;
+      helperRef.assetsCurrencyName = assetsCurrencyName;
+    }, [baseCurrencyName, assetsCurrencyName]);
+
+    // calculate data for inner chart
     useEffect(() => {
       if (myChart === null) return;
 
@@ -233,8 +251,10 @@ export const PieChart: FC<PieChartProps> = memo(
       myChart.update();
     }, [totalAmount, assetsInUsd]);
 
+    // calculate data for outer chart
     useEffect(() => {
       if (myChart === null) return;
+
       helperRef.idealAssetsPercent = idealAssetsPercent;
 
       myChart.data.datasets[0].data = calculateOuterDoughnutData(
