@@ -30,6 +30,7 @@ export const CalculatorPage = memo(() => {
   const [belowOrderAmount, setBelowOrderAmount] = useState('0');
 
   const [assetsInUsd, setAssetsInUsd] = useState('0');
+  const [actualAssetsPercent, setActualAssetsPercent] = useState('0');
 
   function calculateOrderDetails(
     idealAssetsPercent: string,
@@ -74,6 +75,7 @@ export const CalculatorPage = memo(() => {
     const actualAssetsPercent = new Decimal(assetsInUSD)
       .dividedBy(totalAmount)
       .times(100); // (%)
+    setActualAssetsPercent(actualAssetsPercent.toString());
 
     if (!actualAssetsPercent || !idealAssetsPercent) return;
     const differenceAssetsPercent =
@@ -233,7 +235,14 @@ export const CalculatorPage = memo(() => {
           baseCurrencyName={baseCurrencyName}
           assetsCurrencyName={assetsCurrencyName}
         />
-        <PieChart totalAmount={totalAmount} assetsInUsd={assetsInUsd} />
+        <PieChart
+          totalAmount={totalAmount}
+          assetsInUsd={assetsInUsd}
+          idealAssetsPercent={idealAssetsPercent}
+          belowThresholdDeltaPercent={belowThresholdDeltaPercent}
+          aboveThresholdDeltaPercent={aboveThresholdDeltaPercent}
+          actualAssetsPercent={actualAssetsPercent}
+        />
       </InitialDataContainer>
       <ThresholdContainer>
         <ThresholdBlock
