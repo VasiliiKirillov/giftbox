@@ -11,6 +11,7 @@ export const ThresholdBlock: FC<{
   orderAmount: string;
   baseCurrencyName: string;
   assetsCurrencyName: string;
+  multiplier: string;
 }> = memo(
   ({
     thresholdName,
@@ -21,6 +22,7 @@ export const ThresholdBlock: FC<{
     orderAmount,
     baseCurrencyName,
     assetsCurrencyName,
+    multiplier,
   }) => {
     const isBuy = thresholdName === 'Below';
     return (
@@ -49,6 +51,7 @@ export const ThresholdBlock: FC<{
           value={orderAmount}
           labelText={`Order value (${baseCurrencyName})`}
         />
+        <Input disabled value={multiplier} labelText={'Multiplier'} />
       </ThresholdBlockContainer>
     );
   }

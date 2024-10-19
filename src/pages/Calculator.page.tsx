@@ -32,12 +32,16 @@ export const CalculatorPage = memo(() => {
   const [assetsInUsd, setAssetsInUsd] = useState('0');
   const [actualAssetsPercent, setActualAssetsPercent] = useState('0');
 
+  const [belowMultiplier, setBelowMultiplier] = useState('0');
+  const [aboveMultiplier, setAboveMultiplier] = useState('0');
+
   function calculateOrderDetails(
     idealAssetsPercent: string,
     thresholdDeltaPercent: string,
     totalAmount: string,
     assetsInUSD: Decimal,
     assetsAmount: string,
+    currentAssetsCurrencyRate: string,
     isAbove: boolean
   ) {
     const thresholdPercent = isAbove
@@ -57,10 +61,16 @@ export const CalculatorPage = memo(() => {
       .times(thresholdDeltaPercent);
     const orderAmount = orderPrice.dividedBy(desiredCurrencyRate);
 
+    const multiplier = isAbove
+      ? desiredCurrencyRate.dividedBy(currentAssetsCurrencyRate)
+      : new Decimal(currentAssetsCurrencyRate).dividedBy(desiredCurrencyRate);
+    console.log('gov multiplier', multiplier.toString());
+
     return {
       desiredCurrencyRate: desiredCurrencyRate.toString(),
       orderPrice: orderPrice.toString(),
       orderAmount: orderAmount.toString(),
+      multiplier: multiplier.toString(),
     };
   }
 
@@ -112,34 +122,40 @@ export const CalculatorPage = memo(() => {
           desiredCurrencyRate: aboveDesiredCurrencyRate,
           orderPrice: aboveOrderPrice,
           orderAmount: aboveOrderAmount,
+          multiplier: aboveMultiplier,
         } = calculateOrderDetails(
           idealAssetsPercent,
           aboveThresholdDeltaPercent,
           totalAmount,
           assetsInUSD,
           assetsAmount,
+          currentAssetsCurrencyRate,
           true
         );
         setAboveDesiredCurrencyRate(aboveDesiredCurrencyRate);
         setAboveOrderPrice(aboveOrderPrice);
         setAboveOrderAmount(aboveOrderAmount);
+        setAboveMultiplier(aboveMultiplier);
 
         // Example usage for "below" calculation
         const {
           desiredCurrencyRate: belowDesiredCurrencyRate,
           orderPrice: belowOrderPrice,
           orderAmount: belowOrderAmount,
+          multiplier: belowMultiplier,
         } = calculateOrderDetails(
           idealAssetsPercent,
           belowThresholdDeltaPercent,
           totalAmount,
           assetsInUSD,
           assetsAmount,
+          currentAssetsCurrencyRate,
           false
         );
         setBelowDesiredCurrencyRate(belowDesiredCurrencyRate);
         setBelowOrderPrice(belowOrderPrice);
         setBelowOrderAmount(belowOrderAmount);
+        setBelowMultiplier(belowMultiplier);
       }
     } else if (differenceAssetsPercent.toNumber() < 0) {
       // lowerWeight
@@ -170,34 +186,40 @@ export const CalculatorPage = memo(() => {
           desiredCurrencyRate: aboveDesiredCurrencyRate,
           orderPrice: aboveOrderPrice,
           orderAmount: aboveOrderAmount,
+          multiplier: aboveMultiplier,
         } = calculateOrderDetails(
           idealAssetsPercent,
           aboveThresholdDeltaPercent,
           totalAmount,
           assetsInUSD,
           assetsAmount,
+          currentAssetsCurrencyRate,
           true
         );
         setAboveDesiredCurrencyRate(aboveDesiredCurrencyRate);
         setAboveOrderPrice(aboveOrderPrice);
         setAboveOrderAmount(aboveOrderAmount);
+        setAboveMultiplier(aboveMultiplier);
 
         // Example usage for "below" calculation
         const {
           desiredCurrencyRate: belowDesiredCurrencyRate,
           orderPrice: belowOrderPrice,
           orderAmount: belowOrderAmount,
+          multiplier: belowMultiplier,
         } = calculateOrderDetails(
           idealAssetsPercent,
           belowThresholdDeltaPercent,
           totalAmount,
           assetsInUSD,
           assetsAmount,
+          currentAssetsCurrencyRate,
           false
         );
         setBelowDesiredCurrencyRate(belowDesiredCurrencyRate);
         setBelowOrderPrice(belowOrderPrice);
         setBelowOrderAmount(belowOrderAmount);
+        setBelowMultiplier(belowMultiplier);
       }
     } else {
       // balance - do nothing
@@ -256,6 +278,7 @@ export const CalculatorPage = memo(() => {
           orderAmount={belowOrderAmount}
           baseCurrencyName={baseCurrencyName}
           assetsCurrencyName={assetsCurrencyName}
+          multiplier={belowMultiplier}
         />
         <ThresholdBlock
           thresholdName={'Above'}
@@ -266,6 +289,7 @@ export const CalculatorPage = memo(() => {
           orderAmount={aboveOrderAmount}
           baseCurrencyName={baseCurrencyName}
           assetsCurrencyName={assetsCurrencyName}
+          multiplier={aboveMultiplier}
         />
       </ThresholdContainer>
     </CalculatorContainer>

@@ -219,7 +219,7 @@ export const PieChart: FC<PieChartProps> = memo(
               ctx.fillText(
                 `${helperRef.actualAssetsPercent}%`,
                 endX + 10,
-                endY - 5
+                endY - (Number(helperRef.actualAssetsPercent) > 12 ? 5 : -7)
               );
             },
           },
