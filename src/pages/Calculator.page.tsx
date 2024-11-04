@@ -6,20 +6,68 @@ import Decimal from 'decimal.js';
 import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 import { PieChart } from '../components/Calculator/PieChart';
 
+function calculateOrderDetails(
+  idealAssetsPercent: string,
+  thresholdDeltaPercent: string,
+  totalAmount: string,
+  assetsInUSD: Decimal,
+  assetsAmount: string,
+  currentAssetsCurrencyRate: string,
+  isAbove: boolean
+) {
+  const thresholdPercent = isAbove
+    ? new Decimal(idealAssetsPercent).plus(thresholdDeltaPercent)
+    : new Decimal(idealAssetsPercent).minus(thresholdDeltaPercent);
+  const thresholdRatio = thresholdPercent.dividedBy(100);
+  const desiredAssets = new Decimal(totalAmount)
+    .minus(assetsInUSD)
+    .times(thresholdRatio)
+    .dividedBy(new Decimal(1).minus(thresholdRatio));
+
+  const desiredCurrencyRate = desiredAssets.dividedBy(assetsAmount);
+  const orderPrice = new Decimal(
+    desiredAssets.plus(totalAmount).minus(assetsInUSD)
+  )
+    .dividedBy(100)
+    .times(thresholdDeltaPercent);
+  const orderAmount = orderPrice.dividedBy(desiredCurrencyRate);
+  let multiplier = new Decimal(0);
+  try {
+    multiplier = isAbove
+      ? desiredCurrencyRate
+          .minus(currentAssetsCurrencyRate)
+          .dividedBy(currentAssetsCurrencyRate)
+          .times(100)
+      : new Decimal(currentAssetsCurrencyRate)
+          .minus(desiredCurrencyRate)
+          .dividedBy(currentAssetsCurrencyRate)
+          .times(100);
+  } catch (e) {
+    console.log(e);
+  }
+
+  return {
+    desiredCurrencyRate: desiredCurrencyRate.toString(),
+    orderPrice: orderPrice.toString(),
+    orderAmount: orderAmount.toString(),
+    multiplier: multiplier.toString(),
+  };
+}
+
 export const CalculatorPage = memo(() => {
   const [baseCurrencyName, setBaseCurrencyName] = useState('USD'); // usd
   const [assetsCurrencyName, setAssetsCurrencyName] = useState('BTC'); // crypto
 
   // set by user
   const [totalAmount, setTotalAmount] = useState('100'); // usd
-  const [assetsAmount, setAssetsAmount] = useState('14'); // crypto
+  const [assetsAmount, setAssetsAmount] = useState('10'); // crypto
   const [currentAssetsCurrencyRate, setCurrentAssetsCurrencyRate] =
-    useState('2'); // usd
-  const [idealAssetsPercent, setIdealAssetsPercent] = useState('25'); // percent
+    useState('1'); // usd
+  const [idealAssetsPercent, setIdealAssetsPercent] = useState('10'); // percent
   const [aboveThresholdDeltaPercent, setAboveThresholdDeltaPercent] =
-    useState('0');
+    useState('5');
   const [belowThresholdDeltaPercent, setBelowThresholdDeltaPercent] =
-    useState('0');
+    useState('5');
   // calculated
   const [aboveDesiredCurrencyRate, setAboveDesiredCurrencyRate] = useState('0');
   const [aboveOrderPrice, setAboveOrderPrice] = useState('0');
@@ -35,194 +83,131 @@ export const CalculatorPage = memo(() => {
   const [belowMultiplier, setBelowMultiplier] = useState('0');
   const [aboveMultiplier, setAboveMultiplier] = useState('0');
 
-  function calculateOrderDetails(
-    idealAssetsPercent: string,
-    thresholdDeltaPercent: string,
-    totalAmount: string,
-    assetsInUSD: Decimal,
-    assetsAmount: string,
-    currentAssetsCurrencyRate: string,
-    isAbove: boolean
-  ) {
-    const thresholdPercent = isAbove
-      ? new Decimal(idealAssetsPercent).plus(thresholdDeltaPercent)
-      : new Decimal(idealAssetsPercent).minus(thresholdDeltaPercent);
-    const thresholdRatio = thresholdPercent.dividedBy(100);
-    const desiredAssets = new Decimal(totalAmount)
-      .minus(assetsInUSD)
-      .times(thresholdRatio)
-      .dividedBy(new Decimal(1).minus(thresholdRatio));
+  const resetAbove = () => {
+    setAboveDesiredCurrencyRate('-');
+    setAboveOrderPrice('-');
+    setAboveOrderAmount('-');
+    setAboveMultiplier('-');
+  };
 
-    const desiredCurrencyRate = desiredAssets.dividedBy(assetsAmount);
-    const orderPrice = new Decimal(
-      desiredAssets.plus(totalAmount).minus(assetsInUSD)
-    )
+  const resetBelow = () => {
+    setBelowDesiredCurrencyRate('-');
+    setBelowOrderPrice('-');
+    setBelowOrderAmount('-');
+    setBelowMultiplier('-');
+  };
+
+  const calculateAndSetOrder = (
+    isAbove: boolean,
+    absoluteDifference: Decimal
+  ) => {
+    const desiredCurrencyRate = new Decimal(currentAssetsCurrencyRate);
+    const orderPrice = new Decimal(totalAmount)
       .dividedBy(100)
-      .times(thresholdDeltaPercent);
+      .times(absoluteDifference);
     const orderAmount = orderPrice.dividedBy(desiredCurrencyRate);
 
-    const multiplier = isAbove
-      ? desiredCurrencyRate.dividedBy(currentAssetsCurrencyRate)
-      : new Decimal(currentAssetsCurrencyRate).dividedBy(desiredCurrencyRate);
-    console.log('gov multiplier', multiplier.toString());
+    if (isAbove) {
+      setAboveDesiredCurrencyRate(desiredCurrencyRate.toString());
+      setAboveOrderPrice(orderPrice.toString());
+      setAboveOrderAmount(orderAmount.toString());
+      setAboveMultiplier('0');
 
-    return {
-      desiredCurrencyRate: desiredCurrencyRate.toString(),
-      orderPrice: orderPrice.toString(),
-      orderAmount: orderAmount.toString(),
-      multiplier: multiplier.toString(),
-    };
-  }
+      resetBelow();
+    } else {
+      setBelowDesiredCurrencyRate(desiredCurrencyRate.toString());
+      setBelowOrderPrice(orderPrice.toString());
+      setBelowOrderAmount(orderAmount.toString());
+      setBelowMultiplier('0');
+
+      resetAbove();
+    }
+  };
+
+  const setOrderDetails = (isAbove: boolean, assetsInUSD: Decimal) => {
+    const thresholdDelta = isAbove
+      ? aboveThresholdDeltaPercent
+      : belowThresholdDeltaPercent;
+    const { desiredCurrencyRate, orderPrice, orderAmount, multiplier } =
+      calculateOrderDetails(
+        idealAssetsPercent,
+        thresholdDelta,
+        totalAmount,
+        assetsInUSD,
+        assetsAmount,
+        currentAssetsCurrencyRate,
+        isAbove
+      );
+
+    if (isAbove) {
+      setAboveDesiredCurrencyRate(desiredCurrencyRate);
+      setAboveOrderPrice(orderPrice);
+      setAboveOrderAmount(orderAmount);
+      setAboveMultiplier(multiplier);
+    } else {
+      setBelowDesiredCurrencyRate(desiredCurrencyRate);
+      setBelowOrderPrice(orderPrice);
+      setBelowOrderAmount(orderAmount);
+      setBelowMultiplier(multiplier);
+    }
+  };
+
+  const handleOverweight = (
+    differenceAssetsPercent: Decimal,
+    assetsInUSD: Decimal
+  ) => {
+    const absoluteDifference = differenceAssetsPercent.abs();
+    if (absoluteDifference.gte(new Decimal(aboveThresholdDeltaPercent))) {
+      calculateAndSetOrder(true, absoluteDifference);
+    } else {
+      setOrderDetails(true, assetsInUSD);
+      setOrderDetails(false, assetsInUSD);
+    }
+  };
+
+  const handleUnderweight = (
+    differenceAssetsPercent: Decimal,
+    assetsInUSD: Decimal
+  ) => {
+    const absoluteDifference = differenceAssetsPercent.abs();
+    if (absoluteDifference.gte(new Decimal(belowThresholdDeltaPercent))) {
+      calculateAndSetOrder(false, absoluteDifference);
+    } else {
+      setOrderDetails(true, assetsInUSD);
+      setOrderDetails(false, assetsInUSD);
+    }
+  };
 
   useEffect(() => {
-    if (!assetsAmount || !currentAssetsCurrencyRate) return;
+    if (
+      !assetsAmount ||
+      !currentAssetsCurrencyRate ||
+      !totalAmount ||
+      !idealAssetsPercent ||
+      !aboveThresholdDeltaPercent ||
+      !belowThresholdDeltaPercent
+    )
+      return;
+
     const assetsInUSD = new Decimal(assetsAmount).times(
       currentAssetsCurrencyRate
-    ); // (USD)
+    );
     setAssetsInUsd(assetsInUSD.toString());
 
-    if (!assetsInUSD || !totalAmount) return;
-    const actualAssetsPercent = new Decimal(assetsInUSD)
-      .dividedBy(totalAmount)
-      .times(100); // (%)
+    const actualAssetsPercent = assetsInUSD.dividedBy(totalAmount).times(100);
     setActualAssetsPercent(actualAssetsPercent.toString());
 
-    if (!actualAssetsPercent || !idealAssetsPercent) return;
     const differenceAssetsPercent =
-      actualAssetsPercent.minus(idealAssetsPercent); // (%)
+      actualAssetsPercent.minus(idealAssetsPercent);
 
-    if (!aboveThresholdDeltaPercent || !belowThresholdDeltaPercent) return;
-
-    if (differenceAssetsPercent.toNumber() > 0) {
-      // overWeight
-      if (
-        differenceAssetsPercent.abs().toNumber() >=
-        new Decimal(aboveThresholdDeltaPercent).toNumber()
-      ) {
-        // sold by market price
-        const aboveDesiredCurrencyRate = new Decimal(currentAssetsCurrencyRate);
-        const aboveOrderPrice = new Decimal(totalAmount)
-          .dividedBy(100)
-          .times(differenceAssetsPercent.abs());
-        const aboveOrderAmount = aboveOrderPrice.dividedBy(
-          aboveDesiredCurrencyRate
-        );
-
-        setAboveDesiredCurrencyRate(aboveDesiredCurrencyRate.toString());
-        setAboveOrderPrice(aboveOrderPrice.toString());
-        setAboveOrderAmount(aboveOrderAmount.toString());
-
-        setBelowDesiredCurrencyRate('-');
-        setBelowOrderPrice('-');
-        setBelowOrderAmount('-');
-      } else {
-        // count limit orders
-        // Example usage for "above" calculation
-        const {
-          desiredCurrencyRate: aboveDesiredCurrencyRate,
-          orderPrice: aboveOrderPrice,
-          orderAmount: aboveOrderAmount,
-          multiplier: aboveMultiplier,
-        } = calculateOrderDetails(
-          idealAssetsPercent,
-          aboveThresholdDeltaPercent,
-          totalAmount,
-          assetsInUSD,
-          assetsAmount,
-          currentAssetsCurrencyRate,
-          true
-        );
-        setAboveDesiredCurrencyRate(aboveDesiredCurrencyRate);
-        setAboveOrderPrice(aboveOrderPrice);
-        setAboveOrderAmount(aboveOrderAmount);
-        setAboveMultiplier(aboveMultiplier);
-
-        // Example usage for "below" calculation
-        const {
-          desiredCurrencyRate: belowDesiredCurrencyRate,
-          orderPrice: belowOrderPrice,
-          orderAmount: belowOrderAmount,
-          multiplier: belowMultiplier,
-        } = calculateOrderDetails(
-          idealAssetsPercent,
-          belowThresholdDeltaPercent,
-          totalAmount,
-          assetsInUSD,
-          assetsAmount,
-          currentAssetsCurrencyRate,
-          false
-        );
-        setBelowDesiredCurrencyRate(belowDesiredCurrencyRate);
-        setBelowOrderPrice(belowOrderPrice);
-        setBelowOrderAmount(belowOrderAmount);
-        setBelowMultiplier(belowMultiplier);
-      }
-    } else if (differenceAssetsPercent.toNumber() < 0) {
-      // lowerWeight
-      if (
-        differenceAssetsPercent.abs().toNumber() >=
-        new Decimal(belowThresholdDeltaPercent).toNumber()
-      ) {
-        // sold by market price
-        const belowDesiredCurrencyRate = new Decimal(currentAssetsCurrencyRate);
-        const belowOrderPrice = new Decimal(totalAmount)
-          .dividedBy(100)
-          .times(differenceAssetsPercent.abs());
-        const belowOrderAmount = belowOrderPrice.dividedBy(
-          belowDesiredCurrencyRate
-        );
-
-        setAboveDesiredCurrencyRate('-');
-        setAboveOrderPrice('-');
-        setAboveOrderAmount('-');
-
-        setBelowDesiredCurrencyRate(belowDesiredCurrencyRate.toString());
-        setBelowOrderPrice(belowOrderPrice.toString());
-        setBelowOrderAmount(belowOrderAmount.toString());
-      } else {
-        // count limit orders
-        // Example usage for "above" calculation
-        const {
-          desiredCurrencyRate: aboveDesiredCurrencyRate,
-          orderPrice: aboveOrderPrice,
-          orderAmount: aboveOrderAmount,
-          multiplier: aboveMultiplier,
-        } = calculateOrderDetails(
-          idealAssetsPercent,
-          aboveThresholdDeltaPercent,
-          totalAmount,
-          assetsInUSD,
-          assetsAmount,
-          currentAssetsCurrencyRate,
-          true
-        );
-        setAboveDesiredCurrencyRate(aboveDesiredCurrencyRate);
-        setAboveOrderPrice(aboveOrderPrice);
-        setAboveOrderAmount(aboveOrderAmount);
-        setAboveMultiplier(aboveMultiplier);
-
-        // Example usage for "below" calculation
-        const {
-          desiredCurrencyRate: belowDesiredCurrencyRate,
-          orderPrice: belowOrderPrice,
-          orderAmount: belowOrderAmount,
-          multiplier: belowMultiplier,
-        } = calculateOrderDetails(
-          idealAssetsPercent,
-          belowThresholdDeltaPercent,
-          totalAmount,
-          assetsInUSD,
-          assetsAmount,
-          currentAssetsCurrencyRate,
-          false
-        );
-        setBelowDesiredCurrencyRate(belowDesiredCurrencyRate);
-        setBelowOrderPrice(belowOrderPrice);
-        setBelowOrderAmount(belowOrderAmount);
-        setBelowMultiplier(belowMultiplier);
-      }
+    if (differenceAssetsPercent.gt(0)) {
+      handleOverweight(differenceAssetsPercent, assetsInUSD);
+    } else if (differenceAssetsPercent.lt(0)) {
+      handleUnderweight(differenceAssetsPercent, assetsInUSD);
     } else {
-      // balance - do nothing
+      // Balance!
+      resetAbove();
+      resetBelow();
     }
   }, [
     totalAmount,
@@ -231,9 +216,6 @@ export const CalculatorPage = memo(() => {
     idealAssetsPercent,
     aboveThresholdDeltaPercent,
     belowThresholdDeltaPercent,
-    aboveDesiredCurrencyRate,
-    aboveOrderPrice,
-    aboveOrderAmount,
   ]);
 
   return (

@@ -274,14 +274,14 @@ export const PieChart: FC<PieChartProps> = memo(
       <CanvasContent
         ref={pieChartRef}
         id="myDoughnutChart"
-        width="400"
-        height="400"
+        width="432"
+        height="432"
       ></CanvasContent>
     );
   }
 );
 
 const CanvasContent = styled.canvas`
-  width: 400px;
-  height: 400px;
+  width: 432px;
+  height: 432px;
 `;

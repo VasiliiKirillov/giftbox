@@ -34,6 +34,14 @@ export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
             changeAction={setAssetsCurrencyName}
           />
         </ThresholdBlockContainer>
+        <ThresholdBlockContainer>
+          <Input
+            value={assetsCurrencyName}
+            labelText="Average purchase price"
+            additionalInfo="Please enter average purchase price"
+            changeAction={setAssetsCurrencyName}
+          />
+        </ThresholdBlockContainer>
       </InitialDataContainer>
     );
   }
