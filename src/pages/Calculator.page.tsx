@@ -6,6 +6,16 @@ import Decimal from 'decimal.js';
 import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 import { PieChart } from '../components/Calculator/PieChart';
 
+function calculateMultiplier(
+  desiredCurrencyRate: Decimal,
+  currentAssetsCurrencyRate: string
+) {
+  return desiredCurrencyRate
+    .minus(currentAssetsCurrencyRate)
+    .dividedBy(currentAssetsCurrencyRate)
+    .times(100);
+}
+
 function calculateOrderDetails(
   idealAssetsPercent: string,
   thresholdDeltaPercent: string,
@@ -13,7 +23,8 @@ function calculateOrderDetails(
   assetsInUSD: Decimal,
   assetsAmount: string,
   currentAssetsCurrencyRate: string,
-  isAbove: boolean
+  isAbove: boolean,
+  averagePurchasePrice: string
 ) {
   const thresholdPercent = isAbove
     ? new Decimal(idealAssetsPercent).plus(thresholdDeltaPercent)
@@ -31,20 +42,11 @@ function calculateOrderDetails(
     .dividedBy(100)
     .times(thresholdDeltaPercent);
   const orderAmount = orderPrice.dividedBy(desiredCurrencyRate);
-  let multiplier = new Decimal(0);
-  try {
-    multiplier = isAbove
-      ? desiredCurrencyRate
-          .minus(currentAssetsCurrencyRate)
-          .dividedBy(currentAssetsCurrencyRate)
-          .times(100)
-      : new Decimal(currentAssetsCurrencyRate)
-          .minus(desiredCurrencyRate)
-          .dividedBy(currentAssetsCurrencyRate)
-          .times(100);
-  } catch (e) {
-    console.log(e);
-  }
+
+  const multiplier = calculateMultiplier(
+    desiredCurrencyRate,
+    averagePurchasePrice ? averagePurchasePrice : currentAssetsCurrencyRate
+  );
 
   return {
     desiredCurrencyRate: desiredCurrencyRate.toString(),
@@ -57,6 +59,7 @@ function calculateOrderDetails(
 export const CalculatorPage = memo(() => {
   const [baseCurrencyName, setBaseCurrencyName] = useState('USD'); // usd
   const [assetsCurrencyName, setAssetsCurrencyName] = useState('BTC'); // crypto
+  const [averagePurchasePrice, setAveragePurchasePrice] = useState(''); // crypto
 
   // set by user
   const [totalAmount, setTotalAmount] = useState('100'); // usd
@@ -97,7 +100,7 @@ export const CalculatorPage = memo(() => {
     setBelowMultiplier('-');
   };
 
-  const calculateAndSetOrder = (
+  const calculateMisallocation = (
     isAbove: boolean,
     absoluteDifference: Decimal
   ) => {
@@ -136,7 +139,8 @@ export const CalculatorPage = memo(() => {
         assetsInUSD,
         assetsAmount,
         currentAssetsCurrencyRate,
-        isAbove
+        isAbove,
+        averagePurchasePrice
       );
 
     if (isAbove) {
@@ -158,7 +162,8 @@ export const CalculatorPage = memo(() => {
   ) => {
     const absoluteDifference = differenceAssetsPercent.abs();
     if (absoluteDifference.gte(new Decimal(aboveThresholdDeltaPercent))) {
-      calculateAndSetOrder(true, absoluteDifference);
+      // Overweight!
+      calculateMisallocation(true, absoluteDifference);
     } else {
       setOrderDetails(true, assetsInUSD);
       setOrderDetails(false, assetsInUSD);
@@ -171,7 +176,8 @@ export const CalculatorPage = memo(() => {
   ) => {
     const absoluteDifference = differenceAssetsPercent.abs();
     if (absoluteDifference.gte(new Decimal(belowThresholdDeltaPercent))) {
-      calculateAndSetOrder(false, absoluteDifference);
+      // Underweight!
+      calculateMisallocation(false, absoluteDifference);
     } else {
       setOrderDetails(true, assetsInUSD);
       setOrderDetails(false, assetsInUSD);
@@ -216,6 +222,7 @@ export const CalculatorPage = memo(() => {
     idealAssetsPercent,
     aboveThresholdDeltaPercent,
     belowThresholdDeltaPercent,
+    averagePurchasePrice,
   ]);
 
   return (
@@ -225,6 +232,8 @@ export const CalculatorPage = memo(() => {
         setAssetsCurrencyName={setAssetsCurrencyName}
         baseCurrencyName={baseCurrencyName}
         setBaseCurrencyName={setBaseCurrencyName}
+        averagePurchasePrice={averagePurchasePrice}
+        setAveragePurchasePrice={setAveragePurchasePrice}
       />
       <InitialDataContainer>
         <InitialData

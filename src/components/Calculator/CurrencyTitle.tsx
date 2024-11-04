@@ -7,6 +7,8 @@ type CurrencyTitleProps = {
   setBaseCurrencyName: (a: string) => void;
   assetsCurrencyName: string;
   setAssetsCurrencyName: (a: string) => void;
+  averagePurchasePrice: string;
+  setAveragePurchasePrice: (a: string) => void;
 };
 
 export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
@@ -15,6 +17,8 @@ export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
     setBaseCurrencyName,
     assetsCurrencyName,
     setAssetsCurrencyName,
+    averagePurchasePrice,
+    setAveragePurchasePrice,
   }) => {
     return (
       <InitialDataContainer>
@@ -36,10 +40,10 @@ export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
         </ThresholdBlockContainer>
         <ThresholdBlockContainer>
           <Input
-            value={assetsCurrencyName}
+            value={averagePurchasePrice}
             labelText="Average purchase price"
             additionalInfo="Please enter average purchase price"
-            changeAction={setAssetsCurrencyName}
+            changeAction={setAveragePurchasePrice}
           />
         </ThresholdBlockContainer>
       </InitialDataContainer>

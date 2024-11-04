@@ -51,11 +51,7 @@ export const ThresholdBlock: FC<{
           value={orderAmount}
           labelText={`Order value (${baseCurrencyName})`}
         />
-        <Input
-          disabled
-          value={`${isBuy ? '-' : ''}${multiplier}`}
-          labelText={'Multiplier (%)'}
-        />
+        <Input disabled value={multiplier} labelText={'Multiplier (%)'} />
       </ThresholdBlockContainer>
     );
   }
