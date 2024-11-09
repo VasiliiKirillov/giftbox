@@ -4,6 +4,7 @@ import { LabelField } from '../LabelField/LabelField';
 import { HelperText } from '../HelperText/HelperText';
 
 import { InputStyled } from './styles';
+import styled from 'styled-components';
 
 interface InputProps {
   value: string;
@@ -27,7 +28,7 @@ export const Input: FC<InputProps> = memo(
     limitSymbols,
     type,
   }) => (
-    <>
+    <InputContainer>
       <LabelField labelText={labelText} isRequired={isRequired} />
       <InputStyled
         type={type}
@@ -41,6 +42,11 @@ export const Input: FC<InputProps> = memo(
         value={value}
       />
       {additionalInfo && <HelperText additionalInfo={additionalInfo} />}
-    </>
+    </InputContainer>
   )
 );
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;

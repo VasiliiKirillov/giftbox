@@ -27,31 +27,38 @@ export const ThresholdBlock: FC<{
     const isBuy = thresholdName === 'Below';
     return (
       <ThresholdBlockContainer>
-        <Input
-          isRequired
-          value={thresholdValue}
-          labelText={thresholdName + ' threshold (%)'}
-          additionalInfo="Please enter threshold percent"
-          changeAction={setThresholdValue}
-          type="number"
-        />
-        <ThresholdTitle isBuy={isBuy}>{isBuy ? 'BUY' : 'SELL'}</ThresholdTitle>
-        <Input
-          disabled
-          value={orderPrice}
-          labelText={`Order price (${baseCurrencyName})`}
-        />
-        <Input
-          disabled
-          value={desiredCurrency}
-          labelText={`Order Quantity (${assetsCurrencyName})`}
-        />
-        <Input
-          disabled
-          value={orderAmount}
-          labelText={`Order value (${baseCurrencyName})`}
-        />
-        <Input disabled value={multiplier} labelText={'Multiplier (%)'} />
+        <ThresholdContainer>
+          <ThresholdTitle isBuy={isBuy}>
+            {isBuy ? 'BUY' : 'SELL'}
+          </ThresholdTitle>
+          <Input
+            disabled
+            value={orderPrice}
+            labelText={`Order price (${baseCurrencyName})`}
+          />
+        </ThresholdContainer>
+        <ThresholdContainer>
+          <Input
+            isRequired
+            value={thresholdValue}
+            labelText={thresholdName + ' threshold (%)'}
+            changeAction={setThresholdValue}
+            type="number"
+          />
+          <Input
+            disabled
+            value={desiredCurrency}
+            labelText={`Order Quantity (${assetsCurrencyName})`}
+          />
+        </ThresholdContainer>
+        <ThresholdContainer>
+          <Input disabled value={multiplier} labelText={'Multiplier (%)'} />
+          <Input
+            disabled
+            value={orderAmount}
+            labelText={`Order value (${baseCurrencyName})`}
+          />
+        </ThresholdContainer>
       </ThresholdBlockContainer>
     );
   }
@@ -63,11 +70,19 @@ const ThresholdTitle = styled.div<{
   font-size: 24px;
   font-family: 'Readex Pro', sans-serif;
   color: ${(props) => (props.isBuy ? '#008000' : '#ff0000')};
+  height: 84px;
+  display: flex;
+  align-items: center;
+`;
+
+const ThresholdContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 8px;
+  width: 200px;
 `;
 
 const ThresholdBlockContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  margin: 8px;
-  min-width: 200px;
+  flex-direction: row;
 `;

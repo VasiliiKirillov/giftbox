@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "@types/chart.js": "^2.9.41",
     "@types/styled-components": "^5.1.27",
+    "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "decimal.js": "^10.4.3",
     "react": "^18.2.0",
@@ -39,12 +40,12 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "firebase": "^10.3.1",
-    "firebase-tools": "^13.0.2",
+    "firebase-tools": "^13.24.2",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "typescript": "^5.0.2",
-    "vite": "^5.3.1"
+    "vite": "^5.4.10"
   },
   "husky": {
     "hooks": {

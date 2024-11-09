@@ -54,7 +54,7 @@ export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
 const ThresholdBlockContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 8px;
+  margin: 6px 8px;
   min-width: 200px;
 `;
 

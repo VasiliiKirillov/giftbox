@@ -227,62 +227,64 @@ export const CalculatorPage = memo(() => {
 
   return (
     <CalculatorContainer>
-      <CurrencyTitle
-        assetsCurrencyName={assetsCurrencyName}
-        setAssetsCurrencyName={setAssetsCurrencyName}
-        baseCurrencyName={baseCurrencyName}
-        setBaseCurrencyName={setBaseCurrencyName}
-        averagePurchasePrice={averagePurchasePrice}
-        setAveragePurchasePrice={setAveragePurchasePrice}
-      />
-      <InitialDataContainer>
-        <InitialData
-          totalAmount={totalAmount}
-          setTotalAmount={setTotalAmount}
-          assetsAmount={assetsAmount}
-          setAssetsAmount={setAssetsAmount}
-          assetsCurrency={currentAssetsCurrencyRate}
-          setAssetsCurrency={setCurrentAssetsCurrencyRate}
-          assetsPercent={idealAssetsPercent}
-          setAssetsPercent={setIdealAssetsPercent}
-          baseCurrencyName={baseCurrencyName}
+      <CalculatorElement>
+        <CurrencyTitle
           assetsCurrencyName={assetsCurrencyName}
-        />
-        <PieChart
-          totalAmount={totalAmount}
-          assetsInUsd={assetsInUsd}
-          idealAssetsPercent={idealAssetsPercent}
-          belowThresholdDeltaPercent={belowThresholdDeltaPercent}
-          aboveThresholdDeltaPercent={aboveThresholdDeltaPercent}
-          actualAssetsPercent={actualAssetsPercent}
+          setAssetsCurrencyName={setAssetsCurrencyName}
           baseCurrencyName={baseCurrencyName}
-          assetsCurrencyName={assetsCurrencyName}
+          setBaseCurrencyName={setBaseCurrencyName}
+          averagePurchasePrice={averagePurchasePrice}
+          setAveragePurchasePrice={setAveragePurchasePrice}
         />
-      </InitialDataContainer>
-      <ThresholdContainer>
-        <ThresholdBlock
-          thresholdName={'Below'}
-          thresholdValue={belowThresholdDeltaPercent}
-          setThresholdValue={setBelowThresholdDeltaPercent}
-          desiredCurrency={belowDesiredCurrencyRate}
-          orderPrice={belowOrderPrice}
-          orderAmount={belowOrderAmount}
-          baseCurrencyName={baseCurrencyName}
-          assetsCurrencyName={assetsCurrencyName}
-          multiplier={belowMultiplier}
-        />
-        <ThresholdBlock
-          thresholdName={'Above'}
-          thresholdValue={aboveThresholdDeltaPercent}
-          setThresholdValue={setAboveThresholdDeltaPercent}
-          desiredCurrency={aboveDesiredCurrencyRate}
-          orderPrice={aboveOrderPrice}
-          orderAmount={aboveOrderAmount}
-          baseCurrencyName={baseCurrencyName}
-          assetsCurrencyName={assetsCurrencyName}
-          multiplier={aboveMultiplier}
-        />
-      </ThresholdContainer>
+        <InitialDataContainer>
+          <InitialData
+            totalAmount={totalAmount}
+            setTotalAmount={setTotalAmount}
+            assetsAmount={assetsAmount}
+            setAssetsAmount={setAssetsAmount}
+            assetsCurrency={currentAssetsCurrencyRate}
+            setAssetsCurrency={setCurrentAssetsCurrencyRate}
+            assetsPercent={idealAssetsPercent}
+            setAssetsPercent={setIdealAssetsPercent}
+            baseCurrencyName={baseCurrencyName}
+            assetsCurrencyName={assetsCurrencyName}
+          />
+          <PieChart
+            totalAmount={totalAmount}
+            assetsInUsd={assetsInUsd}
+            idealAssetsPercent={idealAssetsPercent}
+            belowThresholdDeltaPercent={belowThresholdDeltaPercent}
+            aboveThresholdDeltaPercent={aboveThresholdDeltaPercent}
+            actualAssetsPercent={actualAssetsPercent}
+            baseCurrencyName={baseCurrencyName}
+            assetsCurrencyName={assetsCurrencyName}
+          />
+        </InitialDataContainer>
+        <ThresholdContainer>
+          <ThresholdBlock
+            thresholdName={'Below'}
+            thresholdValue={belowThresholdDeltaPercent}
+            setThresholdValue={setBelowThresholdDeltaPercent}
+            desiredCurrency={belowDesiredCurrencyRate}
+            orderPrice={belowOrderPrice}
+            orderAmount={belowOrderAmount}
+            baseCurrencyName={baseCurrencyName}
+            assetsCurrencyName={assetsCurrencyName}
+            multiplier={belowMultiplier}
+          />
+          <ThresholdBlock
+            thresholdName={'Above'}
+            thresholdValue={aboveThresholdDeltaPercent}
+            setThresholdValue={setAboveThresholdDeltaPercent}
+            desiredCurrency={aboveDesiredCurrencyRate}
+            orderPrice={aboveOrderPrice}
+            orderAmount={aboveOrderAmount}
+            baseCurrencyName={baseCurrencyName}
+            assetsCurrencyName={assetsCurrencyName}
+            multiplier={aboveMultiplier}
+          />
+        </ThresholdContainer>
+      </CalculatorElement>
     </CalculatorContainer>
   );
 });
@@ -292,9 +294,15 @@ const CalculatorContainer = styled.div`
   flex-direction: column;
 `;
 
+const CalculatorElement = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 648px;
+`;
+
 const ThresholdContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
 `;
 

@@ -6,6 +6,7 @@ export const LabelStyled = styled.div`
   color: #606060;
   margin-bottom: 8px;
   display: flex;
+  height: 20px;
 
   span {
     margin-left: 4px;
