@@ -1,6 +1,7 @@
 import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { Input } from '../common/Input/Input';
+import { SwitchComponent } from '../SwitchComponent/SwitchComponent';
 
 type CurrencyTitleProps = {
   baseCurrencyName: string;
@@ -9,6 +10,8 @@ type CurrencyTitleProps = {
   setAssetsCurrencyName: (a: string) => void;
   averagePurchasePrice: string;
   setAveragePurchasePrice: (a: string) => void;
+  isUseAveragePurchasePrice: boolean;
+  setIsUseAveragePurchasePrice: (a: boolean) => void;
 };
 
 export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
@@ -19,6 +22,8 @@ export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
     setAssetsCurrencyName,
     averagePurchasePrice,
     setAveragePurchasePrice,
+    isUseAveragePurchasePrice,
+    setIsUseAveragePurchasePrice,
   }) => {
     return (
       <InitialDataContainer>
@@ -39,17 +44,37 @@ export const CurrencyTitle: FC<CurrencyTitleProps> = memo(
           />
         </ThresholdBlockContainer>
         <ThresholdBlockContainer>
-          <Input
-            value={averagePurchasePrice}
-            labelText="Average purchase price"
-            additionalInfo="Please enter average purchase price"
-            changeAction={setAveragePurchasePrice}
-          />
+          <AveragePriceContainer>
+            <Input
+              value={averagePurchasePrice}
+              labelText="Average purchase price"
+              additionalInfo="Please enter average purchase price"
+              changeAction={setAveragePurchasePrice}
+            />
+            <SwitchContainer>
+              <SwitchComponent
+                isSelected={isUseAveragePurchasePrice}
+                setSelectedStatus={setIsUseAveragePurchasePrice}
+              />
+            </SwitchContainer>
+          </AveragePriceContainer>
         </ThresholdBlockContainer>
       </InitialDataContainer>
     );
   }
 );
+
+const SwitchContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+`;
+
+const AveragePriceContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  position: relative;
+`;
 
 const ThresholdBlockContainer = styled.div`
   display: flex;

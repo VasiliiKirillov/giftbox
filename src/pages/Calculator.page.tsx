@@ -7,13 +7,18 @@ import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 import { PieChart } from '../components/Calculator/PieChart';
 
 function calculateMultiplier(
+  isAbove: boolean,
   desiredCurrencyRate: Decimal,
   currentAssetsCurrencyRate: string
 ) {
-  return desiredCurrencyRate
+  const multiplier = desiredCurrencyRate
     .minus(currentAssetsCurrencyRate)
     .dividedBy(currentAssetsCurrencyRate)
-    .times(100);
+    .times(100)
+    .toDecimalPlaces(1);
+  if (isAbove && multiplier.lt(0)) return 0;
+  else if (!isAbove && multiplier.gt(0)) return 0;
+  return multiplier;
 }
 
 function calculateOrderDetails(
@@ -24,7 +29,8 @@ function calculateOrderDetails(
   assetsAmount: string,
   currentAssetsCurrencyRate: string,
   isAbove: boolean,
-  averagePurchasePrice: string
+  averagePurchasePrice: string,
+  isUseAveragePurchasePrice: boolean
 ) {
   const thresholdPercent = isAbove
     ? new Decimal(idealAssetsPercent).plus(thresholdDeltaPercent)
@@ -35,17 +41,25 @@ function calculateOrderDetails(
     .times(thresholdRatio)
     .dividedBy(new Decimal(1).minus(thresholdRatio));
 
-  const desiredCurrencyRate = desiredAssets.dividedBy(assetsAmount);
+  const desiredCurrencyRate = desiredAssets
+    .dividedBy(assetsAmount)
+    .toDecimalPlaces(6);
   const orderPrice = new Decimal(
     desiredAssets.plus(totalAmount).minus(assetsInUSD)
   )
     .dividedBy(100)
-    .times(thresholdDeltaPercent);
-  const orderAmount = orderPrice.dividedBy(desiredCurrencyRate);
+    .times(thresholdDeltaPercent)
+    .toDecimalPlaces(6);
+  const orderAmount = orderPrice
+    .dividedBy(desiredCurrencyRate)
+    .toDecimalPlaces(6);
 
   const multiplier = calculateMultiplier(
+    isAbove,
     desiredCurrencyRate,
-    averagePurchasePrice ? averagePurchasePrice : currentAssetsCurrencyRate
+    isUseAveragePurchasePrice && averagePurchasePrice
+      ? averagePurchasePrice
+      : currentAssetsCurrencyRate
   );
 
   return {
@@ -85,6 +99,9 @@ export const CalculatorPage = memo(() => {
 
   const [belowMultiplier, setBelowMultiplier] = useState('0');
   const [aboveMultiplier, setAboveMultiplier] = useState('0');
+
+  const [isUseAveragePurchasePrice, setIsUseAveragePurchasePrice] =
+    useState(false);
 
   const resetAbove = () => {
     setAboveDesiredCurrencyRate('-');
@@ -140,7 +157,8 @@ export const CalculatorPage = memo(() => {
         assetsAmount,
         currentAssetsCurrencyRate,
         isAbove,
-        averagePurchasePrice
+        averagePurchasePrice,
+        isUseAveragePurchasePrice
       );
 
     if (isAbove) {
@@ -212,8 +230,8 @@ export const CalculatorPage = memo(() => {
       handleUnderweight(differenceAssetsPercent, assetsInUSD);
     } else {
       // Balance!
-      resetAbove();
-      resetBelow();
+      setOrderDetails(true, assetsInUSD);
+      setOrderDetails(false, assetsInUSD);
     }
   }, [
     totalAmount,
@@ -223,6 +241,7 @@ export const CalculatorPage = memo(() => {
     aboveThresholdDeltaPercent,
     belowThresholdDeltaPercent,
     averagePurchasePrice,
+    isUseAveragePurchasePrice,
   ]);
 
   return (
@@ -235,6 +254,8 @@ export const CalculatorPage = memo(() => {
           setBaseCurrencyName={setBaseCurrencyName}
           averagePurchasePrice={averagePurchasePrice}
           setAveragePurchasePrice={setAveragePurchasePrice}
+          isUseAveragePurchasePrice={isUseAveragePurchasePrice}
+          setIsUseAveragePurchasePrice={setIsUseAveragePurchasePrice}
         />
         <InitialDataContainer>
           <InitialData

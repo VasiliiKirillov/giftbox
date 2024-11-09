@@ -49,4 +49,5 @@ export const Input: FC<InputProps> = memo(
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
