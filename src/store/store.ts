@@ -6,6 +6,7 @@ import { StoragesSlice } from './storagesState';
 import { UserSlice } from './user';
 import { AvailableCurrenciesSlice } from './availableCurrencies';
 import { CurrencyRatesSlice } from './currencyRatesState';
+import { SpreadsheetListSlice } from './spreadsheetList';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     storages: StoragesSlice.reducer,
     availableCurrencies: AvailableCurrenciesSlice.reducer,
     currencyRates: CurrencyRatesSlice.reducer,
+    spreadsheetList: SpreadsheetListSlice.reducer,
   },
 });
 

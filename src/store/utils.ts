@@ -9,12 +9,15 @@ import {
 import Decimal from 'decimal.js';
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
 
-import { db, getMonthAPI } from '../utils/api';
+import { auth, db, getMonthAPI } from '../utils/api';
 import { getLastDay, getYear, months, monthsMap } from '../utils/main';
 import { addNewStorage } from './storagesState';
 import { AccountRecordRef } from './common';
 import { AppDispatch } from './store';
 import { setIsUserHasDB } from './user';
+import axios from 'axios';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { provider } from '../pages/Auth.page';
 
 type AsyncThunkConfig = {
   state?: unknown;
@@ -279,4 +282,47 @@ const findPrevMonth = async (userUID: string) => {
     }
   }
   return null;
+};
+
+export const fetchSheetData = async (spreadsheetId: string, RANGE: string) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) throw Error('No token');
+
+    const response = await axios.get(
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${RANGE}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log('Google Sheets Data:', response.data.values);
+    return response.data.values;
+  } catch (error: any) {
+    if (error?.status === 401) {
+      await refreshGoogleAccessToken();
+      await fetchSheetData(spreadsheetId, RANGE);
+      return;
+    }
+    console.error('Error fetching Google Sheets data:', error);
+    return 'error';
+  }
+};
+
+const refreshGoogleAccessToken = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const newAccessToken = credential?.accessToken as string;
+
+    // Store the new token and expiration time
+    localStorage.setItem('accessToken', newAccessToken);
+
+    console.log('Access token refreshed:', newAccessToken);
+    return newAccessToken;
+  } catch (error) {
+    console.error('Error refreshing access token:', error);
+    throw error;
+  }
 };

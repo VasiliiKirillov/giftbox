@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 interface InputProps {
   value: string;
-  labelText: string;
+  labelText?: string;
   additionalInfo?: string;
   disabled?: boolean;
   isRequired?: boolean;
@@ -29,7 +29,9 @@ export const Input: FC<InputProps> = memo(
     type,
   }) => (
     <InputContainer>
-      <LabelField labelText={labelText} isRequired={isRequired} />
+      {labelText ? (
+        <LabelField labelText={labelText} isRequired={isRequired} />
+      ) : null}
       <InputStyled
         type={type}
         disabled={disabled}

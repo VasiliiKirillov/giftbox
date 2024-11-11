@@ -5,6 +5,9 @@ import { ThresholdBlock } from '../components/ThresholdBlock';
 import Decimal from 'decimal.js';
 import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 import { PieChart } from '../components/Calculator/PieChart';
+import { SpreadsheetDataElement } from '../components/SpreadsheetDataElement';
+import { useSelector } from 'react-redux';
+import { getCurrencyData, getTotalAmount } from '../store/spreadsheetList';
 
 function calculateMultiplier(
   isAbove: boolean,
@@ -71,6 +74,18 @@ function calculateOrderDetails(
 }
 
 export const CalculatorPage = memo(() => {
+  const currencyData = useSelector(getCurrencyData);
+  const totalAmountFromSpreadsheet = useSelector(getTotalAmount);
+
+  useEffect(() => {
+    if (!currencyData) return;
+    setAssetsCurrencyName(currencyData.name.toUpperCase());
+    setAssetsAmount(currencyData.amount);
+    setCurrentAssetsCurrencyRate(currencyData.currencyRate);
+    if (!totalAmountFromSpreadsheet) return;
+    setTotalAmount(totalAmountFromSpreadsheet);
+  }, [currencyData, totalAmountFromSpreadsheet]);
+
   const [baseCurrencyName, setBaseCurrencyName] = useState('USD'); // usd
   const [assetsCurrencyName, setAssetsCurrencyName] = useState('BTC'); // crypto
   const [averagePurchasePrice, setAveragePurchasePrice] = useState(''); // crypto
@@ -306,13 +321,14 @@ export const CalculatorPage = memo(() => {
           />
         </ThresholdContainer>
       </CalculatorElement>
+      <SpreadsheetDataElement />
     </CalculatorContainer>
   );
 });
 
 const CalculatorContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 `;
 
 const CalculatorElement = styled.div`

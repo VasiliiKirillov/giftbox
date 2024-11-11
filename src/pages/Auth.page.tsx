@@ -1,12 +1,18 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../utils/api';
 import styled from 'styled-components';
+// import axios from 'axios';
 
-const provider = new GoogleAuthProvider();
+export const provider = new GoogleAuthProvider();
+provider.addScope('https://www.googleapis.com/auth/spreadsheets'); // Add Sheets API scope
 
 export const AuthPage = () => {
-  const handleSignIn = () => {
-    signInWithPopup(auth, provider);
+  const handleSignIn = async () => {
+    const result = await signInWithPopup(auth, provider);
+
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const accessToken = credential?.accessToken;
+    if (accessToken) localStorage.setItem('accessToken', accessToken);
   };
 
   return (
