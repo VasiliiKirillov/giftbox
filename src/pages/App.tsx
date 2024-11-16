@@ -45,7 +45,7 @@ export const App = () => {
 
   return (
     <AppContainerStyled>
-      <Outlet />
+      {isUserSignedId !== undefined && <Outlet />}
     </AppContainerStyled>
   );
 };

@@ -9,7 +9,7 @@ import {
 import Decimal from 'decimal.js';
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
 
-import { auth, db, getMonthAPI } from '../utils/api';
+import { auth, db, getMonthAPI, provider } from '../utils/api';
 import { getLastDay, getYear, months, monthsMap } from '../utils/main';
 import { addNewStorage } from './storagesState';
 import { AccountRecordRef } from './common';
@@ -17,7 +17,6 @@ import { AppDispatch } from './store';
 import { setIsUserHasDB } from './user';
 import axios from 'axios';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { provider } from '../pages/Auth.page';
 
 type AsyncThunkConfig = {
   state?: unknown;

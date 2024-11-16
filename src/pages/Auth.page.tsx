@@ -1,10 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '../utils/api';
+import { auth, provider } from '../utils/api';
 import styled from 'styled-components';
-// import axios from 'axios';
-
-export const provider = new GoogleAuthProvider();
-provider.addScope('https://www.googleapis.com/auth/spreadsheets'); // Add Sheets API scope
 
 export const AuthPage = () => {
   const handleSignIn = async () => {
