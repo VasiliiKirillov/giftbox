@@ -13,19 +13,21 @@ export type CurrencyDataType = {
 export type SpreadsheetType = { id: string; name: string };
 export type SpreadsheetListType = Array<SpreadsheetType>;
 
+export type CurrencyRatesData = {
+  btc: string;
+  eth: string;
+  sol: string;
+  ton: string;
+  not: string;
+  hmstr: string;
+};
+
 export type SpreadsheetListState = {
   status: DataStatus;
   data: SpreadsheetListType;
   currencyData: CurrencyDataType | null;
   totalAmount: string | null;
-  currencyRatesData: {
-    btc: string;
-    eth: string;
-    sol: string;
-    ton: string;
-    not: string;
-    hmstr: string;
-  } | null;
+  currencyRatesData: CurrencyRatesData | null;
 };
 
 const initialState: SpreadsheetListState = {

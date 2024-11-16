@@ -312,7 +312,7 @@ export const fetchSheetData = async (
   }
 };
 
-export const fetchCurrData = async () => {
+export const fetchCurrencyRates = async () => {
   try {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) throw Error('No token');

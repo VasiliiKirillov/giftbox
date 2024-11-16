@@ -11,12 +11,13 @@ import { resetExpenses } from '../store/expensesState';
 import { resetCurrencyRates } from '../store/currencyRatesState';
 import { SignOutButton } from '../components/SignOutButton';
 import {
+  CurrencyRatesData,
   resetSpreadsheetList,
   setCurrencyRatesData,
   setSpreadsheetList,
 } from '../store/spreadsheetList';
 import {
-  fetchCurrData,
+  fetchCurrencyRates,
   fetchSheetData,
   getSheetsList,
   writeBatchToSpreadsheet,
@@ -29,72 +30,40 @@ export const AuthorizedApp = memo(() => {
   const userUID = useSelector(getUserUID);
   const isUserHasDB = useSelector(getIsUserHasDB);
 
-  useEffect(() => {
-    // dispatch(fetchAvailableCurrencies());
-    return () => {
-      dispatch(resetStorages());
-      dispatch(resetIncomes());
-      dispatch(resetExpenses());
-      dispatch(resetSpreadsheetList());
-      dispatch(resetCurrencyRates());
-      dispatch(resetAvailableCurrencies());
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!userUID) return;
-
-    dispatch(fetchUserData(userUID));
-  }, [userUID]);
-
-  useEffect(() => {
-    if (isUserHasDB === false) {
-      navigate('/first-storage');
-    }
-  }, [isUserHasDB]);
-
   const [spreadsheetId, setSpreadsheetId] = useState(
     localStorage.getItem('spreadsheetId') ?? ''
   );
-
   const [connectionStatus, setConnectionStatus] = useState('');
 
+  // Handle resetting states on component unmount
   useEffect(() => {
-    localStorage.setItem('spreadsheetId', spreadsheetId ?? '');
-  }, [spreadsheetId]);
+    return () => dispatch(resetStates());
+  }, [dispatch]);
 
+  // Fetch user data when userUID changes
   useEffect(() => {
-    const fetchFunc = async () => {
-      setConnectionStatus('Loading... ⏳');
-      const resp = await fetchSheetData(spreadsheetId, 'assets!B4');
-      if (resp === 'error') {
-        setConnectionStatus('Not connected 🚫');
-      } else if (resp?.[0]?.[0] === 'btc') {
-        setConnectionStatus('Connected ✅');
-        const currencyRates = await fetchCurrData();
-        if (currencyRates !== 'error') {
-          dispatch(setCurrencyRatesData(currencyRates));
-          const currRangeUpdate = [
-            { range: 'assets!Q5', values: [[currencyRates.ton]] },
-            { range: 'assets!B5', values: [[currencyRates.btc]] },
-            { range: 'assets!G5', values: [[currencyRates.eth]] },
-            { range: 'assets!L5', values: [[currencyRates.sol]] },
-            { range: 'assets!V5', values: [[currencyRates.not]] },
-            { range: 'assets!AA5', values: [[currencyRates.hmstr]] },
-          ];
-          await writeBatchToSpreadsheet(spreadsheetId, currRangeUpdate);
-        }
+    if (userUID) dispatch(fetchUserData(userUID));
+  }, [userUID, dispatch]);
 
-        const sheets = await getSheetsList(spreadsheetId);
-        dispatch(setSpreadsheetList(sheets));
-      } else {
-        setConnectionStatus('Connected ⚠️');
-      }
-    };
-    if (spreadsheetId) {
-      fetchFunc();
+  // Redirect if the user does not have a database
+  useEffect(() => {
+    if (isUserHasDB === false) {
+      // TODO: init DB flow or create spreadsheet
     }
+  }, [isUserHasDB, navigate]);
+
+  // Save spreadsheetId to localStorage and check connection
+  useEffect(() => {
+    localStorage.setItem('spreadsheetId', spreadsheetId);
+    if (spreadsheetId) checkSpreadsheetConnection();
   }, [spreadsheetId]);
+
+  // Check connection status and update currency rates
+  const checkSpreadsheetConnection = async () => {
+    setConnectionStatus('Loading... ⏳');
+    const connectionResult = await loadSpreadsheetData(dispatch, spreadsheetId);
+    setConnectionStatus(connectionResult);
+  };
 
   return (
     <>
@@ -147,3 +116,53 @@ const HeaderContainer = styled.div`
   padding: 0 32px;
   box-sizing: border-box;
 `;
+
+// resetActions.js
+const resetStates = () => (dispatch: AppDispatch) => {
+  dispatch(resetStorages());
+  dispatch(resetIncomes());
+  dispatch(resetExpenses());
+  dispatch(resetSpreadsheetList());
+  dispatch(resetCurrencyRates());
+  dispatch(resetAvailableCurrencies());
+};
+
+// spreadsheetUtils.js
+const loadSpreadsheetData = async (
+  dispatch: AppDispatch,
+  spreadsheetId: string
+) => {
+  const response = await fetchSheetData(spreadsheetId, 'assets!B4');
+  if (response === 'error') return 'Not connected 🚫';
+
+  if (response?.[0]?.[0] === 'btc') {
+    const currencyRates = await fetchCurrencyRates();
+    if (currencyRates !== 'error') {
+      await updateCurrencyRates(dispatch, spreadsheetId, currencyRates);
+
+      const sheets = await getSheetsList(spreadsheetId);
+      dispatch(setSpreadsheetList(sheets));
+
+      return 'Connected ✅';
+    }
+    return 'Connected ⚠️';
+  }
+  return 'Connected ⚠️';
+};
+
+const updateCurrencyRates = async (
+  dispatch: AppDispatch,
+  spreadsheetId: string,
+  currencyRates: CurrencyRatesData
+) => {
+  dispatch(setCurrencyRatesData(currencyRates));
+  const currRangeUpdate = [
+    { range: 'assets!Q5', values: [[currencyRates.ton]] },
+    { range: 'assets!B5', values: [[currencyRates.btc]] },
+    { range: 'assets!G5', values: [[currencyRates.eth]] },
+    { range: 'assets!L5', values: [[currencyRates.sol]] },
+    { range: 'assets!V5', values: [[currencyRates.not]] },
+    { range: 'assets!AA5', values: [[currencyRates.hmstr]] },
+  ];
+  await writeBatchToSpreadsheet(spreadsheetId, currRangeUpdate);
+};
