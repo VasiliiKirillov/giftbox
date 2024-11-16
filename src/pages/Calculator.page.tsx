@@ -82,6 +82,9 @@ export const CalculatorPage = memo(() => {
     setAssetsCurrencyName(currencyData.name.toUpperCase());
     setAssetsAmount(currencyData.amount);
     setCurrentAssetsCurrencyRate(currencyData.currencyRate);
+    setIdealAssetsPercent(currencyData.desirablePercent);
+    setBelowThresholdDeltaPercent(currencyData.belowThreshold);
+    setAboveThresholdDeltaPercent(currencyData.aboveThreshold);
     if (!totalAmountFromSpreadsheet) return;
     setTotalAmount(totalAmountFromSpreadsheet);
   }, [currencyData, totalAmountFromSpreadsheet]);

@@ -6,6 +6,9 @@ export type CurrencyDataType = {
   name: string;
   amount: string;
   currencyRate: string;
+  desirablePercent: string;
+  belowThreshold: string;
+  aboveThreshold: string;
 };
 export type SpreadsheetType = { id: string; name: string };
 export type SpreadsheetListType = Array<SpreadsheetType>;
@@ -15,6 +18,14 @@ export type SpreadsheetListState = {
   data: SpreadsheetListType;
   currencyData: CurrencyDataType | null;
   totalAmount: string | null;
+  currencyRatesData: {
+    btc: string;
+    eth: string;
+    sol: string;
+    ton: string;
+    not: string;
+    hmstr: string;
+  } | null;
 };
 
 const initialState: SpreadsheetListState = {
@@ -22,6 +33,7 @@ const initialState: SpreadsheetListState = {
   data: [],
   currencyData: null,
   totalAmount: null,
+  currencyRatesData: null,
 };
 
 export const SpreadsheetListSlice = createSlice({
@@ -38,6 +50,9 @@ export const SpreadsheetListSlice = createSlice({
     setTotalAmount: (state, action) => {
       state.totalAmount = action.payload;
     },
+    setCurrencyRatesData: (state, action) => {
+      state.currencyRatesData = action.payload;
+    },
   },
 });
 
@@ -46,6 +61,7 @@ export const {
   setSpreadsheetList,
   setCurrencyData,
   setTotalAmount,
+  setCurrencyRatesData,
 } = SpreadsheetListSlice.actions;
 
 export const getSpreadsheetList = (store: RootState) =>

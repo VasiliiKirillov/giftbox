@@ -2,14 +2,9 @@ import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
-
 import { AppDispatch } from '../store/store';
 import { fetchUserData, getIsUserHasDB, getUserUID } from '../store/user';
-import {
-  fetchAvailableCurrencies,
-  resetAvailableCurrencies,
-} from '../store/availableCurrencies';
+import { resetAvailableCurrencies } from '../store/availableCurrencies';
 import { resetStorages } from '../store/storagesState';
 import { resetIncomes } from '../store/incomesState';
 import { resetExpenses } from '../store/expensesState';
@@ -17,44 +12,15 @@ import { resetCurrencyRates } from '../store/currencyRatesState';
 import { SignOutButton } from '../components/SignOutButton';
 import {
   resetSpreadsheetList,
+  setCurrencyRatesData,
   setSpreadsheetList,
 } from '../store/spreadsheetList';
-import { fetchSheetData } from '../store/utils';
-
-const getSheetsList = async (spreadsheetId: string) => {
-  try {
-    const accessToken = localStorage.getItem('accessToken') ?? '';
-    if (!accessToken) throw Error('No access token');
-
-    const response = await axios.get(
-      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          fields: 'sheets(properties(title,sheetId,hidden))', // Limit the fields to only the sheet properties
-        },
-      }
-    );
-
-    const currentYearLastTwoDigits = new Date().getFullYear() % 100;
-    const sheets = response.data.sheets
-      .filter(
-        (sheet: any) =>
-          !sheet.properties.hidden &&
-          sheet.properties.title.includes(currentYearLastTwoDigits)
-      )
-      .map((sheet: any) => ({
-        name: sheet.properties.title,
-        sheetId: sheet.properties.sheetId,
-      }));
-    console.log('List of sheets:', sheets);
-    return sheets;
-  } catch (error) {
-    console.error('Error fetching sheets list:', error);
-  }
-};
+import {
+  fetchCurrData,
+  fetchSheetData,
+  getSheetsList,
+  writeBatchToSpreadsheet,
+} from '../store/utils';
 
 export const AuthorizedApp = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -64,7 +30,7 @@ export const AuthorizedApp = memo(() => {
   const isUserHasDB = useSelector(getIsUserHasDB);
 
   useEffect(() => {
-    dispatch(fetchAvailableCurrencies());
+    // dispatch(fetchAvailableCurrencies());
     return () => {
       dispatch(resetStorages());
       dispatch(resetIncomes());
@@ -103,8 +69,22 @@ export const AuthorizedApp = memo(() => {
       const resp = await fetchSheetData(spreadsheetId, 'assets!B4');
       if (resp === 'error') {
         setConnectionStatus('Not connected 🚫');
-      } else if (resp[0][0] === 'btc') {
+      } else if (resp?.[0]?.[0] === 'btc') {
         setConnectionStatus('Connected ✅');
+        const currencyRates = await fetchCurrData();
+        if (currencyRates !== 'error') {
+          dispatch(setCurrencyRatesData(currencyRates));
+          const currRangeUpdate = [
+            { range: 'assets!Q5', values: [[currencyRates.ton]] },
+            { range: 'assets!B5', values: [[currencyRates.btc]] },
+            { range: 'assets!G5', values: [[currencyRates.eth]] },
+            { range: 'assets!L5', values: [[currencyRates.sol]] },
+            { range: 'assets!V5', values: [[currencyRates.not]] },
+            { range: 'assets!AA5', values: [[currencyRates.hmstr]] },
+          ];
+          await writeBatchToSpreadsheet(spreadsheetId, currRangeUpdate);
+        }
+
         const sheets = await getSheetsList(spreadsheetId);
         dispatch(setSpreadsheetList(sheets));
       } else {

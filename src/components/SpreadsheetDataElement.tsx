@@ -21,14 +21,13 @@ export const SpreadsheetDataElement = memo(() => {
     setPickedSpreadsheet(spreadsheetList[0]);
 
     const fetchTotalAmount = async (spreadsheetId: string, range: string) => {
-      console.log('gov range', range);
       const totalAmount = await fetchSheetData(spreadsheetId, range);
-      dispatch(setTotalAmount(totalAmount[0][0]));
+      dispatch(setTotalAmount(totalAmount?.[0]?.[0]));
     };
     if (!spreadsheetList[0]?.name) return;
     fetchTotalAmount(
       localStorage.getItem('spreadsheetId') ?? '',
-      `${spreadsheetList[0].name}!L1`
+      `${spreadsheetList?.[0].name}!L1`
     );
   }, [spreadsheetList]);
 
@@ -36,30 +35,52 @@ export const SpreadsheetDataElement = memo(() => {
     setPickedSpreadsheet(element);
   }, []);
 
-  const [storagesData, setStoragesData] =
-    useState<Array<CurrencyDataType> | null>(null);
+  const [storagesData, setStoragesData] = useState<Array<CurrencyDataType>>([]);
 
   // fetch currencies with related data (btc, eth, currentPrice, my amount, etc)
   useEffect(() => {
     const spreadsheetId = localStorage.getItem('spreadsheetId');
     if (!pickedSpreadsheet?.name || !spreadsheetId) return;
     const fetchCurrencies = async () => {
-      const resp = await fetchSheetData(
+      const currData = await fetchSheetData(
         spreadsheetId,
         `${pickedSpreadsheet.name}!A1:J5`
       );
+      const currThresholds = await fetchSheetData(
+        spreadsheetId,
+        `${pickedSpreadsheet.name}!X1:X6`
+      );
+      const currThresholdsByCurrName = currThresholds.reduce(
+        (acc: Record<string, Record<string, string>>, [str]: Array<string>) => {
+          const [key, values] = str.split(' ');
+          const [desirablePercent, belowThreshold, aboveThreshold] = values
+            .split('-')
+            .map(String);
+
+          acc[key] = { desirablePercent, belowThreshold, aboveThreshold };
+          return acc;
+        },
+        {}
+      );
+
       const storagesData: Array<CurrencyDataType> = [];
-      resp[0].forEach((storeName: string, index: number) => {
+      currData[0].forEach((storeName: string, index: number) => {
         if (storeName === '') return;
         const newStorageData = {} as CurrencyDataType;
         newStorageData.id = storeName;
         newStorageData.name = storeName;
-        if (resp[0][index + 1] === '') {
-          newStorageData.amount = resp[2][index];
-          newStorageData.currencyRate = resp[1][index + 1];
+        newStorageData.desirablePercent =
+          currThresholdsByCurrName[newStorageData.name].desirablePercent;
+        newStorageData.belowThreshold =
+          currThresholdsByCurrName[newStorageData.name].belowThreshold;
+        newStorageData.aboveThreshold =
+          currThresholdsByCurrName[newStorageData.name].aboveThreshold;
+        if (currData[0][index + 1] === '') {
+          newStorageData.amount = currData[2][index];
+          newStorageData.currencyRate = currData[1][index + 1];
         } else {
-          newStorageData.amount = resp[4][index];
-          newStorageData.currencyRate = resp[1][index];
+          newStorageData.amount = currData[4][index];
+          newStorageData.currencyRate = currData[1][index];
         }
         storagesData.push(newStorageData);
       });
@@ -88,21 +109,21 @@ export const SpreadsheetDataElement = memo(() => {
           {spreadsheetList && (
             <DropdownComponent
               listData={spreadsheetList}
-              placeholderValue={'Pick sheet'}
+              placeholderValue={'Loading...'}
               currentItem={pickedSpreadsheet?.name ?? ''}
               changeItemAction={handlePickSpreadsheet}
             />
           )}
         </DropdownElement>
         <DropdownElement>
-          {storagesData && (
-            <DropdownComponent
-              listData={storagesData}
-              placeholderValue={'Pick storage'}
-              currentItem={pickedCurrencyData?.name ?? ''}
-              changeItemAction={handlePickCurrencyData}
-            />
-          )}
+          <DropdownComponent
+            listData={storagesData}
+            placeholderValue={
+              storagesData.length ? 'Pick currency' : 'Loading...'
+            }
+            currentItem={pickedCurrencyData?.name ?? ''}
+            changeItemAction={handlePickCurrencyData}
+          />
         </DropdownElement>
       </CurrencyContainer>
     </SpreadsheetDataContainer>
