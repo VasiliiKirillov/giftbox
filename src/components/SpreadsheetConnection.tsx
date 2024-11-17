@@ -22,7 +22,7 @@ export const SpreadsheetConnection = memo(() => {
   const [spreadsheetId, setSpreadsheetId] = useState(
     localStorage.getItem('spreadsheetId') ?? ''
   );
-  const [connectionStatus, setConnectionStatus] = useState('Not connected 🚫');
+  const [connectionStatus, setConnectionStatus] = useState('Not connected');
 
   // Save spreadsheetId to localStorage and check connection
   const handleConnect = useCallback(async () => {

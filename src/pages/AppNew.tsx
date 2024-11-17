@@ -4,12 +4,14 @@ import styled from 'styled-components';
 import { CalculatorPage } from './Calculator.page';
 import { SpreadsheetDataElement } from '../components/SpreadsheetDataElement';
 
+const isShowSpreadsheetPart = localStorage.getItem('isShowSpreadsheetPart');
+
 export const AppNew = () => {
   return (
     <AppContainerStyled>
       <ContentContainer>
         <CalculatorPage />
-        <SpreadsheetDataElement />
+        {isShowSpreadsheetPart && <SpreadsheetDataElement />}
       </ContentContainer>
     </AppContainerStyled>
   );
