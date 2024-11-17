@@ -109,6 +109,9 @@ const loadSpreadsheetData = async (
   if (response === 'error') {
     return 'Error 🚫';
   }
+  if (response === 'not authorized') {
+    return 'Not connected 🚫';
+  }
 
   if (response?.[0]?.[0] === 'btc') {
     const currencyRates = await fetchCurrencyRates();
@@ -122,7 +125,7 @@ const loadSpreadsheetData = async (
     }
     return 'Connected ⚠️';
   }
-  return 'Connected ⚠️';
+  return '???';
 };
 
 const updateCurrencyRates = async (

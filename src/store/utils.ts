@@ -302,6 +302,9 @@ export const fetchSheetData = async (
     console.log('Google Sheets Data:', response.data.values);
     return response.data.values;
   } catch (error: any) {
+    if (error?.status === 401) {
+      return 'not authorized';
+    }
     console.error('Error fetching Google Sheets data:', error);
     return 'error';
   }
