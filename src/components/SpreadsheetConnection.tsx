@@ -35,6 +35,7 @@ export const SpreadsheetConnection = memo(() => {
   }, [spreadsheetId]);
 
   useEffect(() => {
+    if (!spreadsheetId) return;
     setConnectionStatus('Loading... ⏳');
     localStorage.setItem('spreadsheetId', spreadsheetId);
     checkSpreadsheetConnection();
