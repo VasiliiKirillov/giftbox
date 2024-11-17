@@ -289,7 +289,7 @@ export const fetchSheetData = async (
 ): Promise<any> => {
   try {
     const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) throw Error('No token');
+    if (!accessToken) throw Error('error');
 
     const response = await axios.get(
       `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${RANGE}`,
@@ -302,10 +302,6 @@ export const fetchSheetData = async (
     console.log('Google Sheets Data:', response.data.values);
     return response.data.values;
   } catch (error: any) {
-    if (error?.status === 401) {
-      await refreshGoogleAccessToken();
-      return await fetchSheetData(spreadsheetId, RANGE);
-    }
     console.error('Error fetching Google Sheets data:', error);
     return 'error';
   }
@@ -338,8 +334,9 @@ export const fetchCurrencyRates = async () => {
   }
 };
 
-const refreshGoogleAccessToken = async () => {
+export const refreshGoogleAccessTokenViaSignIn = async () => {
   try {
+    provider.addScope('https://www.googleapis.com/auth/spreadsheets'); // Add Sheets API scope
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const newAccessToken = credential?.accessToken as string;
@@ -348,7 +345,6 @@ const refreshGoogleAccessToken = async () => {
     localStorage.setItem('accessToken', newAccessToken);
 
     console.log('Access token refreshed:', newAccessToken);
-    return newAccessToken;
   } catch (error) {
     console.error('Error refreshing access token:', error);
     throw error;

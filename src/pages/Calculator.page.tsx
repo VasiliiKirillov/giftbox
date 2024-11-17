@@ -5,7 +5,6 @@ import { ThresholdBlock } from '../components/ThresholdBlock';
 import Decimal from 'decimal.js';
 import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 import { PieChart } from '../components/Calculator/PieChart';
-import { SpreadsheetDataElement } from '../components/SpreadsheetDataElement';
 import { useSelector } from 'react-redux';
 import { getCurrencyData, getTotalAmount } from '../store/spreadsheetList';
 
@@ -263,76 +262,68 @@ export const CalculatorPage = memo(() => {
   ]);
 
   return (
-    <CalculatorContainer>
-      <CalculatorElement>
-        <CurrencyTitle
-          assetsCurrencyName={assetsCurrencyName}
-          setAssetsCurrencyName={setAssetsCurrencyName}
+    <CalculatorElement>
+      <CurrencyTitle
+        assetsCurrencyName={assetsCurrencyName}
+        setAssetsCurrencyName={setAssetsCurrencyName}
+        baseCurrencyName={baseCurrencyName}
+        setBaseCurrencyName={setBaseCurrencyName}
+        averagePurchasePrice={averagePurchasePrice}
+        setAveragePurchasePrice={setAveragePurchasePrice}
+        isUseAveragePurchasePrice={isUseAveragePurchasePrice}
+        setIsUseAveragePurchasePrice={setIsUseAveragePurchasePrice}
+      />
+      <InitialDataContainer>
+        <InitialData
+          totalAmount={totalAmount}
+          setTotalAmount={setTotalAmount}
+          assetsAmount={assetsAmount}
+          setAssetsAmount={setAssetsAmount}
+          assetsCurrency={currentAssetsCurrencyRate}
+          setAssetsCurrency={setCurrentAssetsCurrencyRate}
+          assetsPercent={idealAssetsPercent}
+          setAssetsPercent={setIdealAssetsPercent}
           baseCurrencyName={baseCurrencyName}
-          setBaseCurrencyName={setBaseCurrencyName}
-          averagePurchasePrice={averagePurchasePrice}
-          setAveragePurchasePrice={setAveragePurchasePrice}
-          isUseAveragePurchasePrice={isUseAveragePurchasePrice}
-          setIsUseAveragePurchasePrice={setIsUseAveragePurchasePrice}
+          assetsCurrencyName={assetsCurrencyName}
         />
-        <InitialDataContainer>
-          <InitialData
-            totalAmount={totalAmount}
-            setTotalAmount={setTotalAmount}
-            assetsAmount={assetsAmount}
-            setAssetsAmount={setAssetsAmount}
-            assetsCurrency={currentAssetsCurrencyRate}
-            setAssetsCurrency={setCurrentAssetsCurrencyRate}
-            assetsPercent={idealAssetsPercent}
-            setAssetsPercent={setIdealAssetsPercent}
-            baseCurrencyName={baseCurrencyName}
-            assetsCurrencyName={assetsCurrencyName}
-          />
-          <PieChart
-            totalAmount={totalAmount}
-            assetsInUsd={assetsInUsd}
-            idealAssetsPercent={idealAssetsPercent}
-            belowThresholdDeltaPercent={belowThresholdDeltaPercent}
-            aboveThresholdDeltaPercent={aboveThresholdDeltaPercent}
-            actualAssetsPercent={actualAssetsPercent}
-            baseCurrencyName={baseCurrencyName}
-            assetsCurrencyName={assetsCurrencyName}
-          />
-        </InitialDataContainer>
-        <ThresholdContainer>
-          <ThresholdBlock
-            thresholdName={'Below'}
-            thresholdValue={belowThresholdDeltaPercent}
-            setThresholdValue={setBelowThresholdDeltaPercent}
-            desiredCurrency={belowDesiredCurrencyRate}
-            orderPrice={belowOrderPrice}
-            orderAmount={belowOrderAmount}
-            baseCurrencyName={baseCurrencyName}
-            assetsCurrencyName={assetsCurrencyName}
-            multiplier={belowMultiplier}
-          />
-          <ThresholdBlock
-            thresholdName={'Above'}
-            thresholdValue={aboveThresholdDeltaPercent}
-            setThresholdValue={setAboveThresholdDeltaPercent}
-            desiredCurrency={aboveDesiredCurrencyRate}
-            orderPrice={aboveOrderPrice}
-            orderAmount={aboveOrderAmount}
-            baseCurrencyName={baseCurrencyName}
-            assetsCurrencyName={assetsCurrencyName}
-            multiplier={aboveMultiplier}
-          />
-        </ThresholdContainer>
-      </CalculatorElement>
-      <SpreadsheetDataElement />
-    </CalculatorContainer>
+        <PieChart
+          totalAmount={totalAmount}
+          assetsInUsd={assetsInUsd}
+          idealAssetsPercent={idealAssetsPercent}
+          belowThresholdDeltaPercent={belowThresholdDeltaPercent}
+          aboveThresholdDeltaPercent={aboveThresholdDeltaPercent}
+          actualAssetsPercent={actualAssetsPercent}
+          baseCurrencyName={baseCurrencyName}
+          assetsCurrencyName={assetsCurrencyName}
+        />
+      </InitialDataContainer>
+      <ThresholdContainer>
+        <ThresholdBlock
+          thresholdName={'Below'}
+          thresholdValue={belowThresholdDeltaPercent}
+          setThresholdValue={setBelowThresholdDeltaPercent}
+          desiredCurrency={belowDesiredCurrencyRate}
+          orderPrice={belowOrderPrice}
+          orderAmount={belowOrderAmount}
+          baseCurrencyName={baseCurrencyName}
+          assetsCurrencyName={assetsCurrencyName}
+          multiplier={belowMultiplier}
+        />
+        <ThresholdBlock
+          thresholdName={'Above'}
+          thresholdValue={aboveThresholdDeltaPercent}
+          setThresholdValue={setAboveThresholdDeltaPercent}
+          desiredCurrency={aboveDesiredCurrencyRate}
+          orderPrice={aboveOrderPrice}
+          orderAmount={aboveOrderAmount}
+          baseCurrencyName={baseCurrencyName}
+          assetsCurrencyName={assetsCurrencyName}
+          multiplier={aboveMultiplier}
+        />
+      </ThresholdContainer>
+    </CalculatorElement>
   );
 });
-
-const CalculatorContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
 
 const CalculatorElement = styled.div`
   display: flex;

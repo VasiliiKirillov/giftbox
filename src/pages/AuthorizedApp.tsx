@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,18 +10,7 @@ import { resetIncomes } from '../store/incomesState';
 import { resetExpenses } from '../store/expensesState';
 import { resetCurrencyRates } from '../store/currencyRatesState';
 import { SignOutButton } from '../components/SignOutButton';
-import {
-  CurrencyRatesData,
-  resetSpreadsheetList,
-  setCurrencyRatesData,
-  setSpreadsheetList,
-} from '../store/spreadsheetList';
-import {
-  fetchCurrencyRates,
-  fetchSheetData,
-  getSheetsList,
-  writeBatchToSpreadsheet,
-} from '../store/utils';
+import { resetSpreadsheetList } from '../store/spreadsheetList';
 
 export const AuthorizedApp = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -29,11 +18,6 @@ export const AuthorizedApp = memo(() => {
 
   const userUID = useSelector(getUserUID);
   const isUserHasDB = useSelector(getIsUserHasDB);
-
-  const [spreadsheetId, setSpreadsheetId] = useState(
-    localStorage.getItem('spreadsheetId') ?? ''
-  );
-  const [connectionStatus, setConnectionStatus] = useState('');
 
   // Handle resetting states on component unmount
   useEffect(() => {
@@ -52,29 +36,9 @@ export const AuthorizedApp = memo(() => {
     }
   }, [isUserHasDB, navigate]);
 
-  // Save spreadsheetId to localStorage and check connection
-  useEffect(() => {
-    localStorage.setItem('spreadsheetId', spreadsheetId);
-    if (spreadsheetId) checkSpreadsheetConnection();
-  }, [spreadsheetId]);
-
-  // Check connection status and update currency rates
-  const checkSpreadsheetConnection = async () => {
-    setConnectionStatus('Loading... ⏳');
-    const connectionResult = await loadSpreadsheetData(dispatch, spreadsheetId);
-    setConnectionStatus(connectionResult);
-  };
-
   return (
     <>
       <HeaderContainer>
-        <ConnectContainer>
-          <InputStyled
-            onChange={(e) => setSpreadsheetId(e.target.value)}
-            value={spreadsheetId}
-          />
-          <div>{connectionStatus}</div>
-        </ConnectContainer>
         <SignOutButton />
       </HeaderContainer>
       <ContentContainer>
@@ -91,14 +55,6 @@ export const InputStyled = styled.input`
   color: #1b1b1b;
   padding: 4px;
   border: none;
-  width: 400px;
-`;
-
-const ConnectContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  align-items: center;
 `;
 
 const ContentContainer = styled.div`
@@ -125,44 +81,4 @@ const resetStates = () => (dispatch: AppDispatch) => {
   dispatch(resetSpreadsheetList());
   dispatch(resetCurrencyRates());
   dispatch(resetAvailableCurrencies());
-};
-
-// spreadsheetUtils.js
-const loadSpreadsheetData = async (
-  dispatch: AppDispatch,
-  spreadsheetId: string
-) => {
-  const response = await fetchSheetData(spreadsheetId, 'assets!B4');
-  if (response === 'error') return 'Not connected 🚫';
-
-  if (response?.[0]?.[0] === 'btc') {
-    const currencyRates = await fetchCurrencyRates();
-    if (currencyRates !== 'error') {
-      await updateCurrencyRates(dispatch, spreadsheetId, currencyRates);
-
-      const sheets = await getSheetsList(spreadsheetId);
-      dispatch(setSpreadsheetList(sheets));
-
-      return 'Connected ✅';
-    }
-    return 'Connected ⚠️';
-  }
-  return 'Connected ⚠️';
-};
-
-const updateCurrencyRates = async (
-  dispatch: AppDispatch,
-  spreadsheetId: string,
-  currencyRates: CurrencyRatesData
-) => {
-  dispatch(setCurrencyRatesData(currencyRates));
-  const currRangeUpdate = [
-    { range: 'assets!Q5', values: [[currencyRates.ton]] },
-    { range: 'assets!B5', values: [[currencyRates.btc]] },
-    { range: 'assets!G5', values: [[currencyRates.eth]] },
-    { range: 'assets!L5', values: [[currencyRates.sol]] },
-    { range: 'assets!V5', values: [[currencyRates.not]] },
-    { range: 'assets!AA5', values: [[currencyRates.hmstr]] },
-  ];
-  await writeBatchToSpreadsheet(spreadsheetId, currRangeUpdate);
 };

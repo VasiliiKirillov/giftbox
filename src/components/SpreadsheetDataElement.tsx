@@ -10,6 +10,7 @@ import {
 } from '../store/spreadsheetList';
 import { DropdownComponent } from './common/Dropdown/Dropdown';
 import { fetchSheetData } from '../store/utils';
+import { SpreadsheetConnection } from './SpreadsheetConnection';
 
 export const SpreadsheetDataElement = memo(() => {
   const dispatch = useDispatch();
@@ -109,6 +110,7 @@ export const SpreadsheetDataElement = memo(() => {
 
   return (
     <SpreadsheetDataContainer>
+      <SpreadsheetConnection />
       <CurrencyContainer>
         <DropdownElement>
           <DropdownComponent

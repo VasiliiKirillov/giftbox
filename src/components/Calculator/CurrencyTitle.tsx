@@ -79,7 +79,7 @@ const AveragePriceContainer = styled.div`
 const ThresholdBlockContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 6px 8px;
+  margin: 8px;
   min-width: 200px;
 `;
 
