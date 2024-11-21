@@ -1,0 +1,33 @@
+.callout {
+  position: absolute;
+  top: 0;
+  margin-left: 16px;
+  max-width: 500px;
+  z-index: 2;
+  animation-name: showUp;
+  animation-duration: 0.1s;
+  background: hsl(0 100% 100% / 55%);
+  backdrop-filter: blur(5px);
+}
+
+.calloutDark {
+  background: hsl(0 0% 14% / 55%);
+}
+
+@keyframes showUp {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.headingContainer {
+  position: relative;
+  padding-left: 4px;
+}
+
+.iconContainer {
+  margin-bottom: 6px;
+}

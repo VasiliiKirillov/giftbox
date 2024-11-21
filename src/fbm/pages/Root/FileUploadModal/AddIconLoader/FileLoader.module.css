@@ -1,0 +1,43 @@
+.iconLoaderBodyStyled {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 226px;
+    background: #f4f4f4;
+    border: 1px dashed #d1d1d1;
+    margin: 0 32px;
+}
+
+.dragActive {
+    border: 3px dashed #3f7f7d
+}
+
+.textHelperStyled {
+    display: flex;
+    padding: 8px 0 4px 0;
+    gap: 4px;
+    line-height: 128%;
+}
+
+.fileInputStyled {
+    opacity: 0;
+    height: 0;
+    width: 0;
+    line-height: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+.filePickerStyled {
+    color: #238551;
+    cursor: pointer;
+}
+
+.textFormatLoaderStyled {
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 140%;
+    color: #606060;
+}

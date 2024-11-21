@@ -1,0 +1,18 @@
+.emailAssetBody {
+  margin-top: 16px;
+}
+
+.emailAssetRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.emailAssetRow {
+  font-size: 24px;
+  font-weight: 500;
+  color: red;
+}
+
+.subjectEmailAsset {
+  max-width: 490px;
+}

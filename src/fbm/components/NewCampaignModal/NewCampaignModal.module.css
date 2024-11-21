@@ -1,0 +1,16 @@
+.campaignNameMargin {
+  margin-bottom: 16px;
+}
+
+.campaignEntityContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.dropdownGap {
+  gap: 32px;
+}
+
+.subjectNewCampaign {
+  max-width: 474px;
+}

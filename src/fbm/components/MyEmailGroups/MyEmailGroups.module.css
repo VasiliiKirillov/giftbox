@@ -1,0 +1,37 @@
+.myEmailGroupsContentWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.editEmailGroups {
+  display: flex;
+  justify-content: end;
+}
+
+.tableMain {
+  width: inherit;
+}
+
+.buttonWrapper {
+  margin-bottom: 4px;
+}
+
+.myEmailGroupsContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 8px;
+}
+
+.cardStyle {
+  min-width: 352px;
+  max-width: 352px;
+  min-height: 200px;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}

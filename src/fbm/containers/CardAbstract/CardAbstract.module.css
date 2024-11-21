@@ -1,0 +1,11 @@
+.smallCardStyle {
+  width: 264px;
+  min-height: 150px;
+}
+
+.cardStyle {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+}

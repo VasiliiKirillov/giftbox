@@ -70,7 +70,7 @@ const ThresholdTitle = styled.div<{
   font-size: 24px;
   font-family: 'Readex Pro', sans-serif;
   color: ${(props) => (props.isBuy ? '#37ea5b' : '#ff5656')};
-  height: 84px;
+  height: 76px;
   display: flex;
   align-items: center;
 `;

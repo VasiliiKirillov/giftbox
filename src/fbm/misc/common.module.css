@@ -1,0 +1,38 @@
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.titleButtonWrapper {
+  margin-top: -4px;
+}
+
+.cardStyle {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.cardTitle {
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.stubCardStyle {
+  background-color: #e8e8e8;
+}
+
+.emailAssetContentBorder {
+  border: dashed rgba(227, 227, 227, 0.5);
+}
+

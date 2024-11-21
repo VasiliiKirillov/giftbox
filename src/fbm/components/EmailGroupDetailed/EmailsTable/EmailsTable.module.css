@@ -1,0 +1,13 @@
+.tableMain {
+  width: inherit;
+}
+
+.tdStyled {
+  height: 1px;
+}
+
+.tableDataWrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
