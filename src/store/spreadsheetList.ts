@@ -20,6 +20,10 @@ export type CurrencyRatesData = {
   ton: string;
   not: string;
   hmstr: string;
+  flow: string;
+  snx: string;
+  atom: string;
+  spell: string;
 };
 
 export type SpreadsheetListState = {

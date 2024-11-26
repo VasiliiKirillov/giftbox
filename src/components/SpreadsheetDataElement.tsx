@@ -47,16 +47,27 @@ export const SpreadsheetDataElement = memo(() => {
   const loadCurrenciesData = async () => {
     if (!pickedSpreadsheet) return;
     const spreadsheetId = localStorage.getItem('spreadsheetId') ?? '';
-    const currencyDataRange = `${pickedSpreadsheet.name}!A1:J5`;
-    const thresholdDataRange = `${pickedSpreadsheet.name}!X1:X6`;
+    const currencyDataRange = `${pickedSpreadsheet.name}!A6:J10`;
+    const currencyDataRange2 = `${pickedSpreadsheet.name}!G1:J5`;
+    const thresholdDataRange = `${pickedSpreadsheet.name}!X1:X10`;
 
-    const [currData, currThresholds] = await Promise.all([
+    const [currData, currData2, currThresholds] = await Promise.all([
       fetchSheetData(spreadsheetId, currencyDataRange),
+      fetchSheetData(spreadsheetId, currencyDataRange2),
       fetchSheetData(spreadsheetId, thresholdDataRange),
     ]);
 
     const thresholds = mapThresholds(currThresholds);
-    const formattedStoragesData = formatStoragesData(currData, thresholds);
+    const formattedStoragesData = formatStoragesData(
+      [
+        [...currData[0], ...currData2[0]],
+        [...currData[1], ...currData2[1]],
+        [...currData[2], ...currData2[2]],
+        [...currData[3], ...currData2[3]],
+        [...currData[4], ...currData2[4]],
+      ],
+      thresholds
+    );
     setStoragesData(formattedStoragesData);
   };
 
@@ -82,6 +93,7 @@ export const SpreadsheetDataElement = memo(() => {
     currData: CurrDataArray,
     thresholds: ThresholdsMap
   ) => {
+    console.log('gov currData', currData);
     return currData[0]
       .map((storeName, index) => {
         if (!storeName) return null;

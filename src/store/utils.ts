@@ -316,7 +316,7 @@ export const fetchCurrencyRates = async () => {
     if (!accessToken) throw Error('No token');
 
     const response = await axios.get(
-      'https://api.coingecko.com/api/v3/simple/price?x_cg_demo_api_key=CG-QGCaqTLDgT1YSBpg9cqpZnnv&ids=bitcoin,ethereum,the-open-network,notcoin,hamster-kombat,solana&vs_currencies=usd',
+      'https://api.coingecko.com/api/v3/simple/price?x_cg_demo_api_key=CG-QGCaqTLDgT1YSBpg9cqpZnnv&ids=bitcoin,ethereum,the-open-network,notcoin,hamster-kombat,solana,flow,havven,cosmos,spell-token&vs_currencies=usd',
       {
         headers: {
           accept: 'application/json',
@@ -330,6 +330,10 @@ export const fetchCurrencyRates = async () => {
       ton: response.data['the-open-network'].usd as string,
       not: response.data['notcoin'].usd as string,
       hmstr: response.data['hamster-kombat'].usd as string,
+      flow: response.data['flow'].usd as string,
+      snx: response.data['havven'].usd as string,
+      atom: response.data['cosmos'].usd as string,
+      spell: response.data['spell-token'].usd as string,
     };
   } catch (error: any) {
     console.error('Gekko Error fetching:', error);
