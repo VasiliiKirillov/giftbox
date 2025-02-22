@@ -6,10 +6,10 @@ import './index.css';
 import { store } from './store/store';
 import './utils/api';
 import { RouterProvider } from 'react-router-dom';
-import { routerNew } from './routers/MainRouterNew';
+import { router } from './routers/MainRouter';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
-    <RouterProvider router={routerNew} />
+    <RouterProvider router={router} />
   </Provider>
 );

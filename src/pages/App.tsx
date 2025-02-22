@@ -1,55 +1,27 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { onAuthStateChanged } from 'firebase/auth';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { auth } from '../utils/api';
-import { AppDispatch } from '../store/store';
-import {
-  getIsUserSignedIn,
-  setSingedInUser,
-  setSingedOutUser,
-} from '../store/user';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { CalculatorPage } from './Calculator.page';
+import { SpreadsheetDataElement } from '../components/SpreadsheetDataElement';
 
-const useHandleAuthChanges = () => {
-  const dispatch: AppDispatch = useDispatch();
-
-  useLayoutEffect(() => {
-    const unsubscribeAuthState = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setSingedInUser({ name: user.displayName, uid: user.uid }));
-      } else {
-        dispatch(setSingedOutUser());
-      }
-    });
-    return () => {
-      unsubscribeAuthState();
-    };
-  }, []);
-};
+const isShowSpreadsheetPart = localStorage.getItem('isShowSpreadsheetPart');
 
 export const App = () => {
-  useHandleAuthChanges();
-
-  const isUserSignedId = useSelector(getIsUserSignedIn);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isUserSignedId === true) {
-      navigate('/');
-    } else if (isUserSignedId === false) {
-      navigate('/login');
-    }
-  }, [isUserSignedId]);
-
   return (
     <AppContainerStyled>
-      {isUserSignedId !== undefined && <Outlet />}
+      <ContentContainer>
+        <CalculatorPage />
+        {isShowSpreadsheetPart && <SpreadsheetDataElement />}
+      </ContentContainer>
     </AppContainerStyled>
   );
 };
 
+const ContentContainer = styled.div`
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: row;
+`;
 // styles
 const AppContainerStyled = styled.div`
   width: 100vw;

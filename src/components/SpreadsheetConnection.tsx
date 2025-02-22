@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { InputStyled } from '../pages/AuthorizedApp';
 import { AppDispatch } from '../store/store';
 import {
   fetchCurrencyRates,
@@ -146,3 +145,12 @@ const updateCurrencyRates = async (
   ];
   await writeBatchToSpreadsheet(spreadsheetId, currRangeUpdate);
 };
+
+const InputStyled = styled.input`
+  background: rgba(233, 233, 233, 0.5);
+  height: 32px;
+  font-size: 16px;
+  color: #1b1b1b;
+  padding: 4px;
+  border: none;
+`;
