@@ -1,9 +1,0 @@
-.homeEntitiesWrapper {
-  display: flex;
-  flex-direction: row;
-  margin-top: 32px;
-}
-
-.entityWrapper {
-  width: 50%;
-}
