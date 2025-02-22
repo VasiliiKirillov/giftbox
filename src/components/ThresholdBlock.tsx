@@ -34,7 +34,7 @@ export const ThresholdBlock: FC<{
           <Input
             disabled
             value={orderPrice}
-            labelText={`Order price (${baseCurrencyName})`}
+            labelText={`Order currency price (${baseCurrencyName})`}
           />
         </ThresholdContainer>
         <ThresholdContainer>
@@ -48,7 +48,7 @@ export const ThresholdBlock: FC<{
           <Input
             disabled
             value={desiredCurrency}
-            labelText={`Order Quantity (${assetsCurrencyName})`}
+            labelText={`Asset Quantity (${assetsCurrencyName})`}
           />
         </ThresholdContainer>
         <ThresholdContainer>
@@ -70,7 +70,7 @@ const ThresholdTitle = styled.div<{
   font-size: 24px;
   font-family: 'Readex Pro', sans-serif;
   color: ${(props) => (props.isBuy ? '#37ea5b' : '#ff5656')};
-  height: 76px;
+  height: 84px;
   display: flex;
   align-items: center;
 `;

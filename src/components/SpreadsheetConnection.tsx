@@ -15,17 +15,31 @@ import {
 } from '../store/spreadsheetList';
 import { useDispatch } from 'react-redux';
 
+const CONNECTION_STATUS = {
+  NOT_CONNECTED: 'Not connected',
+  LOADING: 'Loading... ⏳',
+  CONNECTED: 'Connected ✅',
+  CONNECTED_WARNING: 'Connected ⚠️',
+  ERROR: 'Error 🚫',
+  NOT_AUTHORIZED: 'Not connected 🔑',
+  UNKNOWN: '???',
+} as const;
+
+type ConnectionStatusType =
+  (typeof CONNECTION_STATUS)[keyof typeof CONNECTION_STATUS];
+
 export const SpreadsheetConnection = memo(() => {
   const dispatch: AppDispatch = useDispatch();
 
   const [spreadsheetId, setSpreadsheetId] = useState(
     localStorage.getItem('spreadsheetId') ?? ''
   );
-  const [connectionStatus, setConnectionStatus] = useState('Not connected');
+  const [connectionStatus, setConnectionStatus] =
+    useState<ConnectionStatusType>(CONNECTION_STATUS.NOT_CONNECTED);
 
   // Save spreadsheetId to localStorage and check connection
   const handleConnect = useCallback(async () => {
-    setConnectionStatus('Loading... ⏳');
+    setConnectionStatus(CONNECTION_STATUS.LOADING);
 
     await refreshGoogleAccessTokenViaSignIn();
 
@@ -35,7 +49,7 @@ export const SpreadsheetConnection = memo(() => {
 
   useEffect(() => {
     if (!spreadsheetId) return;
-    setConnectionStatus('Loading... ⏳');
+    setConnectionStatus(CONNECTION_STATUS.LOADING);
     localStorage.setItem('spreadsheetId', spreadsheetId);
     checkSpreadsheetConnection();
   }, [spreadsheetId]);
@@ -57,8 +71,8 @@ export const SpreadsheetConnection = memo(() => {
         <SignInStyled
           disabled={
             !spreadsheetId ||
-            connectionStatus === 'Connected ✅' ||
-            connectionStatus === 'Loading... ⏳'
+            connectionStatus === CONNECTION_STATUS.CONNECTED ||
+            connectionStatus === CONNECTION_STATUS.LOADING
           }
           onClick={handleConnect}
         >
@@ -106,10 +120,10 @@ const loadSpreadsheetData = async (
 ) => {
   const response = await fetchSheetData(spreadsheetId, 'assets!B4');
   if (response === 'error') {
-    return 'Error 🚫';
+    return CONNECTION_STATUS.ERROR;
   }
   if (response === 'not authorized') {
-    return 'Not connected 🚫';
+    return CONNECTION_STATUS.NOT_AUTHORIZED;
   }
 
   if (response?.[0]?.[0] === 'btc') {
@@ -120,11 +134,11 @@ const loadSpreadsheetData = async (
       const sheets = await getSheetsList(spreadsheetId);
       dispatch(setSpreadsheetList(sheets));
 
-      return 'Connected ✅';
+      return CONNECTION_STATUS.CONNECTED;
     }
-    return 'Connected ⚠️';
+    return CONNECTION_STATUS.CONNECTED_WARNING;
   }
-  return '???';
+  return CONNECTION_STATUS.UNKNOWN;
 };
 
 const updateCurrencyRates = async (
