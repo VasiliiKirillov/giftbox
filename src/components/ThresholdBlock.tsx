@@ -33,8 +33,8 @@ export const ThresholdBlock: FC<{
           </ThresholdTitle>
           <Input
             disabled
-            value={orderPrice}
-            labelText={`Order currency price (${baseCurrencyName})`}
+            value={desiredCurrency}
+            labelText={`Currency price (${baseCurrencyName})`}
           />
         </ThresholdContainer>
         <ThresholdContainer>
@@ -47,7 +47,7 @@ export const ThresholdBlock: FC<{
           />
           <Input
             disabled
-            value={desiredCurrency}
+            value={orderAmount}
             labelText={`Asset Quantity (${assetsCurrencyName})`}
           />
         </ThresholdContainer>
@@ -55,7 +55,7 @@ export const ThresholdBlock: FC<{
           <Input disabled value={multiplier} labelText={'Multiplier (%)'} />
           <Input
             disabled
-            value={orderAmount}
+            value={orderPrice}
             labelText={`Order value (${baseCurrencyName})`}
           />
         </ThresholdContainer>
