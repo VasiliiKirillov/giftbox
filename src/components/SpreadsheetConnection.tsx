@@ -138,12 +138,10 @@ const updateCurrencyRates = async (
     { range: 'assets!Q5', values: [[currencyRates.ton]] },
     { range: 'assets!B5', values: [[currencyRates.btc]] },
     { range: 'assets!G5', values: [[currencyRates.eth]] },
-    { range: 'assets!L5', values: [[currencyRates.sol]] },
     { range: 'assets!V5', values: [[currencyRates.not]] },
     { range: 'assets!AA5', values: [[currencyRates.hmstr]] },
     { range: 'assets!AF5', values: [[currencyRates.snx]] },
     { range: 'assets!AK5', values: [[currencyRates.atom]] },
-    { range: 'assets!AP5', values: [[currencyRates.spell]] },
     { range: 'assets!AU5', values: [[currencyRates.flow]] },
   ];
   await writeBatchToSpreadsheet(spreadsheetId, currRangeUpdate);

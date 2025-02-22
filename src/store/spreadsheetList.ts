@@ -16,14 +16,12 @@ export type SpreadsheetListType = Array<SpreadsheetType>;
 export type CurrencyRatesData = {
   btc: string;
   eth: string;
-  sol: string;
   ton: string;
   not: string;
   hmstr: string;
   flow: string;
   snx: string;
   atom: string;
-  spell: string;
 };
 
 export type SpreadsheetListState = {
