@@ -2,11 +2,6 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
-import { getMonth, getYear } from './main';
-
-export const getMonthAPI = (userUID: string) =>
-  `users/${userUID}/months/${getMonth()}-${getYear()}`;
-
 const firebaseConfig = {
   apiKey: 'AIzaSyDf6EmJoSfqMXI1bbvXHPIDh0flGyhtrsw',
   authDomain: 'giftbox-af946.firebaseapp.com',
