@@ -1,6 +1,8 @@
 import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { Input } from './common/Input/Input';
+import { postLimitOrder } from '../store/app';
+import { useAppDispatch } from '../store/store';
 
 export const ThresholdBlock: FC<{
   thresholdName: string;
@@ -25,6 +27,13 @@ export const ThresholdBlock: FC<{
     multiplier,
   }) => {
     const isBuy = thresholdName === 'Below';
+    const dispatch = useAppDispatch();
+
+    const handleSaveOrder = () => {
+      console.log('handleSaveOrder');
+      dispatch(postLimitOrder(isBuy ? 'BUY' : 'SELL'));
+    };
+
     return (
       <ThresholdBlockContainer>
         <ThresholdContainer>
@@ -32,7 +41,7 @@ export const ThresholdBlock: FC<{
             <ThresholdTitle isBuy={isBuy}>
               {isBuy ? 'BUY' : 'SELL'}
             </ThresholdTitle>
-            <SaveButton>{'Save Order'}</SaveButton>
+            <SaveButton onClick={handleSaveOrder}>{'Save Order'}</SaveButton>
           </HeaderWrapper>
           <Input
             disabled
