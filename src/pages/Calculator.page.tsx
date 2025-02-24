@@ -8,6 +8,7 @@ import { PieChart } from '../components/Calculator/PieChart';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCurrencyData, getTotalAmount } from '../store/spreadsheetList';
 import { addLimitOrder } from '../store/limitOrders';
+import { setDesirableAssetsPercent } from '../store/app';
 
 function calculateMultiplier(
   isAbove: boolean,
@@ -128,6 +129,10 @@ export const CalculatorPage = memo(() => {
     setAboveOrderAmount('-');
     setAboveMultiplier('-');
   };
+
+  useEffect(() => {
+    dispatch(setDesirableAssetsPercent(idealAssetsPercent));
+  }, [idealAssetsPercent]);
 
   const resetBelow = () => {
     setBelowDesiredCurrencyRate('-');

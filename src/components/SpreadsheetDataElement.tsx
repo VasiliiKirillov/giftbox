@@ -93,7 +93,6 @@ export const SpreadsheetDataElement = memo(() => {
     currData: CurrDataArray,
     thresholds: ThresholdsMap
   ) => {
-    console.log('gov currData', currData);
     return currData[0]
       .map((storeName, index) => {
         if (!storeName) return null;
