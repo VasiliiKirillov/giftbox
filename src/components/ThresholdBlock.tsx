@@ -28,9 +28,12 @@ export const ThresholdBlock: FC<{
     return (
       <ThresholdBlockContainer>
         <ThresholdContainer>
-          <ThresholdTitle isBuy={isBuy}>
-            {isBuy ? 'BUY' : 'SELL'}
-          </ThresholdTitle>
+          <HeaderWrapper>
+            <ThresholdTitle isBuy={isBuy}>
+              {isBuy ? 'BUY' : 'SELL'}
+            </ThresholdTitle>
+            <SaveButton>{'Save Order'}</SaveButton>
+          </HeaderWrapper>
           <Input
             disabled
             value={desiredCurrency}
@@ -85,4 +88,23 @@ const ThresholdContainer = styled.div`
 const ThresholdBlockContainer = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const SaveButton = styled.button`
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  margin-left: 10px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `;

@@ -5,8 +5,9 @@ import { ThresholdBlock } from '../components/ThresholdBlock';
 import Decimal from 'decimal.js';
 import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 import { PieChart } from '../components/Calculator/PieChart';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getCurrencyData, getTotalAmount } from '../store/spreadsheetList';
+import { addLimitOrder } from '../store/limitOrders';
 
 function calculateMultiplier(
   isAbove: boolean,
@@ -73,6 +74,7 @@ function calculateOrderDetails(
 }
 
 export const CalculatorPage = memo(() => {
+  const dispatch = useDispatch();
   const currencyData = useSelector(getCurrencyData);
   const totalAmountFromSpreadsheet = useSelector(getTotalAmount);
 
@@ -183,11 +185,27 @@ export const CalculatorPage = memo(() => {
       setAboveOrderPrice(orderPrice);
       setAboveOrderAmount(orderAmount);
       setAboveMultiplier(multiplier);
+      dispatch(
+        addLimitOrder({
+          currencyPrice: desiredCurrencyRate,
+          assetsQuantity: orderAmount,
+          orderValue: orderPrice,
+          orderType: 'SELL',
+        })
+      );
     } else {
       setBelowDesiredCurrencyRate(desiredCurrencyRate);
       setBelowOrderPrice(orderPrice);
       setBelowOrderAmount(orderAmount);
       setBelowMultiplier(multiplier);
+      dispatch(
+        addLimitOrder({
+          currencyPrice: desiredCurrencyRate,
+          assetsQuantity: orderAmount,
+          orderValue: orderPrice,
+          orderType: 'BUY',
+        })
+      );
     }
   };
 

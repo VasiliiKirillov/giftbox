@@ -1,0 +1,38 @@
+---
+description: 
+globs: 
+---
+
+# This is context about my bakend project which is related to this frontend app
+# Feel free to suggest new entities for backend and new logic, it is ok
+
+## Project Overview
+A NestJS-based backend service implementing a limit order trading system. The project appears to be in early development stages, focusing on core trading functionality.
+
+## Technical Architecture
+- Backend Framework: NestJS v11
+- Database: PostgreSQL with Prisma ORM
+- Deployment: Configured for Render cloud platform
+- API Style: REST endpoints
+- Frontend Integration: CORS enabled for Vite-based frontend
+
+## Core Domain Model
+Primary focus on Limit Orders with:
+- UUID-based identification
+- Price and amount tracking
+- Buy/Sell side designation
+- Status tracking (OPEN, FILLED, CANCELLED)
+- Timestamp management
+
+## Current API Endpoints
+1. Base health check: GET /
+2. Create sample order: GET /limit-orders
+3. List all orders: GET /get-limit-orders
+
+
+## Current Limitations/TODOs
+- Limited order management functionality
+- Sample data in create endpoint
+- Basic error handling
+- Limited API endpoints
+
