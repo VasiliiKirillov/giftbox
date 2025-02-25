@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { InitialData } from '../components/Calculator/InitialData';
-import { ThresholdBlock } from '../components/ThresholdBlock';
+import { ThresholdBlock } from '../components/Calculator/ThresholdBlock';
 import Decimal from 'decimal.js';
 import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
 import { PieChart } from '../components/Calculator/PieChart';

@@ -1,18 +1,18 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { AppDispatch } from '../store/store';
+import { AppDispatch } from '../../store/store';
 import {
   fetchCurrencyRates,
   fetchSheetData,
   getSheetsList,
   refreshGoogleAccessTokenViaSignIn,
   writeBatchToSpreadsheet,
-} from '../store/utils';
+} from '../../store/utils';
 import {
   CurrencyRatesData,
   setCurrencyRatesData,
   setSpreadsheetList,
-} from '../store/spreadsheetList';
+} from '../../store/spreadsheetList';
 import { useDispatch } from 'react-redux';
 
 const CONNECTION_STATUS = {

@@ -7,9 +7,9 @@ import {
   setCurrencyData,
   setTotalAmount,
   SpreadsheetType,
-} from '../store/spreadsheetList';
-import { DropdownComponent } from './common/Dropdown/Dropdown';
-import { fetchSheetData } from '../store/utils';
+} from '../../store/spreadsheetList';
+import { DropdownComponent } from '../common/Dropdown/Dropdown';
+import { fetchSheetData } from '../../store/utils';
 import { SpreadsheetConnection } from './SpreadsheetConnection';
 
 export const SpreadsheetDataElement = memo(() => {

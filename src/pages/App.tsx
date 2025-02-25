@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { CalculatorPage } from './Calculator.page';
-import { SpreadsheetDataElement } from '../components/SpreadsheetDataElement';
+import { SpreadsheetDataElement } from '../components/Spreadsheet/SpreadsheetDataElement';
 
 const isShowSpreadsheetPart = localStorage.getItem('isShowSpreadsheetPart');
 

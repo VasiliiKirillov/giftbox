@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react';
 import styled from 'styled-components';
 import { Input } from '../common/Input/Input';
-import { SwitchComponent } from '../SwitchComponent/SwitchComponent';
+import { SwitchComponent } from '../common/SwitchComponent/SwitchComponent';
 
 type CurrencyTitleProps = {
   baseCurrencyName: string;

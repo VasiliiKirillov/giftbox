@@ -1,8 +1,8 @@
 import React, { FC, memo } from 'react';
 import styled from 'styled-components';
-import { Input } from './common/Input/Input';
-import { postLimitOrder } from '../store/app';
-import { useAppDispatch } from '../store/store';
+import { Input } from '../common/Input/Input';
+import { postLimitOrder } from '../../store/app';
+import { useAppDispatch } from '../../store/store';
 
 export const ThresholdBlock: FC<{
   thresholdName: string;
