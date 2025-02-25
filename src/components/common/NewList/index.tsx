@@ -1,6 +1,6 @@
 import React, { memo, useRef, UIEvent, useState } from 'react';
 
-import { MoveToTopButton } from '../common/MoveToTopButton';
+import { MoveToTopButton } from './MoveToTopButton';
 
 import { ListWrapper } from './styles';
 import { ListProps, RowData } from './types';

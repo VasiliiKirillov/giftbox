@@ -1,14 +1,14 @@
 import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { InitialData } from '../components/Calculator/InitialData';
-import { ThresholdBlock } from '../components/Calculator/ThresholdBlock';
+import { InitialData } from './InitialData';
+import { ThresholdBlock } from './ThresholdBlock';
 import Decimal from 'decimal.js';
-import { CurrencyTitle } from '../components/Calculator/CurrencyTitle';
-import { PieChart } from '../components/Calculator/PieChart';
+import { CurrencyTitle } from './CurrencyTitle';
+import { PieChart } from './PieChart';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCurrencyData, getTotalAmount } from '../store/spreadsheetList';
-import { addLimitOrder } from '../store/limitOrders';
-import { setDesirableAssetsPercent } from '../store/app';
+import { getCurrencyData, getTotalAmount } from '../../store/spreadsheetList';
+import { addLimitOrder } from '../../store/limitOrders';
+import { setDesirableAssetsPercent } from '../../store/app';
 
 function calculateMultiplier(
   isAbove: boolean,
@@ -74,7 +74,7 @@ function calculateOrderDetails(
   };
 }
 
-export const CalculatorPage = memo(() => {
+export const Calculator = memo(() => {
   const dispatch = useDispatch();
   const currencyData = useSelector(getCurrencyData);
   const totalAmountFromSpreadsheet = useSelector(getTotalAmount);
@@ -352,6 +352,8 @@ const CalculatorElement = styled.div`
   display: flex;
   flex-direction: column;
   width: 648px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 `;
 
 const ThresholdContainer = styled.div`

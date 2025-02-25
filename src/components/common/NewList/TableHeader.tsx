@@ -10,7 +10,6 @@ import {
   TableHeaderReorderStyled,
 } from './styles';
 import { RowData, TableHeaderProps } from './types';
-import { ReactComponent as ReorderIcon } from './assets/reorder.svg';
 
 import { HeaderRefContext } from './ContextTableHelpers';
 
@@ -34,7 +33,7 @@ export const TableHeader: TableHeaderComponent = memo(
                 <TableHeaderTitleStyled>{columnName}</TableHeaderTitleStyled>
                 {reorderOptions?.[key] && (
                   <TableHeaderReorderStyled onClick={reorderOptions?.[key]}>
-                    <ReorderIcon />
+                    <div>Reord</div>
                   </TableHeaderReorderStyled>
                 )}
               </TableHeaderContentWrapper>

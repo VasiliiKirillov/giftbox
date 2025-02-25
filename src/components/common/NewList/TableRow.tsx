@@ -2,7 +2,7 @@ import React, { memo, useContext } from 'react';
 
 import { RowData, TableRowProps } from './types';
 import { ColumnWidthContext } from './ContextTableHelpers';
-import { TableOptions } from 'Components/common/TableOptions/TableOptions';
+import { TableOptions } from './TableOptions/TableOptions';
 import { LIST_WRAPPER_ID } from '.';
 
 import { TableCellStyled, TableRowStyled } from './styles';
