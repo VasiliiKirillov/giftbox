@@ -1,78 +1,57 @@
 import React, { memo, useMemo } from 'react';
 import { List } from '../common/NewList';
 import styled from 'styled-components';
-
-type LimitOrderData = {
-  id: string;
-  currencyName: string;
-  desirableAssetsPercent: string;
-  currencyPrice: string;
-  assetsQuantity: string;
-  orderValue: string;
-  orderType: 'BUY' | 'SELL';
-};
-
-// Mock data
-const mockLimitOrders: LimitOrderData[] = [
-  {
-    id: '1',
-    currencyName: 'BTC',
-    desirableAssetsPercent: '25%',
-    currencyPrice: '$45,000',
-    assetsQuantity: '0.5',
-    orderValue: '$22,500',
-    orderType: 'BUY',
-  },
-  {
-    id: '2',
-    currencyName: 'ETH',
-    desirableAssetsPercent: '15%',
-    currencyPrice: '$2,500',
-    assetsQuantity: '4.0',
-    orderValue: '$10,000',
-    orderType: 'SELL',
-  },
-  {
-    id: '3',
-    currencyName: 'SOL',
-    desirableAssetsPercent: '10%',
-    currencyPrice: '$120',
-    assetsQuantity: '50',
-    orderValue: '$6,000',
-    orderType: 'BUY',
-  },
-];
+import { useSelector } from 'react-redux';
+import { getLimitOrdersByCurrency } from '../../store/limitOrders';
 
 export const LimitOrderDetails = memo(() => {
+  const orders = useSelector(getLimitOrdersByCurrency);
+
   const headerData = useMemo(
     () => ({
-      id: 'ID',
       currencyName: 'Currency',
       desirableAssetsPercent: 'Target %',
       currencyPrice: 'Price',
       assetsQuantity: 'Quantity',
       orderValue: 'Value',
       orderType: 'Type',
+      status: 'Status',
+      createdAt: 'Created',
     }),
     []
+  );
+
+  const formattedOrders = useMemo(() => {
+    return orders.map((order) => ({
+      ...order,
+      id: String(order.id),
+      desirableAssetsPercent: `${order.desirableAssetsPercent}%`,
+      currencyPrice: `$${order.currencyPrice.toLocaleString()}`,
+      orderValue: `$${order.orderValue.toLocaleString()}`,
+      createdAt: new Date(order.createdAt).toLocaleDateString(),
+    }));
+  }, [orders]);
+
+  const buyOrders = useMemo(
+    () => orders.filter((order) => order.orderType === 'BUY'),
+    [orders]
+  );
+
+  const sellOrders = useMemo(
+    () => orders.filter((order) => order.orderType === 'SELL'),
+    [orders]
   );
 
   return (
     <OrderDetailsContainer>
       <OrderInfo>
-        <InfoItem>Total Orders: {mockLimitOrders.length}</InfoItem>
-        <InfoItem>
-          Buy Orders:{' '}
-          {mockLimitOrders.filter((order) => order.orderType === 'BUY').length}
-        </InfoItem>
-        <InfoItem>
-          Sell Orders:{' '}
-          {mockLimitOrders.filter((order) => order.orderType === 'SELL').length}
-        </InfoItem>
+        <InfoItem>Total Orders: {orders.length}</InfoItem>
+        <InfoItem>Buy Orders: {buyOrders.length}</InfoItem>
+        <InfoItem>Sell Orders: {sellOrders.length}</InfoItem>
       </OrderInfo>
       <InfoItem>Limit Orders</InfoItem>
       <ListStyled>
-        <List data={mockLimitOrders} headerData={headerData} />
+        <List data={formattedOrders} headerData={headerData} />
       </ListStyled>
     </OrderDetailsContainer>
   );

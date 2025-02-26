@@ -7,7 +7,7 @@ import { CurrencyTitle } from './CurrencyTitle';
 import { PieChart } from './PieChart';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCurrencyData, getTotalAmount } from '../../store/spreadsheetList';
-import { addLimitOrder } from '../../store/limitOrders';
+import { addCurrentLimitOrder } from '../../store/limitOrders';
 import { setDesirableAssetsPercent } from '../../store/app';
 
 function calculateMultiplier(
@@ -191,7 +191,7 @@ export const Calculator = memo(() => {
       setAboveOrderAmount(orderAmount);
       setAboveMultiplier(multiplier);
       dispatch(
-        addLimitOrder({
+        addCurrentLimitOrder({
           currencyPrice: desiredCurrencyRate,
           assetsQuantity: orderAmount,
           orderValue: orderPrice,
@@ -204,7 +204,7 @@ export const Calculator = memo(() => {
       setBelowOrderAmount(orderAmount);
       setBelowMultiplier(multiplier);
       dispatch(
-        addLimitOrder({
+        addCurrentLimitOrder({
           currencyPrice: desiredCurrencyRate,
           assetsQuantity: orderAmount,
           orderValue: orderPrice,
@@ -354,6 +354,7 @@ const CalculatorElement = styled.div`
   width: 648px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  padding: 24px 16px 16px;
 `;
 
 const ThresholdContainer = styled.div`

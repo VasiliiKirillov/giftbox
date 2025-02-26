@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Calculator } from '../components/Calculator/Calculator';
 import { SpreadsheetDataElement } from '../components/Spreadsheet/SpreadsheetDataElement';
-import { LimitOrderDetails } from '../components/LimitOrderDetails/LimitOrderDetails';
+import { LimitOrderDetailsPage } from '../components/LimitOrderDetails/LimitOrderDetailsPage';
 const isShowSpreadsheetPart = localStorage.getItem('isShowSpreadsheetPart');
 
 export const App = () => {
@@ -13,7 +13,7 @@ export const App = () => {
         <Calculator />
         <RightColumnContainer>
           {isShowSpreadsheetPart && <SpreadsheetDataElement />}
-          <LimitOrderDetails />
+          <LimitOrderDetailsPage />
         </RightColumnContainer>
       </ContentContainer>
     </AppContainerStyled>
@@ -21,7 +21,7 @@ export const App = () => {
 };
 
 const ContentContainer = styled.div`
-  padding: 32px 16px;
+  padding: 16px 16px;
   display: flex;
   flex-direction: row;
   gap: 16px;
