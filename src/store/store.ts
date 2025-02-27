@@ -4,12 +4,14 @@ import { useDispatch } from 'react-redux';
 import { SpreadsheetListSlice } from './spreadsheetList';
 import { LimitOrdersSlice } from './limitOrders';
 import { AppSlice } from './app';
+import { ChatSlice } from './chat';
 
 export const store = configureStore({
   reducer: {
     spreadsheetList: SpreadsheetListSlice.reducer,
     limitOrders: LimitOrdersSlice.reducer,
     app: AppSlice.reducer,
+    chat: ChatSlice.reducer,
   },
 });
 
