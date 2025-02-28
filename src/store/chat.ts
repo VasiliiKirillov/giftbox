@@ -42,7 +42,7 @@ export const sendMessage = createAsyncThunk(
     thunkAPI.dispatch(ChatSlice.actions.addUserMessage(userInput));
 
     const response = await axios.post(
-      'https://giftbox-backend-5d90.onrender.com/openai/chat',
+      `${import.meta.env.VITE_API_URL}/openai/chat`,
       {
         message: userInput,
       }

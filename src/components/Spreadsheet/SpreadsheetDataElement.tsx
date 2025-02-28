@@ -49,7 +49,7 @@ export const SpreadsheetDataElement = memo(() => {
     const spreadsheetId = localStorage.getItem('spreadsheetId') ?? '';
     const currencyDataRange = `${pickedSpreadsheet.name}!A6:J10`;
     const currencyDataRange2 = `${pickedSpreadsheet.name}!G1:J5`;
-    const thresholdDataRange = `${pickedSpreadsheet.name}!X1:X10`;
+    const thresholdDataRange = `${pickedSpreadsheet.name}!X1:X7`;
 
     const [currData, currData2, currThresholds] = await Promise.all([
       fetchSheetData(spreadsheetId, currencyDataRange),

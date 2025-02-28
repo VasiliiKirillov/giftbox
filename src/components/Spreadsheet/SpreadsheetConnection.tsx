@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AppDispatch } from '../../store/store';
 import {

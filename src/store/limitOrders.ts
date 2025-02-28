@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { CurrentLimitOrder, LimitOrder } from '../types/LimitOrder';
 import { RootState } from './store';
 import { getCurrencyData } from './spreadsheetList';
+import axios from 'axios';
 
 interface LimitOrdersState {
   currentBuyOrder: CurrentLimitOrder | null;
@@ -76,40 +77,31 @@ export const postLimitOrder = createAsyncThunk(
       currencyName: currencyData.name,
       desirableAssetsPercent,
     };
-    const response = await fetch(
-      'https://giftbox-backend-5d90.onrender.com/limit-orders',
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/limit-orders`,
+      orderData,
       {
-        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(orderData),
       }
     );
-    const result = await response.json();
-    return result;
+    return response.data;
   }
 );
 
 export const fetchLimitOrderByCurrency = createAsyncThunk(
   'limitOrders/fetchByCurrency',
   async (currencyName: string) => {
-    const response = await fetch(
-      // `https://giftbox-backend-5d90.onrender.com/limit-orders/by-currency?currency=${currencyName}`,
-      `http://localhost:3000/limit-orders/by-currency?currency=${currencyName}`,
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/limit-orders/by-currency`,
       {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+        params: {
+          currency: currencyName,
         },
       }
     );
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch limit orders');
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data;
   }
 );
