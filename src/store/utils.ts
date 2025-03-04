@@ -173,3 +173,40 @@ export const getSheetsList = async (spreadsheetId: string) => {
     console.error('Error fetching sheets list:', error);
   }
 };
+
+export const addNewTransaction = async (
+  spreadsheetId: string,
+  sheetName: string, // e.g., 'Sheet1'
+  cellRange: string, // e.g., 'A20:B'
+  amount: string,
+  description: string
+) => {
+  try {
+    // Construct the base range for fetching data
+    const baseRange = `${sheetName}!${cellRange}`;
+
+    // First, fetch the current data to find the first empty row
+    const currentData = await fetchSheetData(spreadsheetId, baseRange);
+    if (currentData === 'error' || currentData === 'not authorized') {
+      throw new Error('Failed to fetch current data');
+    }
+
+    // Find the first empty row (relative to the starting row)
+    const startRow = parseInt(cellRange.match(/\d+/)?.[0] || '20');
+    const nextRow = startRow + (currentData?.length || 0);
+
+    // Construct the range for the new row (e.g., 'Sheet1!A25:B25')
+    const writeRange = `${sheetName}!A${nextRow}:B${nextRow}`;
+
+    // Write the new transaction
+    await writeDataToSpreadsheet(spreadsheetId, writeRange, [
+      amount,
+      description,
+    ]);
+
+    return nextRow;
+  } catch (error) {
+    console.error('Error adding new transaction:', error);
+    throw error;
+  }
+};

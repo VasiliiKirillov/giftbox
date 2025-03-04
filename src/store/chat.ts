@@ -1,17 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from './store';
+import { addNewTransaction } from './utils';
+import { getSpreadsheetList } from './spreadsheetList';
 
 export type ChatMessage = {
   id: number;
   message: string;
   isUser: boolean;
   timestamp: string;
-  metadata?: {
-    category: string;
-    amount: number;
-    type: 'expense' | 'income';
-  };
+  record?: string;
+  amount?: number;
+  type?: 'expense' | 'income';
+  transactionMonth?: string;
+  transactionYear?: string;
 };
 
 interface ChatState {
@@ -39,19 +41,21 @@ const initialState: ChatState = {
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async (userInput: string, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const spreadsheetList = getSpreadsheetList(state);
+
     thunkAPI.dispatch(ChatSlice.actions.addUserMessage(userInput));
 
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/openai/chat`,
       {
         message: userInput,
+        spreadsheetName: spreadsheetList[0].name,
       }
     );
-    // Extract the response text or stringify the object for display
-    const { message, ...metadata } = response.data.response;
     return {
-      metadata,
-      message,
+      ...response.data,
+      spreadsheetName: spreadsheetList[0].name,
     };
   }
 );
@@ -85,11 +89,43 @@ export const ChatSlice = createSlice({
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Add AI response
+
+        console.log(action.payload);
+        let message = '';
+        if (
+          action.payload.success &&
+          action.payload.response.transactionMonth &&
+          action.payload.response.transactionYear &&
+          action.payload.response.record &&
+          action.payload.response.amount &&
+          action.payload.response.type
+        ) {
+          message = `I've added a ${action.payload.response.type} transaction of ${action.payload.response.amount} for ${action.payload.response.record}`;
+          addNewTransaction(
+            localStorage.getItem('spreadsheetId') ?? '',
+            action.payload.spreadsheetName,
+            'A20:B',
+            action.payload.response.type === 'expense'
+              ? `-${action.payload.response.amount}`
+              : action.payload.response.amount,
+            action.payload.response.record
+          ).then(() => {
+            console.log('gov Transaction added');
+          });
+        } else {
+          message =
+            'Something went wrong. Please try again. Technical error: ' +
+            action.payload.response.technicalMessage;
+        }
+
         const aiMessage: ChatMessage = {
           id: state.messages.length + 1,
-          message: action.payload.message,
-          metadata: action.payload.metadata,
+          transactionMonth: action.payload.response.transactionMonth,
+          transactionYear: action.payload.response.transactionYear,
+          record: action.payload.response.record,
+          amount: action.payload.response.amount,
+          type: action.payload.response.type,
+          message,
           isUser: false,
           timestamp: new Date().toLocaleTimeString([], {
             hour: '2-digit',
