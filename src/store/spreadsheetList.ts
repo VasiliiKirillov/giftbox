@@ -27,7 +27,8 @@ export type CurrencyRatesData = {
 export type SpreadsheetListState = {
   status: DataStatus;
   data: SpreadsheetListType;
-  currencyData: CurrencyDataType | null;
+  pickedAsset: CurrencyDataType | null;
+  pickedSpreadsheet: SpreadsheetType | null;
   totalAmount: string | null;
   currencyRatesData: CurrencyRatesData | null;
 };
@@ -35,7 +36,8 @@ export type SpreadsheetListState = {
 const initialState: SpreadsheetListState = {
   status: DataStatus.idle,
   data: [],
-  currencyData: null,
+  pickedAsset: null,
+  pickedSpreadsheet: null,
   totalAmount: null,
   currencyRatesData: null,
 };
@@ -49,13 +51,16 @@ export const SpreadsheetListSlice = createSlice({
       state.data = action.payload;
     },
     setCurrencyData: (state, action) => {
-      state.currencyData = action.payload;
+      state.pickedAsset = action.payload;
     },
     setTotalAmount: (state, action) => {
       state.totalAmount = action.payload;
     },
     setCurrencyRatesData: (state, action) => {
       state.currencyRatesData = action.payload;
+    },
+    setPickedSpreadsheetToStore: (state, action) => {
+      state.pickedSpreadsheet = action.payload;
     },
   },
 });
@@ -66,11 +71,14 @@ export const {
   setCurrencyData,
   setTotalAmount,
   setCurrencyRatesData,
+  setPickedSpreadsheetToStore,
 } = SpreadsheetListSlice.actions;
 
 export const getSpreadsheetList = (store: RootState) =>
   store.spreadsheetList.data;
-export const getCurrencyData = (store: RootState) =>
-  store.spreadsheetList.currencyData;
+export const getPickedAsset = (store: RootState) =>
+  store.spreadsheetList.pickedAsset;
 export const getTotalAmount = (store: RootState) =>
   store.spreadsheetList.totalAmount;
+export const getPickedSpreadsheet = (store: RootState) =>
+  store.spreadsheetList.pickedSpreadsheet;

@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from './store';
-import { addNewTransaction } from './utils';
-import { getSpreadsheetList } from './spreadsheetList';
 
 export type ChatMessage = {
   id: number;
@@ -12,6 +10,7 @@ export type ChatMessage = {
   record?: string;
   amount?: number;
   type?: 'expense' | 'income';
+  storage?: string;
   transactionMonth?: string;
   transactionYear?: string;
 };
@@ -41,21 +40,16 @@ const initialState: ChatState = {
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async (userInput: string, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const spreadsheetList = getSpreadsheetList(state);
-
     thunkAPI.dispatch(ChatSlice.actions.addUserMessage(userInput));
 
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/openai/chat`,
       {
         message: userInput,
-        spreadsheetName: spreadsheetList[0].name,
       }
     );
     return {
       ...response.data,
-      spreadsheetName: spreadsheetList[0].name,
     };
   }
 );
@@ -98,20 +92,10 @@ export const ChatSlice = createSlice({
           action.payload.response.transactionYear &&
           action.payload.response.record &&
           action.payload.response.amount &&
-          action.payload.response.type
+          action.payload.response.type &&
+          action.payload.response.storage
         ) {
           message = `I've added a ${action.payload.response.type} transaction of ${action.payload.response.amount} for ${action.payload.response.record}`;
-          addNewTransaction(
-            localStorage.getItem('spreadsheetId') ?? '',
-            action.payload.spreadsheetName,
-            'A20:B',
-            action.payload.response.type === 'expense'
-              ? `-${action.payload.response.amount}`
-              : action.payload.response.amount,
-            action.payload.response.record
-          ).then(() => {
-            console.log('gov Transaction added');
-          });
         } else {
           message =
             'Something went wrong. Please try again. Technical error: ' +
@@ -124,6 +108,7 @@ export const ChatSlice = createSlice({
           transactionYear: action.payload.response.transactionYear,
           record: action.payload.response.record,
           amount: action.payload.response.amount,
+          storage: action.payload.response.storage,
           type: action.payload.response.type,
           message,
           isUser: false,
@@ -157,3 +142,5 @@ export default ChatSlice.reducer;
 
 export const getIsLoading = (state: RootState) => state.chat.isLoading;
 export const getMessages = (state: RootState) => state.chat.messages;
+export const getLastMessage = (state: RootState) =>
+  state.chat.messages[state.chat.messages.length - 1];

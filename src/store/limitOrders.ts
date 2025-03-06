@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { CurrentLimitOrder, LimitOrder } from '../types/LimitOrder';
 import { RootState } from './store';
-import { getCurrencyData } from './spreadsheetList';
+import { getPickedAsset } from './spreadsheetList';
 import axios from 'axios';
 
 interface LimitOrdersState {
@@ -57,10 +57,10 @@ export const postLimitOrder = createAsyncThunk(
   'app/postLimitOrder',
   async (orderType: OrderType, { getState }) => {
     const state = getState() as RootState;
-    const currencyData = getCurrencyData(state);
+    const pickedAsset = getPickedAsset(state);
     const desirableAssetsPercent = state.app.desirableAssetsPercent;
 
-    if (!currencyData) {
+    if (!pickedAsset) {
       throw new Error('Currency data not found');
     }
 
@@ -74,7 +74,7 @@ export const postLimitOrder = createAsyncThunk(
     }
     const orderData = {
       ...limitOrder,
-      currencyName: currencyData.name,
+      currencyName: pickedAsset.name,
       desirableAssetsPercent,
     };
     const response = await axios.post(

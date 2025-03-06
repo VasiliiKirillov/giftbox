@@ -5,6 +5,7 @@ import { SpreadsheetListSlice } from './spreadsheetList';
 import { LimitOrdersSlice } from './limitOrders';
 import { AppSlice } from './app';
 import { ChatSlice } from './chat';
+import storageReducer from './storage';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     limitOrders: LimitOrdersSlice.reducer,
     app: AppSlice.reducer,
     chat: ChatSlice.reducer,
+    storage: storageReducer,
   },
 });
 

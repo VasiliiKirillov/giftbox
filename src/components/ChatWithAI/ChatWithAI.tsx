@@ -1,14 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../store/store';
-import { sendMessage, getIsLoading, getMessages } from '../../store/chat';
+import {
+  sendMessage,
+  getIsLoading,
+  getMessages,
+  getLastMessage,
+} from '../../store/chat';
 import { useSelector } from 'react-redux';
+import { fetchAllStorages, getStoragesByName } from '../../store/storage';
+import { addNewTransaction } from '../../store/utils';
+import { getPickedSpreadsheet } from '../../store/spreadsheetList';
 
+const useUpdateSpreadsheetList = () => {
+  const storagesByName = useSelector(getStoragesByName);
+  const lastMessage = useSelector(getLastMessage);
+  const pickedSpreadsheet = useSelector(getPickedSpreadsheet);
+
+  useEffect(() => {
+    const lastMessageCorrect =
+      !lastMessage.isUser &&
+      lastMessage.storage &&
+      lastMessage.amount &&
+      lastMessage.record &&
+      lastMessage.type;
+    if (lastMessageCorrect && pickedSpreadsheet) {
+      addNewTransaction(
+        localStorage.getItem('spreadsheetId') ?? '',
+        pickedSpreadsheet.name,
+        storagesByName[lastMessage.storage as string].metaData,
+        lastMessage.type === 'expense'
+          ? `-${lastMessage.amount!.toString()}`
+          : lastMessage.amount!.toString(),
+        lastMessage.record!
+      )
+        .then(() => {
+          console.log('gov Transaction added');
+        })
+        .catch((error) => {
+          console.error('gov Error adding transaction:', error);
+        });
+    }
+  }, [lastMessage.id, pickedSpreadsheet]);
+};
 export const ChatWithAI = () => {
   const [inputValue, setInputValue] = useState('');
   const dispatch = useAppDispatch();
   const isLoading = useSelector(getIsLoading);
   const messages = useSelector(getMessages);
+
+  useUpdateSpreadsheetList();
+
+  useEffect(() => {
+    dispatch(fetchAllStorages());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

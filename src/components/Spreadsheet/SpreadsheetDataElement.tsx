@@ -6,6 +6,7 @@ import {
   getSpreadsheetList,
   setCurrencyData,
   setTotalAmount,
+  setPickedSpreadsheetToStore,
   SpreadsheetType,
 } from '../../store/spreadsheetList';
 import { DropdownComponent } from '../common/Dropdown/Dropdown';
@@ -41,6 +42,7 @@ export const SpreadsheetDataElement = memo(() => {
 
   useEffect(() => {
     if (!pickedSpreadsheet) return;
+    dispatch(setPickedSpreadsheetToStore(pickedSpreadsheet));
     loadCurrenciesData();
   }, [pickedSpreadsheet]);
 

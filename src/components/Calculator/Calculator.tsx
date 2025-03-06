@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { InitialData } from './InitialData';
 import { ThresholdBlock } from './ThresholdBlock';
@@ -6,7 +6,7 @@ import Decimal from 'decimal.js';
 import { CurrencyTitle } from './CurrencyTitle';
 import { PieChart } from './PieChart';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCurrencyData, getTotalAmount } from '../../store/spreadsheetList';
+import { getPickedAsset, getTotalAmount } from '../../store/spreadsheetList';
 import { addCurrentLimitOrder } from '../../store/limitOrders';
 import { setDesirableAssetsPercent } from '../../store/app';
 
@@ -76,20 +76,20 @@ function calculateOrderDetails(
 
 export const Calculator = memo(() => {
   const dispatch = useDispatch();
-  const currencyData = useSelector(getCurrencyData);
+  const pickedAsset = useSelector(getPickedAsset);
   const totalAmountFromSpreadsheet = useSelector(getTotalAmount);
 
   useEffect(() => {
-    if (!currencyData) return;
-    setAssetsCurrencyName(currencyData.name.toUpperCase());
-    setAssetsAmount(currencyData.amount);
-    setCurrentAssetsCurrencyRate(currencyData.currencyRate);
-    setIdealAssetsPercent(currencyData.desirablePercent);
-    setBelowThresholdDeltaPercent(currencyData.belowThreshold);
-    setAboveThresholdDeltaPercent(currencyData.aboveThreshold);
+    if (!pickedAsset) return;
+    setAssetsCurrencyName(pickedAsset.name.toUpperCase());
+    setAssetsAmount(pickedAsset.amount);
+    setCurrentAssetsCurrencyRate(pickedAsset.currencyRate);
+    setIdealAssetsPercent(pickedAsset.desirablePercent);
+    setBelowThresholdDeltaPercent(pickedAsset.belowThreshold);
+    setAboveThresholdDeltaPercent(pickedAsset.aboveThreshold);
     if (!totalAmountFromSpreadsheet) return;
     setTotalAmount(totalAmountFromSpreadsheet);
-  }, [currencyData, totalAmountFromSpreadsheet]);
+  }, [pickedAsset, totalAmountFromSpreadsheet]);
 
   const [baseCurrencyName, setBaseCurrencyName] = useState('USD'); // usd
   const [assetsCurrencyName, setAssetsCurrencyName] = useState('BTC'); // crypto
