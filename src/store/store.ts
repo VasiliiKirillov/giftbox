@@ -6,7 +6,7 @@ import { LimitOrdersSlice } from './limitOrders';
 import { AppSlice } from './app';
 import { ChatSlice } from './chat';
 import storageReducer from './storage';
-
+import accountingRecordReducer from './accountingRecord';
 export const store = configureStore({
   reducer: {
     spreadsheetList: SpreadsheetListSlice.reducer,
@@ -14,6 +14,7 @@ export const store = configureStore({
     app: AppSlice.reducer,
     chat: ChatSlice.reducer,
     storage: storageReducer,
+    accountingRecord: accountingRecordReducer,
   },
 });
 

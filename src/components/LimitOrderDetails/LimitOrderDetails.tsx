@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { List } from '../common/NewList';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';

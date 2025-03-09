@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from './store';
+import { addAccountingRecord } from './accountingRecord';
 
 export type ChatMessage = {
   id: number;
@@ -48,8 +49,28 @@ export const sendMessage = createAsyncThunk(
         message: userInput,
       }
     );
+
+    if (
+      response.data.success &&
+      response.data.response.transactionMonth &&
+      response.data.response.transactionYear &&
+      response.data.response.record &&
+      response.data.response.amount &&
+      response.data.response.type &&
+      response.data.response.storage &&
+      response.data.response.accountingRecordId
+    ) {
+      thunkAPI.dispatch(
+        addAccountingRecord({
+          ...response.data.response,
+        })
+      );
+      return response.data;
+    }
+
     return {
       ...response.data,
+      success: false,
     };
   }
 );
@@ -83,18 +104,8 @@ export const ChatSlice = createSlice({
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
         state.isLoading = false;
-
-        console.log(action.payload);
         let message = '';
-        if (
-          action.payload.success &&
-          action.payload.response.transactionMonth &&
-          action.payload.response.transactionYear &&
-          action.payload.response.record &&
-          action.payload.response.amount &&
-          action.payload.response.type &&
-          action.payload.response.storage
-        ) {
+        if (action.payload.success) {
           message = `I've added a ${action.payload.response.type} transaction of ${action.payload.response.amount} for ${action.payload.response.record}`;
         } else {
           message =

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { SpreadsheetDataElement } from '../components/Spreadsheet/SpreadsheetDataElement';
-import { LimitOrderDetailsPage } from '../components/LimitOrderDetails/LimitOrderDetailsPage';
+import { AccountingRecordPage } from '../components/AccountingRecord/AccountingRecordPage';
 
 const isShowSpreadsheetPart = localStorage.getItem('isShowSpreadsheetPart');
 
@@ -13,7 +13,7 @@ export const MainPage = () => {
       </LeftColumnContainer>
       <RightColumnContainer>
         {isShowSpreadsheetPart && <SpreadsheetDataElement />}
-        <LimitOrderDetailsPage />
+        <AccountingRecordPage />
       </RightColumnContainer>
     </ContentContainer>
   );
