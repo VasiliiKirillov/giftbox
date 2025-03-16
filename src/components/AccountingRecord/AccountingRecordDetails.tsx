@@ -3,38 +3,20 @@ import { List } from '../common/NewList';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import {
-  getAccountingRecords,
   getAccountingRecordsByType,
+  getAccountingRecordsWithStorageNames,
 } from '../../store/accountingRecord';
 
-const MONTHS = {
-  1: 'January',
-  2: 'February',
-  3: 'March',
-  4: 'April',
-  5: 'May',
-  6: 'June',
-  7: 'July',
-  8: 'August',
-  9: 'September',
-  10: 'October',
-  11: 'November',
-  12: 'December',
-} as const;
-
-type MonthNumber = keyof typeof MONTHS;
-
 export const AccountingRecordDetails = memo(() => {
-  const records = useSelector(getAccountingRecords);
+  const records = useSelector(getAccountingRecordsWithStorageNames);
   const recordsByType = useSelector(getAccountingRecordsByType);
 
   const headerData = useMemo(
     () => ({
-      record: 'Record',
+      description: 'Description',
       amount: 'Amount',
       type: 'Type',
-      report: 'Report',
-      storage: 'Storage',
+      storageName: 'Storage',
       transactionPeriod: 'Transaction Period',
     }),
     []
@@ -43,11 +25,12 @@ export const AccountingRecordDetails = memo(() => {
   const formattedRecords = useMemo(() => {
     return records.map((record) => ({
       ...record,
-      id: String(record.accountingRecordId),
+      id: String(record.id),
       amount: `$${record.amount.toLocaleString()}`,
-      transactionPeriod: `${MONTHS[record.transactionMonth as MonthNumber]} ${
-        record.transactionYear
-      }`,
+      transactionPeriod: new Date(record.date).toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric',
+      }),
     }));
   }, [records]);
 

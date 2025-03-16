@@ -27,7 +27,7 @@ const ContentContainer = styled.div`
 `;
 
 const LeftColumnContainer = styled.div`
-  min-width: 648px;
+  min-width: 700px;
 `;
 
 const RightColumnContainer = styled.div`

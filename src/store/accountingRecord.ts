@@ -6,17 +6,24 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import axios from 'axios';
+import { getStoragesById } from './storage';
 
+// TODO remove transactionMonth and transactionYear
 export interface AccountingRecord {
-  accountingRecordId: number;
+  id: number;
   amount: number;
   record: string;
   report: string;
-  storage: string;
+  storageId: string;
   technicalMessage: string;
   transactionMonth: number;
   transactionYear: number;
+  date: string;
   type: 'expense' | 'income';
+}
+
+export interface AccountingRecordWithStorageName extends AccountingRecord {
+  storageName: string;
 }
 
 interface AccountingRecordState {
@@ -35,7 +42,7 @@ export const fetchAllAccountingRecords = createAsyncThunk(
   'accountingRecord/fetchAll',
   async () => {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/accounting-records`
+      `${import.meta.env.VITE_API_URL}/accounting-record`
     );
     return response.data;
   }
@@ -78,6 +85,17 @@ export const getAccountingRecordIsLoading = (state: RootState) =>
   state.accountingRecord.isLoading;
 export const getAccountingRecordError = (state: RootState) =>
   state.accountingRecord.error;
+
+export const getAccountingRecordsWithStorageNames = createSelector(
+  [getAccountingRecords, getStoragesById],
+  (records, storagesMap): AccountingRecordWithStorageName[] => {
+    console.log('storagesMap', storagesMap);
+    return records.map((record) => ({
+      ...record,
+      storageName: storagesMap[record.storageId]?.name || 'Unknown Storage',
+    }));
+  }
+);
 
 export const getAccountingRecordsByType = createSelector(
   [getAccountingRecords],

@@ -7,6 +7,7 @@ import { RootState } from './store';
 import axios from 'axios';
 
 export interface Storage {
+  id: number;
   metaData: string;
   name: string;
 }
@@ -59,6 +60,13 @@ export const getStorages = (state: RootState) => state.storage.storages;
 export const getStorageIsLoading = (state: RootState) =>
   state.storage.isLoading;
 export const getStorageError = (state: RootState) => state.storage.error;
+
+export const getStoragesById = createSelector([getStorages], (storages) => {
+  return storages.reduce<{ [key: string]: Storage }>((acc, storage) => {
+    acc[storage.id] = storage;
+    return acc;
+  }, {});
+});
 
 export const getStoragesByName = createSelector([getStorages], (storages) => {
   return storages.reduce(
