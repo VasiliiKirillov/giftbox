@@ -10,6 +10,7 @@ export interface Storage {
   id: number;
   metaData: string;
   name: string;
+  currency: string;
 }
 
 interface StorageState {

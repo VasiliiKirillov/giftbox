@@ -12,8 +12,6 @@ export type ChatMessage = {
   amount?: number;
   type?: 'expense' | 'income';
   storage?: string;
-  transactionMonth?: string;
-  transactionYear?: string;
 };
 
 interface ChatState {
@@ -52,13 +50,11 @@ export const sendMessage = createAsyncThunk(
 
     if (
       response.data.success &&
-      response.data.response.transactionMonth &&
-      response.data.response.transactionYear &&
-      response.data.response.record &&
+      response.data.response.description &&
       response.data.response.amount &&
       response.data.response.type &&
-      response.data.response.storage &&
-      response.data.response.accountingRecordId
+      response.data.response.storageId &&
+      response.data.response.id
     ) {
       thunkAPI.dispatch(
         addAccountingRecord({
@@ -115,8 +111,6 @@ export const ChatSlice = createSlice({
 
         const aiMessage: ChatMessage = {
           id: state.messages.length + 1,
-          transactionMonth: action.payload.response.transactionMonth,
-          transactionYear: action.payload.response.transactionYear,
           record: action.payload.response.record,
           amount: action.payload.response.amount,
           storage: action.payload.response.storage,

@@ -8,7 +8,6 @@ import { RootState } from './store';
 import axios from 'axios';
 import { getStoragesById } from './storage';
 
-// TODO remove transactionMonth and transactionYear
 export interface AccountingRecord {
   id: number;
   amount: number;
@@ -16,14 +15,13 @@ export interface AccountingRecord {
   report: string;
   storageId: string;
   technicalMessage: string;
-  transactionMonth: number;
-  transactionYear: number;
   date: string;
   type: 'expense' | 'income';
 }
 
-export interface AccountingRecordWithStorageName extends AccountingRecord {
+export interface AccountingRecordDetailed extends AccountingRecord {
   storageName: string;
+  currency: string;
 }
 
 interface AccountingRecordState {
@@ -53,7 +51,7 @@ export const AccountingRecordSlice = createSlice({
   initialState,
   reducers: {
     addAccountingRecord: (state, action: PayloadAction<AccountingRecord>) => {
-      state.records.push(action.payload);
+      state.records.unshift(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -88,11 +86,11 @@ export const getAccountingRecordError = (state: RootState) =>
 
 export const getAccountingRecordsWithStorageNames = createSelector(
   [getAccountingRecords, getStoragesById],
-  (records, storagesMap): AccountingRecordWithStorageName[] => {
-    console.log('storagesMap', storagesMap);
+  (records, storagesMap): AccountingRecordDetailed[] => {
     return records.map((record) => ({
       ...record,
       storageName: storagesMap[record.storageId]?.name || 'Unknown Storage',
+      currency: storagesMap[record.storageId]?.currency || '???',
     }));
   }
 );

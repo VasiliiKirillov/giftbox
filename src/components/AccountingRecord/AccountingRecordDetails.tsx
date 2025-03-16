@@ -26,7 +26,7 @@ export const AccountingRecordDetails = memo(() => {
     return records.map((record) => ({
       ...record,
       id: String(record.id),
-      amount: `$${record.amount.toLocaleString()}`,
+      amount: `${record.amount.toLocaleString()} ${record.currency}`,
       transactionPeriod: new Date(record.date).toLocaleDateString('en-US', {
         month: 'long',
         year: 'numeric',
